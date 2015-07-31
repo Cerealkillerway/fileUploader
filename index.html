@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="css/fileUploader.css" rel="stylesheet">
+
+    <script type="text/javascript" src="lib/jquery-2.1.4.js"></script>
+    <script type="text/javascript" src="js/fileUploader.js"></script>
+</head>
+
+<body>
+    <h2>File Uploader v 0.0.0</h2>
+
+    <div class="fileUploader">
+        <p class="introMsg"></p>
+        <div>
+            <div class="inputContainer">
+                <input class="fileLoader" type="file" id="attachments" name="attachments" multiple />
+            </div>
+            <div class="dropZone"></div>
+            <div class="filesContainer filesContainerEmpty" style="min-height: 175px;">
+                <div class="innerFileThumbs"></div>
+                <div style="clear:both;"></div>
+            </div>
+        </div>
+        <div class="result"></div>
+    </div>    
+</body>
+
+<script tyle="text/javascript">
+    $('.fileUploader').fileUploader({
+        lang: 'it',
+        resultFileContainerClass: "duplicator attachment form-group",
+        resultPrefix: "data[FT][FatturaElettronicaBody][Allegati]",
+        resultInputNames: ["NomeAttachment", "FormatoAttachment", "Attachment"],
+        useFileIcons: false,
+        //debug: true
+    });
+</script>
+</html>

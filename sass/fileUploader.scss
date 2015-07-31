@@ -1,0 +1,117 @@
+$mainColor: #333 !default;
+$resultColor: #ff9000 !default;
+
+
+body {
+    padding: 35px;
+    font-family: arial;
+}
+
+.fileUploader {
+    color: $mainColor;
+    font-weight: bold;
+
+    img {
+        display: block;
+    }
+
+    .hide {
+        display: none !important;
+    }
+
+    .inputContainer {
+        display: none;
+    }
+
+    .dropZone {
+        height: 150px;
+        width: 100%;
+        margin-top: 25px;
+        border: dashed 3px $mainColor;
+        text-align: center;
+        vertical-align: middle;
+        line-height: 150px;
+        font-size: 36px;
+        color: lighten($mainColor, 30%);
+    }
+
+    %borderBoxed {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    .filesContainer {
+        margin-top: 25px;
+
+        .newElement {
+            width: 100%;
+
+            & > input, & > div {
+                display: inline-block;
+            }
+
+            .fileTitle {
+                width: 38%;
+                margin-right: 2%;
+                height: 26px;
+                position: relative;
+                top: -10px;
+                @extend %borderBoxed;
+            }
+
+            .fileExt {
+                display: none;
+            }
+
+            .loadBar {
+                border: solid 2px $mainColor;
+                width: 28%;
+                height: 26px;
+                margin-top: 5px;
+                margin-right: 2%;
+                @extend %borderBoxed;
+
+                div {
+                    background-color: $mainColor;
+                    width: 0;
+                    height: 100%;
+                }
+            }
+
+            .fileActions {
+                position: relative;
+                top: -10px;
+                width: 30%;
+                @extend %borderBoxed;
+
+                div {
+                    height: 26px;
+                    width: 30px;
+                    display: inline-block;
+                    line-height: 26px;
+                }
+
+                a {
+                    text-decoration: none !important;
+                    color: $mainColor !important;
+                }
+
+                .fileDelete {
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+
+    .result {
+        margin-top: 25px;
+        border: dashed 3px $resultColor;
+
+        span {
+            input {
+                display: block;
+            }
+        }
+    }
+}

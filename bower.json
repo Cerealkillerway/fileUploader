@@ -1,0 +1,41 @@
+{
+  "name": "fileUploader",
+  "version": "0.0.0",
+  "homepage": "https://github.com/Cerealkillerway/materialNote",
+  "description": "A fork of Summernote.js ported to Materialize",
+  "keywords": [
+    "wysiwyg",
+    "editor",
+    "materialize"
+  ],
+  "authors": [
+    "CK"
+  ],
+  "dependencies": {
+    "jquery": ">=2.1.1"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Cerealkillerway/materialNote"
+  },
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    ".sass-cache",
+    "config.rb",
+    "Gemfile",
+    "Guardfile",
+    "Gruntfile",
+    ".gitignore",
+    "package.json",
+    "README.md",
+    "font",
+    "lib",
+    "sass/components",
+    "sass/materialize.scss",
+    "index.html"
+  ]
+}

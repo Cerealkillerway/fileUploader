@@ -1,0 +1,72 @@
+body {
+  padding: 35px;
+  font-family: arial; }
+
+.fileUploader {
+  color: #333;
+  font-weight: bold; }
+  .fileUploader img {
+    display: block; }
+  .fileUploader .hide {
+    display: none !important; }
+  .fileUploader .inputContainer {
+    display: none; }
+  .fileUploader .dropZone {
+    height: 150px;
+    width: 100%;
+    margin-top: 25px;
+    border: dashed 3px #333;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 150px;
+    font-size: 36px;
+    color: gray; }
+  .fileUploader .filesContainer .newElement .fileTitle, .fileUploader .filesContainer .newElement .loadBar, .fileUploader .filesContainer .newElement .fileActions {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box; }
+  .fileUploader .filesContainer {
+    margin-top: 25px; }
+    .fileUploader .filesContainer .newElement {
+      width: 100%; }
+      .fileUploader .filesContainer .newElement > input, .fileUploader .filesContainer .newElement > div {
+        display: inline-block; }
+      .fileUploader .filesContainer .newElement .fileTitle {
+        width: 38%;
+        margin-right: 2%;
+        height: 26px;
+        position: relative;
+        top: -10px; }
+      .fileUploader .filesContainer .newElement .fileExt {
+        display: none; }
+      .fileUploader .filesContainer .newElement .loadBar {
+        border: solid 2px #333;
+        width: 28%;
+        height: 26px;
+        margin-top: 5px;
+        margin-right: 2%; }
+        .fileUploader .filesContainer .newElement .loadBar div {
+          background-color: #333;
+          width: 0;
+          height: 100%; }
+      .fileUploader .filesContainer .newElement .fileActions {
+        position: relative;
+        top: -10px;
+        width: 30%; }
+        .fileUploader .filesContainer .newElement .fileActions div {
+          height: 26px;
+          width: 30px;
+          display: inline-block;
+          line-height: 26px; }
+        .fileUploader .filesContainer .newElement .fileActions a {
+          text-decoration: none !important;
+          color: #333 !important; }
+        .fileUploader .filesContainer .newElement .fileActions .fileDelete {
+          cursor: pointer; }
+  .fileUploader .result {
+    margin-top: 25px;
+    border: dashed 3px #ff9000; }
+    .fileUploader .result span input {
+      display: block; }
+
+/*# sourceMappingURL=fileUploader.css.map */

@@ -3,7 +3,12 @@
 A simple file uploader with HTML5
 
 ### Usage
-Just call <b>fileUploader({options})</b> on any jquery element
+Just call <b>fileUploader()</b> on any jquery element.<br>
+Example:
+
+     $('.fileUploader').fileUploader();
+     
+There are some options and language overrides that can passed to constructor in the form: <b>fileUploader({options}{translation})</b> (see below).
 
 ### Options
 <b>lang</b> language to use (default 'en')

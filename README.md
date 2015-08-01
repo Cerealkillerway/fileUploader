@@ -36,12 +36,12 @@ It comes with english and italian translations built-in;
 it is possible to override them or add a custom translation by defining it as a second argument in the constructor:
 
     $('.fileUploader').fileUploader({
-        lang: 'ru'
+        lang: 'hi'
     },
     {
-        "ru": {
-            intro_msg: "(đðøĸðłðđđŋĸßð¢)",      
-            dropZone_msg: "ðđøþþŋøþµµßðĸł",
+        "hi": {
+            intro_msg: "(फ़ाइल संलग्न करें ...)",      
+            dropZone_msg: "फ़ाइल यहां छोड़ें",
         }
     });
 

@@ -46,6 +46,8 @@ body {
 
         .newElement {
             width: 100%;
+            height: 40px;
+            margin-bottom: 7px;
 
             & > input, & > div {
                 display: inline-block;
@@ -54,7 +56,9 @@ body {
             .fileTitle {
                 width: 38%;
                 margin-right: 2%;
-                height: 26px;
+                font-size: 18px;
+                border: none;
+                text-align: right;
                 position: relative;
                 top: -10px;
                 @extend %borderBoxed;
@@ -67,9 +71,9 @@ body {
             .loadBar {
                 border: solid 2px $mainColor;
                 width: 28%;
-                height: 26px;
-                margin-top: 5px;
                 margin-right: 2%;
+                height: 100%;
+                -webkit-backface-visibility: hidden;
                 @extend %borderBoxed;
 
                 div {
@@ -81,15 +85,14 @@ body {
 
             .fileActions {
                 position: relative;
-                top: -10px;
                 width: 30%;
+                position: relative;
+                top: -10px;
                 @extend %borderBoxed;
 
                 div {
-                    height: 26px;
                     width: 30px;
                     display: inline-block;
-                    line-height: 26px;
                 }
 
                 a {
@@ -107,11 +110,33 @@ body {
     .result {
         margin-top: 25px;
         border: dashed 3px $resultColor;
+        min-height: 35px;
+        padding: 15px;
 
-        span {
+        & > div {
+            margin-bottom: 15px;
+            width: 49%;
+            margin-right: 1%;
+            float: left;
+            @extend %borderBoxed;
+
             input {
+                width: 100%;
                 display: block;
-            }
+            }            
         }
+
+        &:last-child:after {
+            content:'';
+            display:block;
+            clear: both;
+        }
+    }
+
+    .debugMode {
+        color: $resultColor;
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
     }
 }

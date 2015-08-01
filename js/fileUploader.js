@@ -65,7 +65,12 @@
         // initialization
         $(this).find('.introMsg').html(currentLangObj.intro_msg);
         $(dropZone).html(currentLangObj.dropZone_msg); 
-        if (!config.debug) $resultContainer.addClass('hide');
+        if (!config.debug) {
+            $resultContainer.addClass('hide');
+        }
+        else {
+            $('<p class="debugMode">Debug mode: on</p>').insertBefore($resultContainer);
+        }
 
         // files read function
         function filesRead(event) {
@@ -88,7 +93,7 @@
 
             function loadEnd(reader, file, index) {
                 reader.onloadend = function() {
-                    var spanContainer = $('<span data-index="' + index + '" class="' + options.resultFileContainerClass + '"></span>');
+                    var spanContainer = $('<div data-index="' + index + '" class="' + options.resultFileContainerClass + '"></div>');
                     spanContainer.append($('<div>File: ' + index + '</div>'));
                     spanContainer.append($('<input/>').attr({type: 'text', name: config.resultPrefix + '[' + index + '][' + config.resultInputNames[0] + ']', value: file.name}));
                     spanContainer.append($('<input/>').attr({type: 'text', name: config.resultPrefix + '[' + index + '][' + config.resultInputNames[1] + ']', value: file.type}));
@@ -99,10 +104,24 @@
                     var currentElement = $('#fileContainer-' + index);
                     //set direct link on file see button
                     currentElement.children('.fileActions').children('a').attr('href', reader.result);
-                    //animate loading bar
-                    currentElement.children('.loadBar').children('div').animate({width: '100%'}, 500);
                 };
                 reader.readAsDataURL(file);
+            }
+
+            function progress(reader, index) {
+                var currentElement = $('#fileContainer-' + index);
+
+                reader.onprogress = function(event) {
+                    if (event.lengthComputable) {
+                        var percentLoaded = Math.round((event.loaded / event.total) * 100);
+                        console.log(percentLoaded);
+                        
+                        // Increase the progress bar length.
+                        if (percentLoaded <= 100) {
+                            currentElement.children('.loadBar').children('div').animate({width: '100%'}, 500);
+                        }
+                    }
+                };
             }
 
 
@@ -117,9 +136,11 @@
                 // remove file block
                 $('#fileContainer-' + index).remove();
                 // remove result block
-                $resultContainer.children('span[data-index="' + index + '"]').remove();
+                $resultContainer.children('div[data-index="' + index + '"]').remove();
 
                 if ($('.innerFileThumbs').children().length === 0) $('.filesContainer').addClass('filesContainerEmpty');
+
+                logger('Deleted file N: ' + index, 2);
             };
 
             fileRename = function(event) {
@@ -182,6 +203,7 @@
                 $('#fileExt-' + parseInt(globalIndex)).html(fileExt);
 
                 // now read!
+                progress(reader, globalIndex);
                 loadEnd(reader, file, globalIndex);
                 globalIndex++;
             }

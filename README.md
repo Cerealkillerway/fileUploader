@@ -20,7 +20,7 @@ Just call <b>fileUploader({options})</b> on any jquery element
 
 In the result container, each reader's result is inserted as a DIV with 3 nested INPUT elements (title, extension, value (the base64 string)); each of these 3 elements has a name attribute in the form "prefix[index][name]"
 By default the prefix is "fileUploader", and the names are ["title", "extension", "value"].
-If neede it is possible to change them:
+If needed it is possible to change them:
 
 <b>resultPrefix</b> custom name-prefix for result elements
 <b>resultInputNames</b> custom array of names for the 3 result elements created for each file (ordered)

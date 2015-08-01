@@ -1,11 +1,6 @@
 $mainColor: #333 !default;
-$resultColor: #ff9000 !default;
+$resultColor: #ff0000 !default;
 
-
-body {
-    padding: 35px;
-    font-family: arial;
-}
 
 .fileUploader {
     color: $mainColor;
@@ -44,23 +39,32 @@ body {
     .filesContainer {
         margin-top: 25px;
 
+        .fileThumb {
+            margin: auto;
+        }
+
         .newElement {
             width: 100%;
             height: 40px;
             margin-bottom: 7px;
 
+            input:focus {
+                outline: none !important;
+            }
+
             & > input, & > div {
-                display: inline-block;
+                float: left;
             }
 
             .fileTitle {
                 width: 38%;
                 margin-right: 2%;
+                color: $mainColor;
                 font-size: 18px;
                 border: none;
                 text-align: right;
                 position: relative;
-                top: -10px;
+                top: 10px;
                 @extend %borderBoxed;
             }
 
@@ -73,7 +77,6 @@ body {
                 width: 28%;
                 margin-right: 2%;
                 height: 100%;
-                -webkit-backface-visibility: hidden;
                 @extend %borderBoxed;
 
                 div {
@@ -87,7 +90,7 @@ body {
                 position: relative;
                 width: 30%;
                 position: relative;
-                top: -10px;
+                top: 10px;
                 @extend %borderBoxed;
 
                 div {
@@ -108,7 +111,8 @@ body {
     }
 
     .result {
-        margin-top: 25px;
+        margin-top: 5px;
+        color: $resultColor;
         border: dashed 3px $resultColor;
         min-height: 35px;
         padding: 15px;
@@ -135,6 +139,7 @@ body {
 
     .debugMode {
         color: $resultColor;
+        margin: 35px auto auto 0;
         text-align: center;
         font-weight: bold;
         text-transform: uppercase;

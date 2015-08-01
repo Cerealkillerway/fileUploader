@@ -6,14 +6,15 @@ module.exports = function(grunt) {
         connect: {
             server: {
                 options: {
-                    port: 7000
+                    port: grunt.option('port') || 7000
                 },
             }
         },
         sass: {
             dist: {
                 files: {
-                    'css/fileUploader.css': 'sass/fileUploader.scss'
+                    'css/fileUploader.css': 'sass/fileUploader.scss',
+                    'css/main.css': 'sass/main.scss'
                 }
             }
         },
@@ -21,9 +22,6 @@ module.exports = function(grunt) {
             css: {
                 files: ['sass/*.scss', 'lib/sass/.scss'],
                 tasks: ['sass'],
-                options: {
-                    livereload: true
-                }
             },
             livereload: {
                 options: {
@@ -31,7 +29,9 @@ module.exports = function(grunt) {
                 },
                 files: [
                     'index.html',
-                    'js/fileUploader.js'
+                    'js/fileUploader.js',
+                    'css/fileUploader.css',
+                    'css/main.css'
                 ],
             }
         },

@@ -1,7 +1,3 @@
-body {
-  padding: 35px;
-  font-family: arial; }
-
 .fileUploader {
   color: #333;
   font-weight: bold; }
@@ -27,28 +23,32 @@ body {
     box-sizing: border-box; }
   .fileUploader .filesContainer {
     margin-top: 25px; }
+    .fileUploader .filesContainer .fileThumb {
+      margin: auto; }
     .fileUploader .filesContainer .newElement {
       width: 100%;
       height: 40px;
       margin-bottom: 7px; }
+      .fileUploader .filesContainer .newElement input:focus {
+        outline: none !important; }
       .fileUploader .filesContainer .newElement > input, .fileUploader .filesContainer .newElement > div {
-        display: inline-block; }
+        float: left; }
       .fileUploader .filesContainer .newElement .fileTitle {
         width: 38%;
         margin-right: 2%;
+        color: #333;
         font-size: 18px;
         border: none;
         text-align: right;
         position: relative;
-        top: -10px; }
+        top: 10px; }
       .fileUploader .filesContainer .newElement .fileExt {
         display: none; }
       .fileUploader .filesContainer .newElement .loadBar {
         border: solid 2px #333;
         width: 28%;
         margin-right: 2%;
-        height: 100%;
-        -webkit-backface-visibility: hidden; }
+        height: 100%; }
         .fileUploader .filesContainer .newElement .loadBar div {
           background-color: #333;
           width: 0;
@@ -57,7 +57,7 @@ body {
         position: relative;
         width: 30%;
         position: relative;
-        top: -10px; }
+        top: 10px; }
         .fileUploader .filesContainer .newElement .fileActions div {
           width: 30px;
           display: inline-block; }
@@ -67,8 +67,9 @@ body {
         .fileUploader .filesContainer .newElement .fileActions .fileDelete {
           cursor: pointer; }
   .fileUploader .result {
-    margin-top: 25px;
-    border: dashed 3px #ff9000;
+    margin-top: 5px;
+    color: #ff0000;
+    border: dashed 3px #ff0000;
     min-height: 35px;
     padding: 15px; }
     .fileUploader .result > div {
@@ -84,7 +85,8 @@ body {
       display: block;
       clear: both; }
   .fileUploader .debugMode {
-    color: #ff9000;
+    color: #ff0000;
+    margin: 35px auto auto 0;
     text-align: center;
     font-weight: bold;
     text-transform: uppercase; }

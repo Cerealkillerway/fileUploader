@@ -1,5 +1,5 @@
 (function($) {
-    $.fn.fileUploader = function(options) {
+    $.fn.fileUploader = function(options, translation) {
         // default options
         var config = {
             lang: 'en',
@@ -8,22 +8,23 @@
             useLoadingBars: true,                               // insert loading bar for files
             resultContainer: $(this).find('.result'),           // hidden container to place results to
             resultFileContainerClass: "file-",                  // class for every file result container span
-            resultPrefix: "fileUploader-",                      // prefix for inputs in the file result container
+            resultPrefix: "fileUploader",                      // prefix for inputs in the file result container
             resultInputNames: ["title", "extension", "value"]   // name suffix to be used for result inputs
         };
 
         var lang = {
             "en": {
-                intro_msg: "(Add attachments to your invoice...)",
+                intro_msg: "(Add attachments...)",
                 dropZone_msg: "Drop here your files",
             },
             "it": {
-                intro_msg: "(Aggiungi documenti allegati alla tua fattura...)",
+                intro_msg: "(Aggiungi documenti allegati...)",
                 dropZone_msg: "Trascina qui i tuoi files...",
             }
         };
         // extend with user-defined options
         if (options) {
+            $.extend(lang, translation);
             $.extend(config, options);
         }
         
@@ -114,7 +115,7 @@
                 reader.onprogress = function(event) {
                     if (event.lengthComputable) {
                         var percentLoaded = Math.round((event.loaded / event.total) * 100);
-                        console.log(percentLoaded);
+                        logger('File ' + index + ' loaded: ' + percentLoaded, 3);
                         
                         // Increase the progress bar length.
                         if (percentLoaded <= 100) {
@@ -149,7 +150,7 @@
                 var text = $this.val() + '.' + ext;
                 var index = $this.attr('id').split('-')[1];
 
-                var $input = $resultContainer.find('span[data-index="' + index + '"] input:first');
+                var $input = $resultContainer.find('div[data-index="' + index + '"] input:first');
                 $input.val(text);
             };
 
@@ -160,9 +161,13 @@
 
                 // create current element's DOM
                 var containerStyle = "position: relative;";
+
+                //insert file icon if requested
                 if (config.useFileIcons) {
-                    containerStyle = containerStyle + " float: left;";
+                    var currentThumb = $('<img src="/images/' + fileType(file.name) + '.png" class="fileThumb" id="fileThumb-' + parseInt(globalIndex) + '" />');
+                    $fileThumbsContainer.append(currentThumb);
                 }
+
                 var container = $('<div class="newElement" id="fileContainer-' + parseInt(globalIndex) + '" style="' + containerStyle + '"></div');
                 $fileThumbsContainer.append(container);
                 
@@ -187,12 +192,6 @@
                 var currentExtension = $('<div class="fileExt" id="fileExt-' + parseInt(globalIndex) + '"></div>');
                 container.prepend(currentExtension);
                 container.prepend(currentTitle);
-
-                //insert file icon if requested
-                if (config.useFileIcons) {
-                    var currentThumb = $('<img src="/images/' + fileType(file.name) + '.png" class="fileThumb" id="fileThumb-' + parseInt(globalIndex) + '" />');
-                    container.prepend(currentThumb);
-                }
 
                 currentTitle.keyup(fileRename);
 

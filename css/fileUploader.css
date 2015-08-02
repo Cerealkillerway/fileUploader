@@ -23,6 +23,23 @@
     box-sizing: border-box; }
   .fileUploader .filesContainer {
     margin-top: 25px; }
+    .fileUploader .filesContainer .error .fileTitle {
+      color: #aa00ff !important; }
+    .fileUploader .filesContainer .error .loadBar {
+      border: solid 2px #aa00ff !important; }
+      .fileUploader .filesContainer .error .loadBar .errorMsg {
+        color: #aa00ff !important;
+        font-weight: bold;
+        font-size: 18px;
+        line-height: 40px;
+        height: 100%;
+        width: 100%;
+        background-color: transparent !important;
+        text-align: center; }
+    .fileUploader .filesContainer .error .fileActions div {
+      color: #aa00ff !important; }
+    .fileUploader .filesContainer .error .fileActions a {
+      color: #aa00ff !important; }
     .fileUploader .filesContainer .fileThumb {
       margin: auto; }
     .fileUploader .filesContainer .newElement {
@@ -90,5 +107,8 @@
     text-align: center;
     font-weight: bold;
     text-transform: uppercase; }
+  .fileUploader .debug {
+    color: #ff0000;
+    text-align: center; }
 
 /*# sourceMappingURL=fileUploader.css.map */

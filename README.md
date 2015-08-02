@@ -13,6 +13,8 @@ There are some options and language overrides that can passed to constructor in 
 ### Options
 <b>lang</b>: language to use (default 'en')
 
+<b>fileMaxSize</b>: maximum allowed file size in MB (default 50)
+
 <b>useFileIcons</b>: use icons for each file depending on file type (default true)
 
 <b>debug</b>: enable debug mode (default false)
@@ -24,6 +26,8 @@ There are some options and language overrides that can passed to constructor in 
 <b>resultFileContainerClass</b>: custom class to use for each reader's result container (default "file-")
 
 <b>defaultFileExt</b>: extension to use for files with no extension (default "")
+
+<b>defaultMimeType</b>: MIME type to use for files with no extension (default "")
 
 In the result container, each reader's result is inserted as a DIV with 3 nested INPUT elements (title, extension, value (the base64 string)); each of these 3 elements has a name attribute in the form "prefix[index][name]"
 
@@ -40,12 +44,13 @@ It comes with english and italian translations built-in;
 it is possible to override them or add a custom translation by defining it as a second argument in the constructor:
 
     $('.fileUploader').fileUploader({
-        lang: 'hi'
+        lang: 'es'
     },
     {
-        "hi": {
-            intro_msg: "(फ़ाइल संलग्न करें ...)",      
-            dropZone_msg: "फ़ाइल यहां छोड़ें",
+        "es": {
+            intro_msg: "(Adjuntar Documentos...)",      
+            dropZone_msg: "Arrastre los archivos aquí",
+            maxSizeExceeded_msg: "Archivo demasiado grande"
         }
     });
 
@@ -60,6 +65,12 @@ grunt --port=9000
 ### License
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a>
 ##### History
+v0.0.5
+------
+- fixed bug for files without extension
+- added file size limit parameter
+- improved debug mode
+
 v0.0.3
 ------
 - real progress indicator

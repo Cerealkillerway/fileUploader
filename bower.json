@@ -1,8 +1,8 @@
 {
   "name": "fileUploader",
-  "version": "0.0.0",
-  "homepage": "https://github.com/Cerealkillerway/materialNote",
-  "description": "A fork of Summernote.js ported to Materialize",
+  "version": "0.0.5",
+  "homepage": "https://github.com/Cerealkillerway/fileUploader",
+  "description": "A simple file uploader that uses html5 file reader api",
   "keywords": [
     "wysiwyg",
     "editor",
@@ -17,7 +17,7 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "https://github.com/Cerealkillerway/materialNote"
+    "url": "https://github.com/Cerealkillerway/fileUploader"
   },
   "license": "MIT",
   "ignore": [

@@ -10,17 +10,21 @@
             resultFileContainerClass: "file-",                  // class for every file result container span
             resultPrefix: "fileUploader",                       // prefix for inputs in the file result container
             resultInputNames: ["title", "extension", "value"],  // name suffix to be used for result inputs
-            defaultFileExt: ""
+            defaultFileExt: "",                                 // extension to use for files with no extension
+            defaultMimeType: "",                      // MIME type to use for files with no extension 
+            fileMaxSize: 50                                     // maximum allowed file size (in MB)
         };
 
         var lang = {
             "en": {
                 intro_msg: "(Add attachments...)",
-                dropZone_msg: "Drop here your files",
+                dropZone_msg: "Drop your files here",
+                maxSizeExceeded_msg: "File too large"
             },
             "it": {
                 intro_msg: "(Aggiungi documenti allegati...)",
                 dropZone_msg: "Trascina qui i tuoi files...",
+                maxSizeExceeded_msg: "File troppo grande"
             }
         };
         // extend with user-defined options
@@ -72,6 +76,8 @@
         }
         else {
             $('<p class="debugMode">Debug mode: on</p>').insertBefore($resultContainer);
+            $('<div class="debug">Uploaded files: <span id="debugUploaded">0</span> | Rejected files: <span id="debugRejected">0</span></div>').insertBefore($resultContainer);
+            $('<div class="debug">Current MAX FILE SIZE: ' + config.fileMaxSize + ' MB</div>').insertBefore($resultContainer);
         }
 
         // files read function
@@ -92,32 +98,13 @@
             // set selected file's name to fleNameContainer
             $fileNameContainer.html('upload files');
 
-
-            function loadEnd(reader, file, index) {
-                reader.onloadend = function() {
-                    var type = file.type;
-                    var name = file.name;
-
-                    if (type === "") type = "unknown";
-                    if (name.indexOf('.') < 0 && config.defaultFileExt !== "") name = name + '.' + config.defaultFileExt;
-
-                    var spanContainer = $('<div data-index="' + index + '" class="' + options.resultFileContainerClass + '"></div>');
-                    spanContainer.append($('<div>File: ' + index + '</div>'));
-                    spanContainer.append($('<input/>').attr({type: 'text', name: config.resultPrefix + '[' + index + '][' + config.resultInputNames[0] + ']', value: name}));
-                    spanContainer.append($('<input/>').attr({type: 'text', name: config.resultPrefix + '[' + index + '][' + config.resultInputNames[1] + ']', value: type}));
-                    spanContainer.append($('<input/>').attr({type: 'text', name: config.resultPrefix + '[' + index + '][' + config.resultInputNames[2] + ']', value: reader.result}));
-
-                    $resultContainer.append(spanContainer);
-
-                    var currentElement = $('#fileContainer-' + index);
-                    //set direct link on file see button
-                    currentElement.children('.fileActions').children('a').attr('href', reader.result);
-                };
-                reader.readAsDataURL(file);
-            }
-
-            function progress(reader, index) {
+            function readFile(reader, file, index) {
                 var currentElement = $('#fileContainer-' + index);
+                var size = Math.round(file.size / 1000000 * 100) / 100;      // size in MB
+
+                reader.onloadstart = function() {
+                    logger('START read file: ' + index + ', size: ' + size + ' MB', 2);
+                };
 
                 reader.onprogress = function(event) {
                     if (event.lengthComputable) {
@@ -130,8 +117,57 @@
                         }
                     }
                 };
-            }
 
+                reader.onloadend = function() {
+                    var type = file.type;
+                    var name = file.name;
+                    var result = reader.result;
+                    var mimeType = result.substring(0, result.indexOf(';'));
+
+                    // if file has no MIME type, replace with default one
+                    if (mimeType === "data:" && config.defaultMimeType.length > 0) {
+                        result = "data:" + config.defaultMimeType + result.substring(result.indexOf(';'), result.length);
+                    }
+
+                    if (type === "") type = config.defaultMimeType;
+                    if (name.indexOf('.') < 0 && config.defaultFileExt !== "") name = name + '.' + config.defaultFileExt;
+
+                    var spanContainer = $('<div data-index="' + index + '" class="' + options.resultFileContainerClass + '"></div>');
+                    spanContainer.append($('<div>File: ' + index + '</div>'));
+                    spanContainer.append($('<input/>').attr({type: 'text', name: config.resultPrefix + '[' + index + '][' + config.resultInputNames[0] + ']', value: name}));
+                    spanContainer.append($('<input/>').attr({type: 'text', name: config.resultPrefix + '[' + index + '][' + config.resultInputNames[1] + ']', value: type}));
+                    spanContainer.append($('<input/>').attr({type: 'text', name: config.resultPrefix + '[' + index + '][' + config.resultInputNames[2] + ']', value: result}));
+
+                    $resultContainer.append(spanContainer);
+
+                    var currentElement = $('#fileContainer-' + index);
+                    //set direct link on file see button
+                    currentElement.children('.fileActions').children('a').attr('href', result);
+                    logger('END read file: ' + index, 4);
+
+                    var totalUploaded = parseInt($('#debugUploaded').html()) + 1;
+                    $('#debugUploaded').html(totalUploaded);
+                };
+
+                if (size <= config.fileMaxSize) {
+                    reader.readAsDataURL(file);
+                }
+                else {
+                    currentElement.addClass('error');
+                    currentElement.children('.loadBar').empty().append('<div class="errorMsg">' + currentLangObj.maxSizeExceeded_msg + '</div>');
+
+                    setTimeout(function() {
+                        currentElement.animate({opacity: 0}, 300, function() {
+                            $(this).remove();
+                        });
+                    }, 2000);
+
+                    var totalRejected = parseInt($('#debugRejected').html()) + 1;
+                    $('#debugRejected').html(totalRejected);
+
+                    logger("FILE REJECTED: Max size exceeded - max size: " + config.fileMaxSize + ' MB - file size: ' + size + ' MB');
+                }
+            }
 
             var startIndex = $('#innerFileThumbs').children().last().attr('id');
             if (startIndex !== undefined) startIndex = parseInt(startIndex.substring(startIndex.indexOf('-') + 1, startIndex.length)) + 1;
@@ -222,8 +258,7 @@
                 $('#fileExt-' + parseInt(globalIndex)).html(fileExt);
 
                 // now read!
-                progress(reader, globalIndex);
-                loadEnd(reader, file, globalIndex);
+                readFile(reader, file, globalIndex);
                 globalIndex++;
             }
         }

@@ -1,6 +1,20 @@
 $mainColor: #333 !default;
 $mainColorText: #ddd !default;
 
+
+::-webkit-scrollbar {
+    width: 17px;
+}
+::-webkit-scrollbar-track {
+    background-color: $mainColor;
+}
+::-webkit-scrollbar-thumb {
+    background-color: lighten($mainColor, 20%);
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: lighten($mainColor, 30%);
+}
+
 body {
     padding: 0;
     margin: 0;

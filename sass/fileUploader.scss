@@ -1,4 +1,5 @@
 $mainColor: #333 !default;
+$errorColor: #aa00ff !default;
 $resultColor: #ff0000 !default;
 
 
@@ -38,6 +39,37 @@ $resultColor: #ff0000 !default;
 
     .filesContainer {
         margin-top: 25px;
+
+        .error {
+            .fileTitle {
+                color: $errorColor !important;
+            }
+
+            .loadBar {
+                border: solid 2px $errorColor !important;
+
+                .errorMsg {
+                    color: $errorColor !important;
+                    font-weight: bold;
+                    font-size: 18px;
+                    line-height: 40px;
+                    height: 100%;
+                    width: 100%;
+                    background-color: transparent !important;
+                    text-align: center;
+                }
+            }
+
+            .fileActions {
+                div {
+                    color: $errorColor !important;
+                }
+
+                a {
+                    color: $errorColor !important;
+                }
+            }
+        }
 
         .fileThumb {
             margin: auto;
@@ -143,5 +175,10 @@ $resultColor: #ff0000 !default;
         text-align: center;
         font-weight: bold;
         text-transform: uppercase;
+    }
+
+    .debug {
+        color: $resultColor;
+        text-align: center;
     }
 }

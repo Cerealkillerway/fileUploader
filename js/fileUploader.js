@@ -8,8 +8,9 @@
             useLoadingBars: true,                               // insert loading bar for files
             resultContainer: $(this).find('.result'),           // hidden container to place results to
             resultFileContainerClass: "file-",                  // class for every file result container span
-            resultPrefix: "fileUploader",                      // prefix for inputs in the file result container
-            resultInputNames: ["title", "extension", "value"]   // name suffix to be used for result inputs
+            resultPrefix: "fileUploader",                       // prefix for inputs in the file result container
+            resultInputNames: ["title", "extension", "value"],  // name suffix to be used for result inputs
+            defaultFileExt: ""
         };
 
         var lang = {
@@ -94,10 +95,16 @@
 
             function loadEnd(reader, file, index) {
                 reader.onloadend = function() {
+                    var type = file.type;
+                    var name = file.name;
+
+                    if (type === "") type = "unknown";
+                    if (name.indexOf('.') < 0 && config.defaultFileExt !== "") name = name + '.' + config.defaultFileExt;
+
                     var spanContainer = $('<div data-index="' + index + '" class="' + options.resultFileContainerClass + '"></div>');
                     spanContainer.append($('<div>File: ' + index + '</div>'));
-                    spanContainer.append($('<input/>').attr({type: 'text', name: config.resultPrefix + '[' + index + '][' + config.resultInputNames[0] + ']', value: file.name}));
-                    spanContainer.append($('<input/>').attr({type: 'text', name: config.resultPrefix + '[' + index + '][' + config.resultInputNames[1] + ']', value: file.type}));
+                    spanContainer.append($('<input/>').attr({type: 'text', name: config.resultPrefix + '[' + index + '][' + config.resultInputNames[0] + ']', value: name}));
+                    spanContainer.append($('<input/>').attr({type: 'text', name: config.resultPrefix + '[' + index + '][' + config.resultInputNames[1] + ']', value: type}));
                     spanContainer.append($('<input/>').attr({type: 'text', name: config.resultPrefix + '[' + index + '][' + config.resultInputNames[2] + ']', value: reader.result}));
 
                     $resultContainer.append(spanContainer);
@@ -147,8 +154,15 @@
             fileRename = function(event) {
                 var $this = $(event.target);
                 var ext = $this.siblings('.fileExt').html();
-                var text = $this.val() + '.' + ext;
+                var text;
                 var index = $this.attr('id').split('-')[1];
+
+                if (ext.length > 0) {
+                    text = $this.val() + '.' + ext;
+                }
+                else {
+                    text = $this.val();
+                }
 
                 var $input = $resultContainer.find('div[data-index="' + index + '"] input:first');
                 $input.val(text);
@@ -195,9 +209,15 @@
 
                 currentTitle.keyup(fileRename);
 
-
-                var fileName = file.name.substring(0, file.name.lastIndexOf('.'));
-                var fileExt = file.name.substring(file.name.lastIndexOf('.') + 1, file.name.length);
+                var fileName, fileExt;
+                if (file.name.lastIndexOf('.') > 0) {
+                    fileName = file.name.substring(0, file.name.lastIndexOf('.'));
+                    fileExt = file.name.substring(file.name.lastIndexOf('.') + 1, file.name.length);
+                }
+                else {
+                    fileName = file.name;
+                    fileExt = config.defaultFileExt;
+                }
                 $('#fileTitle-' + parseInt(globalIndex)).val(fileName);
                 $('#fileExt-' + parseInt(globalIndex)).html(fileExt);
 

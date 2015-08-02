@@ -3,7 +3,12 @@
 A simple file uploader with HTML5
 
 ### Usage
-Just call <b>fileUploader({options})</b> on any jquery element
+Just call <b>fileUploader()</b> on any jquery element.<br>
+Example:
+
+     $('.fileUploader').fileUploader();
+     
+There are some options and language overrides that can passed to constructor in the form: <b>fileUploader({options}{translation})</b> (see below).
 
 ### Options
 <b>lang</b>: language to use (default 'en')
@@ -21,10 +26,13 @@ Just call <b>fileUploader({options})</b> on any jquery element
 <b>defaultFileExt</b>: extension to use for files with no extension (default "")
 
 In the result container, each reader's result is inserted as a DIV with 3 nested INPUT elements (title, extension, value (the base64 string)); each of these 3 elements has a name attribute in the form "prefix[index][name]"
-By default the prefix is "fileUploader", and the names are ["title", "extension", "value"].
+
+By default the prefix is "fileUploader", and the names are ["title", "extension", "value"].<br>
+
 If needed it is possible to change them:
 
 <b>resultPrefix</b> custom name-prefix for result elements
+
 <b>resultInputNames</b> custom array of names for the 3 result elements created for each file (ordered)
 
 ### Translations
@@ -32,12 +40,12 @@ It comes with english and italian translations built-in;
 it is possible to override them or add a custom translation by defining it as a second argument in the constructor:
 
     $('.fileUploader').fileUploader({
-        lang: 'ru'
+        lang: 'hi'
     },
     {
-        "ru": {
-            intro_msg: "(đðøĸðłðđđŋĸßð¢)",      
-            dropZone_msg: "ðđøþþŋøþµµßðĸł",
+        "hi": {
+            intro_msg: "(फ़ाइल संलग्न करें ...)",      
+            dropZone_msg: "फ़ाइल यहां छोड़ें",
         }
     });
 

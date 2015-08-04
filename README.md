@@ -1,4 +1,6 @@
-## File Uploader V 0.0.5
+## File Uploader V 0.0.6
+
+LIVE DEMO: [FileUploader demo](http://www.web-forge.info/projects/fileUploader)
 
 A simple file uploader with HTML5
 

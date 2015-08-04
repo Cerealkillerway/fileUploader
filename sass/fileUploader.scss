@@ -80,8 +80,12 @@ $resultColor: #ff0000 !default;
             height: 40px;
             margin-bottom: 7px;
 
-            input:focus {
-                outline: none !important;
+            input {
+                background-color: transparent;
+                
+                &:focus {
+                    outline: none !important;
+                }
             }
 
             & > input, & > div {

@@ -1,4 +1,5 @@
 $mainColor: #333 !default;
+$reloadedColor: #00c853 !default;
 $errorColor: #aa00ff !default;
 $resultColor: #ff0000 !default;
 
@@ -75,6 +76,26 @@ $resultColor: #ff0000 !default;
             margin: auto;
         }
 
+        .reloadedElement {
+            .fileTitle {
+                color: $reloadedColor !important;
+            }
+
+            .loadBar {
+                border: solid 2px $reloadedColor !important;
+
+                div {
+                    background-color: $reloadedColor !important;
+                }
+            }
+
+            .fileActions {
+                a, .fileDelete {
+                    color: $reloadedColor !important;
+                }
+            }
+        }
+
         .newElement {
             width: 100%;
             height: 40px;
@@ -136,7 +157,8 @@ $resultColor: #ff0000 !default;
 
                 a {
                     text-decoration: none !important;
-                    color: $mainColor !important;
+                    color: $mainColor;
+                    cursor: pointer;
                 }
 
                 .fileDelete {

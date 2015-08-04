@@ -6,13 +6,17 @@
             useFileIcons: true,
             debug: false,                                       // activate console logs for debug
             useLoadingBars: true,                               // insert loading bar for files
+            reloadedFilesClass: 'reloadedElement',              // class for previously uploaded files
             resultContainer: $(this).find('.result'),           // hidden container to place results to
-            resultFileContainerClass: "file-",                  // class for every file result container span
+            resultFileContainerClass: "uploadedFile",           // class for every file result container span
             resultPrefix: "fileUploader",                       // prefix for inputs in the file result container
             resultInputNames: ["title", "extension", "value"],  // name suffix to be used for result inputs
             defaultFileExt: "",                                 // extension to use for files with no extension
-            defaultMimeType: "",                      // MIME type to use for files with no extension 
-            fileMaxSize: 50                                     // maximum allowed file size (in MB)
+            defaultMimeType: "",                                // MIME type to use for files with no extension 
+            fileMaxSize: 50,                                    // maximum allowed file size (in MB)
+            onload: function() {},                              // callback on plugin initialization
+            onfileloadStart: function() {},                     // callback on file reader start
+            onfileloadEnd: function() {}                        // callback on file reader end
         };
 
         var lang = {
@@ -58,6 +62,81 @@
             }
         }
 
+        fileDelete = function(event) {
+            var index = $(event.target).data('delete');
+            var id = $(event.target).data('id');
+
+            // remove file block
+            $('#fileContainer-' + index).remove();
+            // remove result block
+            $resultContainer.children('div[data-index="' + index + '"]').remove();
+
+            if ($('.innerFileThumbs').children().length === 0) $('.filesContainer').addClass('filesContainerEmpty');
+
+            logger('Deleted file N: ' + index, 2);
+        };
+
+        fileRename = function(event) {
+            var $this = $(event.target);
+            var ext = $this.siblings('.fileExt').html();
+            var text;
+            var index = $this.attr('id').split('-')[1];
+
+            if (ext.length > 0) {
+                text = $this.val() + '.' + ext;
+            }
+            else {
+                text = $this.val();
+            }
+
+            var $input = $resultContainer.find('div[data-index="' + index + '"] input:first');
+            $input.val(text);
+        };
+
+        // create container for file uploading elements (icon, progress bar, etc...)
+        function createUploaderContainer(index, fileName, fileExt) {
+            // create current element's DOM
+            var containerStyle = "position: relative;";
+
+            //insert file icon if requested
+            if (config.useFileIcons) {
+                var currentThumb = $('<img src="/images/' + fileType(file.name) + '.png" class="fileThumb" id="fileThumb-' + parseInt(index) + '" />');
+                $fileThumbsContainer.append(currentThumb);
+            }
+
+            var container = $('<div class="newElement" id="fileContainer-' + parseInt(index) + '" style="' + containerStyle + '"></div');
+            $fileThumbsContainer.append(container);
+            
+            var fileButtonsContainer = $('<div class="fileActions"></div>');
+            container.append(fileButtonsContainer);
+            // file "see" link
+            var seeFileLink = $('<a target="_blank"><div class="fileSee">L</div></a>');
+            fileButtonsContainer.append(seeFileLink);
+
+            // delete button
+            var deleteBtn = $('<div data-delete="' + parseInt(index) + '" class="fileDelete">X</div>');
+            fileButtonsContainer.append(deleteBtn);
+            deleteBtn.click(fileDelete);
+
+            //insert loading bars if requested
+            if (config.useLoadingBars) {
+                var currentLoadBar = $('<div class="loadBar"><div></div></div>');
+                container.prepend(currentLoadBar);
+            }
+
+            var currentTitle = $('<input placeholder="nome" class="fileTitle" id="fileTitle-' + parseInt(index) + '"></input>');
+            var currentExtension = $('<div class="fileExt" id="fileExt-' + parseInt(index) + '"></div>');
+            container.prepend(currentExtension);
+            container.prepend(currentTitle);
+
+            currentTitle.keyup(fileRename);
+
+            $('#fileTitle-' + parseInt(index)).val(fileName);
+            $('#fileExt-' + parseInt(index)).html(fileExt);
+
+            return container;
+        }
+
         var globalIndex = 0;
         var $resultContainer = config.resultContainer;
         var $loadBtn = $(this).find('.fileLoader');
@@ -79,6 +158,27 @@
             $('<div class="debug">Uploaded files: <span id="debugUploaded">0</span> | Rejected files: <span id="debugRejected">0</span></div>').insertBefore($resultContainer);
             $('<div class="debug">Current MAX FILE SIZE: ' + config.fileMaxSize + ' MB</div>').insertBefore($resultContainer);
         }
+
+        // onload callback
+        config.onload($resultContainer);
+
+        // lookup for previously loaded files
+        $.each(config.resultContainer.children('.' + config.resultFileContainerClass), function(index, element) {
+            logger('found previously uploaded file: index = ' + $(element).data('index'), 2);
+
+            var fileData = $(element).children();
+            var fileNameArray = $(fileData[1]).val().split('.');
+            var fileExt = fileNameArray[fileNameArray.length - 1];
+                fileNameArray.pop();
+
+            var fileName = fileNameArray.join('.');
+
+            loadedFile = createUploaderContainer(globalIndex, fileName, fileExt);
+            loadedFile.children('.loadBar').children('div').css({width: '100%'});
+            loadedFile.addClass(config.reloadedFilesClass);
+            globalIndex++;
+        });
+
 
         // files read function
         function filesRead(event) {
@@ -103,6 +203,7 @@
                 var size = Math.round(file.size / 1000000 * 100) / 100;      // size in MB
 
                 reader.onloadstart = function() {
+                    config.onfileloadStart(index);
                     logger('START read file: ' + index + ', size: ' + size + ' MB', 2);
                 };
 
@@ -118,6 +219,16 @@
                     }
                 };
 
+                function createResultContainer(index, name, type, result) {
+                    var resultElemContainer = $('<div data-index="' + index + '" class="' + config.resultFileContainerClass + '"></div>');
+                    resultElemContainer.append($('<div>File: ' + index + '</div>'));
+                    resultElemContainer.append($('<input/>').attr({type: 'text', name: config.resultPrefix + '[' + index + '][' + config.resultInputNames[0] + ']', value: name}));
+                    resultElemContainer.append($('<input/>').attr({type: 'text', name: config.resultPrefix + '[' + index + '][' + config.resultInputNames[1] + ']', value: type}));
+                    resultElemContainer.append($('<input/>').attr({type: 'text', name: config.resultPrefix + '[' + index + '][' + config.resultInputNames[2] + ']', value: result}));
+
+                    $resultContainer.append(resultElemContainer);
+                }
+
                 reader.onloadend = function() {
                     var type = file.type;
                     var name = file.name;
@@ -132,13 +243,7 @@
                     if (type === "") type = config.defaultMimeType;
                     if (name.indexOf('.') < 0 && config.defaultFileExt !== "") name = name + '.' + config.defaultFileExt;
 
-                    var spanContainer = $('<div data-index="' + index + '" class="' + options.resultFileContainerClass + '"></div>');
-                    spanContainer.append($('<div>File: ' + index + '</div>'));
-                    spanContainer.append($('<input/>').attr({type: 'text', name: config.resultPrefix + '[' + index + '][' + config.resultInputNames[0] + ']', value: name}));
-                    spanContainer.append($('<input/>').attr({type: 'text', name: config.resultPrefix + '[' + index + '][' + config.resultInputNames[1] + ']', value: type}));
-                    spanContainer.append($('<input/>').attr({type: 'text', name: config.resultPrefix + '[' + index + '][' + config.resultInputNames[2] + ']', value: result}));
-
-                    $resultContainer.append(spanContainer);
+                    createResultContainer(index, name, type, result);
 
                     var currentElement = $('#fileContainer-' + index);
                     //set direct link on file see button
@@ -147,6 +252,8 @@
 
                     var totalUploaded = parseInt($('#debugUploaded').html()) + 1;
                     $('#debugUploaded').html(totalUploaded);
+
+                    config.onfileloadEnd(index, result);
                 };
 
                 if (size <= config.fileMaxSize) {
@@ -173,77 +280,10 @@
             if (startIndex !== undefined) startIndex = parseInt(startIndex.substring(startIndex.indexOf('-') + 1, startIndex.length)) + 1;
             else startIndex = 0;
 
-            fileDelete = function(event) {
-                var index = $(event.target).data('delete');
-                var id = $(event.target).data('id');
-
-                // remove file block
-                $('#fileContainer-' + index).remove();
-                // remove result block
-                $resultContainer.children('div[data-index="' + index + '"]').remove();
-
-                if ($('.innerFileThumbs').children().length === 0) $('.filesContainer').addClass('filesContainerEmpty');
-
-                logger('Deleted file N: ' + index, 2);
-            };
-
-            fileRename = function(event) {
-                var $this = $(event.target);
-                var ext = $this.siblings('.fileExt').html();
-                var text;
-                var index = $this.attr('id').split('-')[1];
-
-                if (ext.length > 0) {
-                    text = $this.val() + '.' + ext;
-                }
-                else {
-                    text = $this.val();
-                }
-
-                var $input = $resultContainer.find('div[data-index="' + index + '"] input:first');
-                $input.val(text);
-            };
-
             // create a new div containing thumb, delete button and title field for each target file
             for (var i = 0; i < filesList.length; i++) {
                 var file = filesList[i];
                 var reader = new FileReader();
-
-                // create current element's DOM
-                var containerStyle = "position: relative;";
-
-                //insert file icon if requested
-                if (config.useFileIcons) {
-                    var currentThumb = $('<img src="/images/' + fileType(file.name) + '.png" class="fileThumb" id="fileThumb-' + parseInt(globalIndex) + '" />');
-                    $fileThumbsContainer.append(currentThumb);
-                }
-
-                var container = $('<div class="newElement" id="fileContainer-' + parseInt(globalIndex) + '" style="' + containerStyle + '"></div');
-                $fileThumbsContainer.append(container);
-                
-                var fileButtonsContainer = $('<div class="fileActions"></div>');
-                container.append(fileButtonsContainer);
-                // file "see" link
-                var seeFileLink = $('<a target="_blank"><div class="fileSee">L</div></a>');
-                fileButtonsContainer.append(seeFileLink);
-
-                // delete button
-                var deleteBtn = $('<div data-delete="' + parseInt(globalIndex) + '" class="fileDelete">X</div>');
-                fileButtonsContainer.append(deleteBtn);
-                deleteBtn.click(fileDelete);
-
-                //insert loading bars if requested
-                if (config.useLoadingBars) {
-                    var currentLoadBar = $('<div class="loadBar"><div></div></div>');
-                    container.prepend(currentLoadBar);
-                }
-
-                var currentTitle = $('<input placeholder="nome" class="fileTitle" id="fileTitle-' + parseInt(globalIndex) + '"></input>');
-                var currentExtension = $('<div class="fileExt" id="fileExt-' + parseInt(globalIndex) + '"></div>');
-                container.prepend(currentExtension);
-                container.prepend(currentTitle);
-
-                currentTitle.keyup(fileRename);
 
                 var fileName, fileExt;
                 if (file.name.lastIndexOf('.') > 0) {
@@ -254,9 +294,8 @@
                     fileName = file.name;
                     fileExt = config.defaultFileExt;
                 }
-                $('#fileTitle-' + parseInt(globalIndex)).val(fileName);
-                $('#fileExt-' + parseInt(globalIndex)).html(fileExt);
-
+                
+                createUploaderContainer(globalIndex, fileName, fileExt);
                 // now read!
                 readFile(reader, file, globalIndex);
                 globalIndex++;

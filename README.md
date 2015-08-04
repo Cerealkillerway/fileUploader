@@ -1,4 +1,4 @@
-## File Uploader V 0.0.6
+## File Uploader V 0.0.7
 
 LIVE DEMO: [FileUploader demo](http://www.web-forge.info/projects/fileUploader)
 
@@ -18,6 +18,8 @@ There are some options and language overrides that can passed to constructor in 
 <b>fileMaxSize</b>: maximum allowed file size in MB (default 50)
 
 <b>useFileIcons</b>: use icons for each file depending on file type (default true)
+
+<b>reloadedFilesClass</b>: a class to style previously uploaded files (files uploaded during a previous session and now retrieved and placed in the result container) (default 'reloadedElement')
 
 <b>debug</b>: enable debug mode (default false)
 
@@ -40,6 +42,34 @@ If needed it is possible to change them:
 <b>resultPrefix</b> custom name-prefix for result elements
 
 <b>resultInputNames</b> custom array of names for the 3 result elements created for each file (ordered)
+
+#### Callbacks
+Together with the options object it is possible to define some callbacks:
+
+<b>onload</b>: called at plugin start; receives the resultContainer element (jQuery) as first parameter
+
+<b>onfileloadStart</b>: called on every file read start; receives the new file index as first parameter
+
+<b>onfileloadEnd</b>: callled on every file read end; receives the file index as first parameter and the result base64 strint as second
+
+(example)
+
+    $('.fileUploader').fileUploader({
+        useFileIcons: false,
+        fileMaxSize: 1.7,
+        debug: true,
+        //callbacks
+        onload: function(resultContainer) {
+            console.log(started plugin!);
+        },
+        onfileloadStart: function(index) {
+            console.log('new file read started: ' + index);
+        },
+        onfileloadEnd: function(index, result) {
+            console.log('loaded new file:' + index);
+            console.log(result);
+        }
+    });
 
 ### Translations
 It comes with english and italian translations built-in;
@@ -66,7 +96,14 @@ grunt --port=9000
 
 ### License
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a>
+
 ##### History
+v0.0.7
+------
+- added support for previously uploaded files
+- added callbacks
+- minor bug fixes
+
 v0.0.5
 ------
 - fixed bug for files without extension

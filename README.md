@@ -1,15 +1,19 @@
-## File Uploader V 0.0.7
+## File Uploader V 1.0.0
 
 LIVE DEMO: [FileUploader demo](http://www.web-forge.info/projects/fileUploader)
 
-A simple file uploader with HTML5
+A file uploader skeleton that uses HTML5 file reader API.
 
 ### Usage
 Just call <b>fileUploader()</b> on any jquery element.<br>
 Example:
 
      $('.fileUploader').fileUploader();
-     
+
+This skeleton handle the client-side file reading; then the files must be sended (ex. with an ajax call) to a server procedure that will save them somewhere (filesystem, db, ...).
+You can use the "getData" method to get all files' data and then or handle everything on your own by iterating result container's children elements;
+If needed you can also populate the result container with previously uploaded file's data (onload callback is suitable for this purpose).
+
 There are some options and language overrides that can passed to constructor in the form: <b>fileUploader({options}{translation})</b> (see below).
 
 ### Options
@@ -73,31 +77,46 @@ Together with the options object it is possible to define some callbacks:
 
 ### Translations
 It comes with english and italian translations built-in;
-it is possible to override them or add a custom translation by defining it as a second argument in the constructor:
+it is possible to override them or add a custom translation by defining it in "langs" object in the constructor
 
     $('.fileUploader').fileUploader({
-        lang: 'es'
-    },
-    {
-        "es": {
-            intro_msg: "(Adjuntar Documentos...)",      
-            dropZone_msg: "Arrastre los archivos aquí",
-            maxSizeExceeded_msg: "Archivo demasiado grande"
+        lang: 'es',
+        langs: {
+            "es": {
+                intro_msg: "(Adjuntar Documentos...)",      
+                dropZone_msg: "Arrastre los archivos aquí",
+                maxSizeExceeded_msg: "Archivo demasiado grande",
+                name_placeHolder: "nombre"
+            }
         }
     });
 
+### Methods
+
+<b>getData</b>: returns an array of objects, containing the data of every file in the result container; every object of the array has the properties: title, ext, value.
+
+Example:
+
+    var result = $('.fileUploader').fileUploader('getData');
 
 ### Grunt
 It is provided with livereload and sass version of stylesheet;
 use "grunt" to execute it and point your browser on "localhost:7000" (prerequisites: ruby, sass ("gem install sass"), grunt-cli, grunt and needed plugins ("npm install"), browser livereload extension);
 
 Use --port option to serve it on another port; example:
-grunt --port=9000
+<b>grunt --port=9000</b>
 
 ### License
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a>
 
 ##### History
+v1.0.0
+------
+- complete repackage following jquery best practices for jquery plugins
+- solved "reload same file" bug
+- code improvements
+- graphical improvements
+
 v0.0.7
 ------
 - added support for previously uploaded files

@@ -12,9 +12,9 @@
 
 <body>
     <header>
-        <h2>File Uploader v 0.0.7</h2>
+        <h2>File Uploader v 1.0.0</h2>
         <p>
-            A simple file uploader skeleton that uses HTML5 file reader api
+            A file uploader skeleton that uses HTML5 file reader api
         </p>  
     </header>
     
@@ -33,6 +33,13 @@
             </div>
             <div class="result"></div>
         </div>
+        
+        <br>
+        <p>
+            In this example "save" button will log the loaded files in console;<br>
+            then you have to handle these results (ex. sending them to a remote procedure using ajax)...
+        </p>
+        <a id="save" class="ckBtn">Save</a> (Logs result in console)
     </main>
     
     <footer>
@@ -48,6 +55,11 @@
         useFileIcons: false,
         fileMaxSize: 1.7,
         debug: true,
+    });
+
+    $('#save').click(function() {
+        var result = $('.fileUploader').fileUploader('getData');
+        //do what you need with result (ex. send ajax call to remote procedure to persist files)
     });
 </script>
 </html>

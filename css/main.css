@@ -21,6 +21,15 @@ body {
 main {
   padding: 15px 35px;
   flex: 1 0 auto; }
+  main .ckBtn {
+    background-color: #333;
+    color: #ddd;
+    text-transform: uppercase;
+    padding: 7px 25px;
+    display: inline-block;
+    cursor: pointer; }
+    main .ckBtn:hover {
+      background-color: black; }
 
 header {
   padding: 25px 35px;
@@ -34,9 +43,10 @@ footer {
   text-align: center; }
   footer a:link, footer a:visited {
     text-transform: uppercase;
-    color: #ddd;
+    color: #b71c1c;
     text-decoration: none; }
   footer a:hover, footer a:active {
-    text-decoration: underline; }
+    text-decoration: underline;
+    color: #e55454; }
 
 /*# sourceMappingURL=main.css.map */

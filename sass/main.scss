@@ -1,5 +1,6 @@
 $mainColor: #333 !default;
 $mainColorText: #ddd !default;
+$linkColor: #b71c1c !default;
 
 
 ::-webkit-scrollbar {
@@ -28,6 +29,19 @@ body {
 main {
     padding: 15px 35px;
     flex: 1 0 auto;
+
+    .ckBtn {
+        background-color: $mainColor;
+        color: $mainColorText;
+        text-transform: uppercase;
+        padding: 7px 25px;
+        display: inline-block;
+        cursor: pointer;
+
+        &:hover {
+            background-color: darken($mainColor, 20%);
+        }
+    }
 }
 
 header {
@@ -44,11 +58,12 @@ footer {
     
     a:link , a:visited {
         text-transform: uppercase;
-        color: $mainColorText;
+        color: $linkColor;
         text-decoration: none;
     }
 
     a:hover, a:active {
         text-decoration: underline;
+        color: lighten($linkColor, 20%);
     }
 }

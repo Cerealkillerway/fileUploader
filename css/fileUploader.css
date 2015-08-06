@@ -41,6 +41,7 @@
     .fileUploader .filesContainer .error .fileActions a {
       color: #aa00ff !important; }
     .fileUploader .filesContainer .fileThumb {
+      max-height: 130px;
       margin: auto; }
     .fileUploader .filesContainer .reloadedElement .fileTitle {
       color: #00c853 !important; }

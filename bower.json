@@ -1,6 +1,6 @@
 {
   "name": "fileUploader",
-  "version": "0.0.7",
+  "version": "1.0.0",
   "homepage": "https://github.com/Cerealkillerway/fileUploader",
   "description": "A simple file uploader that uses html5 file reader api",
   "keywords": [

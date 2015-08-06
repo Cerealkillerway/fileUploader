@@ -47,7 +47,7 @@
             if (this._options.debug) {
                 if (level) {
                     for (var i = 0; i < level; i++) {
-                        message = '-> ' + message;
+                        message = '\u27A1 ' + message;
                     }
                 }
                 console.log(message);

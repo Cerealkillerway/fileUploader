@@ -14,10 +14,14 @@ This skeleton handle the client-side file reading; then the files must be sended
 You can use the "getData" method to get all files' data and then or handle everything on your own by iterating result container's children elements;
 If needed you can also populate the result container with previously uploaded file's data (onload callback is suitable for this purpose).
 
-There are some options and language overrides that can passed to constructor in the form: <b>fileUploader({options}{translation})</b> (see below).
+There are some options that can passed to constructor in the form:
+
+    fileUploader({options})
+
+(see below).
 
 ### Options
-<b>lang</b>: language to use (default 'en')
+<b>lang</b>: language to use (default 'en'); see "translations" section for overrides and new language definitions
 
 <b>fileMaxSize</b>: maximum allowed file size in MB (default 50)
 

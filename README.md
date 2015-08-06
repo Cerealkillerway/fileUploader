@@ -16,7 +16,7 @@ If needed you can also populate the result container with previously uploaded fi
 
 There are some options that can passed to constructor in the form:
 
-    fileUploader({options})
+    $('.fileUploader').fileUploader({options})
 
 (see below).
 

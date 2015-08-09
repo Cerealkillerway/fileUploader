@@ -1,4 +1,4 @@
-## File Uploader V 1.0.0
+## File Uploader v1.0.0
 
 LIVE DEMO: [FileUploader demo](http://www.web-forge.info/projects/fileUploader)
 

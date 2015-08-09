@@ -1,3 +1,4 @@
+// v1.0.0
 (function($) {
 
     var FileUploader = function($el, options, translation) {

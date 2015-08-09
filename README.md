@@ -114,31 +114,31 @@ Use --port option to serve it on another port; example:
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a>
 
 ##### History
-v1.0.0
+1.0.0
 ------
 - complete repackage following jquery best practices for jquery plugins
 - solved "reload same file" bug
 - code improvements
 - graphical improvements
 
-v0.0.7
+0.0.7
 ------
 - added support for previously uploaded files
 - added callbacks
 - minor bug fixes
 
-v0.0.5
+0.0.5
 ------
 - fixed bug for files without extension
 - added file size limit parameter
 - improved debug mode
 
-v0.0.3
+0.0.3
 ------
 - real progress indicator
 - fixed flickering of loaded elements
 - fixed Gruntfile
 
-v0.0.0
+0.0.0
 ------
 - first version

@@ -1,5 +1,5 @@
 /*
-* fileUploader v1.1.3
+* fileUploader v1.1.5
 * available under MIT license
 * 
 * */
@@ -215,6 +215,14 @@
 
         var availableLabel = $el.find(".sizeAvailable");
         var currentTotalSize = 0;
+        var self = this;
+
+        $.each($resultContainer.children('.uploadedFile'), function(index, item) {
+            currentTotalSize = currentTotalSize + parseFloat($(item).children('input[name="' + self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[3] + ']"]').val());
+        });
+
+        console.log(currentTotalSize);
+        availableLabel.children('span').html(Math.round((this._options.totalMaxSize - currentTotalSize) * 100) / 100);
 
         // onload callback
         this._options.onload($resultContainer);

@@ -1,5 +1,5 @@
 /*
-* fileUploader v1.1.5
+* fileUploader v1.1.6
 * available under MIT license
 * 
 * */
@@ -221,7 +221,7 @@
             currentTotalSize = currentTotalSize + parseFloat($(item).children('input[name="' + self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[3] + ']"]').val());
         });
 
-        console.log(currentTotalSize);
+        this._logger("current total size: " + currentTotalSize);
         availableLabel.children('span').html(Math.round((this._options.totalMaxSize - currentTotalSize) * 100) / 100);
 
         // onload callback
@@ -248,6 +248,7 @@
 
         // files read function
         this._filesRead = function(event) {
+            console.log(event.data);
             var Uploader = event.data.Uploader;
             var DOM = event.data.DOM;
             var filesList;
@@ -399,6 +400,10 @@
         function handleDrop(event) {
             event.stopPropagation();
             event.preventDefault();
+            event.data = {
+                Uploader: Uploader,
+                DOM: $el
+            };
             Uploader._filesRead(event);
         }
 

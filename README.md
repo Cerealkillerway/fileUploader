@@ -1,4 +1,4 @@
-## File Uploader v1.1.5
+## File Uploader v1.1.6
 
 LIVE DEMO: [FileUploader demo](http://www.web-forge.info/projects/fileUploader)
 
@@ -117,6 +117,10 @@ Use --port option to serve it on another port; example:
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
 ##### History
+1.1.6
+-----
+- fixed bug for drag and drop
+
 1.1.5
 -----
 - fixed retrieving already loaded files' size bug

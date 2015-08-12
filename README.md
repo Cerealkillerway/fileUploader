@@ -1,4 +1,4 @@
-## File Uploader v1.0.0
+## File Uploader v1.1.3
 
 LIVE DEMO: [FileUploader demo](http://www.web-forge.info/projects/fileUploader)
 
@@ -25,6 +25,8 @@ There are some options that can passed to constructor in the form:
 
 **fileMaxSize**: maximum allowed file size in MB (default 50)
 
+**totalMaxSize**: maximum allowd upload size for all files together (default 1000)
+
 **useFileIcons**: use icons for each file depending on file type (default true)
 
 **reloadedFilesClass**: a class to style previously uploaded files (files uploaded during a previous session and now retrieved and placed in the result container) (default 'reloadedElement')
@@ -41,15 +43,15 @@ There are some options that can passed to constructor in the form:
 
 **defaultMimeType**: MIME type to use for files with no extension (default "")
 
-In the result container, each reader's result is inserted as a DIV with 3 nested INPUT elements (title, extension, value (the base64 string)); each of these 3 elements has a name attribute in the form "prefix[index][name]"
+In the result container, each reader's result is inserted as a DIV with 4 nested INPUT elements (title, extension, value (the base64 string) and size (in MB)); each of these 4 elements has a name attribute in the form "prefix[index][name]"
 
-By default the prefix is "fileUploader", and the names are ["title", "extension", "value"].<br>
+By default the prefix is "fileUploader", and the names are ["title", "extension", "value", "size"].<br>
 
 If needed it is possible to change them:
 
 **resultPrefix** custom name-prefix for result elements
 
-**resultInputNames** custom array of names for the 3 result elements created for each file (ordered)
+**resultInputNames** custom array of names for the 4 result elements created for each file (ordered)
 
 #### Callbacks
 Together with the options object it is possible to define some callbacks:
@@ -90,6 +92,7 @@ it is possible to override them or add a custom translation by defining it in "l
                 intro_msg: "(Adjuntar Documentos...)",      
                 dropZone_msg: "Arrastre los archivos aquí",
                 maxSizeExceeded_msg: "Archivo demasiado grande",
+                totalMaxSizeExceeded_msg: "Tamaño total superado",
                 name_placeHolder: "nombre"
             }
         }
@@ -114,6 +117,10 @@ Use --port option to serve it on another port; example:
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
 ##### History
+1.1.3
+-----
+- added support for total max size
+
 1.0.0
 ------
 - complete repackage following jquery best practices for jquery plugins

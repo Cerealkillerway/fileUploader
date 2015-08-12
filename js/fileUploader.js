@@ -1,5 +1,5 @@
 /*
-* fileUploader v1.0.0
+* fileUploader v1.1.3
 * available under MIT license
 * 
 * */
@@ -11,30 +11,33 @@
         this._defaults = {
             lang: 'en',
             useFileIcons: true,
-            debug: false,                                       // activate console logs for debug
-            useLoadingBars: true,                               // insert loading bar for files
-            reloadedFilesClass: 'reloadedElement',              // class for previously uploaded files
-            resultContainer: $el.find('.result'),               // hidden container to place results to
-            resultFileContainerClass: "uploadedFile",           // class for every file result container span
-            resultPrefix: "fileUploader",                       // prefix for inputs in the file result container
-            resultInputNames: ["title", "extension", "value"],  // name suffix to be used for result inputs
-            defaultFileExt: "",                                 // extension to use for files with no extension
-            defaultMimeType: "",                                // MIME type to use for files with no extension 
-            fileMaxSize: 50,                                    // maximum allowed file size (in MB)
-            onload: function() {},                              // callback on plugin initialization
-            onfileloadStart: function() {},                     // callback on file reader start
-            onfileloadEnd: function() {},                       // callback on file reader end
+            debug: false,                                                  // activate console logs for debug
+            useLoadingBars: true,                                          // insert loading bar for files
+            reloadedFilesClass: 'reloadedElement',                         // class for previously uploaded files
+            resultContainer: $el.find('.result'),                          // hidden container to place results to
+            resultFileContainerClass: "uploadedFile",                      // class for every file result container span
+            resultPrefix: "fileUploader",                                  // prefix for inputs in the file result container
+            resultInputNames: ["title", "extension", "value", "size"],     // name suffix to be used for result inputs
+            defaultFileExt: "",                                            // extension to use for files with no extension
+            defaultMimeType: "",                                           // MIME type to use for files with no extension 
+            fileMaxSize: 50,                                               // maximum allowed file size (in MB)
+            totalMaxSize: 1000,                                            // total maximum allowed size of all files
+            onload: function() {},                                         // callback on plugin initialization
+            onfileloadStart: function() {},                                // callback on file reader start
+            onfileloadEnd: function() {},                                  // callback on file reader end
             langs: {
                 "en": {
                     intro_msg: "(Add attachments...)",
                     dropZone_msg: "Drop your files here",
                     maxSizeExceeded_msg: "File too large",
+                    totalMaxSizeExceeded_msg: "Total size exceeded",
                     name_placeHolder: "name"
                 },
                 "it": {
                     intro_msg: "(Aggiungi documenti allegati...)",
                     dropZone_msg: "Trascina qui i tuoi files...",
                     maxSizeExceeded_msg: "File troppo grande",
+                    totalMaxSizeExceeded_msg: "Dimensione max. superata",
                     name_placeHolder: "nome"
                 }
             }
@@ -84,6 +87,15 @@
                 element.prev('img').remove();
             }
             element.remove();
+
+            // get file size
+            var fileSize = $resultContainer.find('input[name="' + Uploader._options.resultPrefix + '[' + index + '][' + Uploader._options.resultInputNames[3] + ']"]').val();
+
+            currentTotalSize = currentTotalSize - fileSize;
+            var availableSize = Uploader._options.totalMaxSize - currentTotalSize;
+
+            availableLabel.children('span').html(availableSize);
+            
             // remove result block
             $resultContainer.children('div[data-index="' + index + '"]').remove();
 
@@ -197,7 +209,12 @@
             $('<p class="debugMode">Debug mode: on</p>').insertBefore($resultContainer);
             $('<div class="debug">Uploaded files: <span id="debugUploaded">0</span> | Rejected files: <span id="debugRejected">0</span></div>').insertBefore($resultContainer);
             $('<div class="debug">Current MAX FILE SIZE: ' + this._options.fileMaxSize + ' MB</div>').insertBefore($resultContainer);
+            $('<div class="debug">Current MAX TOTAL SIZE: ' + this._options.totalMaxSize + ' MB</div>').insertBefore($resultContainer);
+            $('<div class="debug sizeAvailable">Size still available: <span>' + this._options.totalMaxSize + '</span> MB</div>').insertBefore($resultContainer);
         }
+
+        var availableLabel = $el.find(".sizeAvailable");
+        var currentTotalSize = 0;
 
         // onload callback
         this._options.onload($resultContainer);
@@ -271,6 +288,7 @@
                     resultElemContainer.append($('<input/>').attr({type: 'text', name: Uploader._options.resultPrefix + '[' + index + '][' + Uploader._options.resultInputNames[0] + ']', value: name}));
                     resultElemContainer.append($('<input/>').attr({type: 'text', name: Uploader._options.resultPrefix + '[' + index + '][' + Uploader._options.resultInputNames[1] + ']', value: type}));
                     resultElemContainer.append($('<input/>').attr({type: 'text', name: Uploader._options.resultPrefix + '[' + index + '][' + Uploader._options.resultInputNames[2] + ']', value: result}));
+                    resultElemContainer.append($('<input/>').attr({type: 'text', name: Uploader._options.resultPrefix + '[' + index + '][' + Uploader._options.resultInputNames[3] + ']', value: size}));
 
                     $resultContainer.append(resultElemContainer);
                 }
@@ -301,12 +319,27 @@
                     Uploader._options.onfileloadEnd(index, result);
                 };
 
-                if (size <= Uploader._options.fileMaxSize) {
+                if ((size <= Uploader._options.fileMaxSize) && ((currentTotalSize + size) <= Uploader._options.totalMaxSize)) {
                     reader.readAsDataURL(file);
+
+                    // update total size
+                    currentTotalSize = currentTotalSize + size;
+                    var currentAvailableSize = Uploader._options.totalMaxSize - currentTotalSize;
+                    availableLabel.children('span').html(Math.round(currentAvailableSize * 100) / 100);
                 }
                 else {
+                    var errorMsg = currentLangObj.totalMaxSizeExceeded_msg;
+
+                    if (size > Uploader._options.fileMaxSize) {
+                        errorMsg = currentLangObj.maxSizeExceeded_msg;
+                        Uploader._logger("FILE REJECTED: Max size exceeded - max size: " + Uploader._options.fileMaxSize + ' MB - file size: ' + size + ' MB');
+                    }
+                    else {
+                        Uploader._logger("FILE REJECTED: Max total size exceeded - max size: " + Uploader._options.totalMaxSizeExceeded_msg + ' MB - current total size: ' + (currentTotalSize + size) + ' MB');
+                    }
+
                     currentElement.addClass('error');
-                    currentElement.children('.loadBar').empty().append('<div class="errorMsg">' + currentLangObj.maxSizeExceeded_msg + '</div>');
+                    currentElement.children('.loadBar').empty().append('<div class="errorMsg">' + errorMsg + '</div>');
 
                     setTimeout(function() {
                         currentElement.animate({opacity: 0}, 300, function() {
@@ -320,8 +353,6 @@
 
                     var totalRejected = parseInt($('#debugRejected').html()) + 1;
                     $('#debugRejected').html(totalRejected);
-
-                    Uploader._logger("FILE REJECTED: Max size exceeded - max size: " + Uploader._options.fileMaxSize + ' MB - file size: ' + size + ' MB');
                 }
             }
 

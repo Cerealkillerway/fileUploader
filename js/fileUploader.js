@@ -1,4 +1,8 @@
-// v1.0.0
+/*
+* fileUploader v1.0.0
+* available under MIT license
+* 
+* */
 (function($) {
 
     var FileUploader = function($el, options, translation) {

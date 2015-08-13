@@ -1,5 +1,5 @@
 /*
-* fileUploader v1.1.6
+* fileUploader v2.0.0
 * available under MIT license
 * 
 * */
@@ -14,7 +14,7 @@
             debug: false,                                                  // activate console logs for debug
             useLoadingBars: true,                                          // insert loading bar for files
             reloadedFilesClass: 'reloadedElement',                         // class for previously uploaded files
-            resultContainer: $el.find('.result'),                          // hidden container to place results to
+            resultContainer: 'result',                                     // result container's class (where to place result files data)
             resultFileContainerClass: "uploadedFile",                      // class for every file result container span
             resultPrefix: "fileUploader",                                  // prefix for inputs in the file result container
             resultInputNames: ["title", "extension", "value", "size"],     // name suffix to be used for result inputs
@@ -48,7 +48,20 @@
         this.options = function(options) {
             return (options) ? $.extend(true, this._options, options) : this._options;
         };
-        
+
+
+        // return data
+        this.get = function(parameter) {
+            var self = this;
+
+            switch (parameter) {
+                case "currentTotalSize":
+                return Math.round(currentTotalSize * 100) / 100;
+
+                case "currentAvailableSize":
+                return Math.round((self._options.totalMaxSize - currentTotalSize) * 100) / 100;
+            }
+        };
         
         // debug logs function
         this._logger = function(message, level) {
@@ -127,7 +140,7 @@
         this.getData = function() {
             this._logger('RECEIVED SAVE COMMAND:', 0);
 
-            var $resultContainer = this._options.resultContainer;
+            //var $resultContainer = this._options.resultContainer;
             var data = [];
 
             $.each($resultContainer.children('.' + this._options.resultFileContainerClass), function(index, element) {
@@ -190,7 +203,7 @@
         };
 
         var globalIndex = 0;
-        var $resultContainer = this._options.resultContainer;
+        var $resultContainer = $el.find('.' + this._options.resultContainer);
         var $loadBtn = $el.find('.fileLoader');
         var $fileContainer = $el.find('.filesContainer');
         var $fileNameContainer = $el.find('.fileNameContainer');
@@ -229,7 +242,7 @@
 
         // lookup for previously loaded files
         var Uploader = this;
-        $.each(this._options.resultContainer.children('.' + this._options.resultFileContainerClass), function(index, element) {
+        $.each($resultContainer.children('.' + this._options.resultFileContainerClass), function(index, element) {
             Uploader._logger('found previously uploaded file: index = ' + $(element).data('index'), 2);
 
             var fileData = $(element).children();
@@ -248,7 +261,6 @@
 
         // files read function
         this._filesRead = function(event) {
-            console.log(event.data);
             var Uploader = event.data.Uploader;
             var DOM = event.data.DOM;
             var filesList;

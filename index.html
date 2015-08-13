@@ -12,14 +12,32 @@
 
 <body>
     <header>
-        <h2>File Uploader v1.1.6</h2>
+        <h2>File Uploader v2.0.0</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader api
         </p>  
     </header>
     
     <main>
-        <div class="fileUploader">
+        <h2>Multi uploader example</h2>
+        <h3>fileUploader 1</h3>
+        <div class="fileUploader" id="one">
+            <p class="introMsg"></p>
+            <div>
+                <div class="inputContainer">
+                    <input class="fileLoader" type="file" id="attachments" name="attachments" multiple />
+                </div>
+                <div class="dropZone"></div>
+                <div class="filesContainer filesContainerEmpty">
+                    <div class="innerFileThumbs"></div>
+                    <div style="clear:both;"></div>
+                </div>
+            </div>
+            <div class="result"></div>
+        </div>
+    
+        <h3>fileUploader 2</h3>
+        <div class="fileUploader" id="two">
             <p class="introMsg"></p>
             <div>
                 <div class="inputContainer">
@@ -39,7 +57,9 @@
             In this example "save" button will log the loaded files in console;<br>
             then you have to handle these results (ex. sending them to a remote procedure using ajax)...
         </p>
-        <a id="save" class="ckBtn">Save</a> (Logs result in console)
+        <a id="save1" class="ckBtn">Save 1</a>&nbsp;&nbsp;&nbsp;<a id="save2" class="ckBtn">Save 2</a> (Logs result in console)<br><br>
+        <a id="getCurrentTotalSize1" class="ckBtn">Get Total Size 1</a>&nbsp;&nbsp;&nbsp;
+        <a id="getCurrentTotalSize2" class="ckBtn">Get Total Size 2</a><br>
     </main>
     
     <footer>
@@ -58,9 +78,21 @@
         debug: true,
     });
 
-    $('#save').click(function() {
-        var result = $('.fileUploader').fileUploader('getData');
+    $('#save1').click(function() {
+        var result = $('#one').fileUploader('getData');
         //do what you need with result (ex. send ajax call to remote procedure to persist files)
     });
+    $('#save2').click(function() {
+        var result = $('#two').fileUploader('getData');
+        //do what you need with result (ex. send ajax call to remote procedure to persist files)
+    });
+
+    $('#getCurrentTotalSize1').click(function() {
+        console.log("Current total size uploader 1:" + $('#one').fileUploader('get', 'currentTotalSize'));
+    });
+    $('#getCurrentTotalSize2').click(function() {
+        console.log("Current total size uploader 2:" + $('#two').fileUploader('get', 'currentTotalSize'));
+    });
+
 </script>
 </html>

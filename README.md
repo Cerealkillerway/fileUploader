@@ -1,4 +1,4 @@
-## File Uploader v1.1.6
+## File Uploader v2.0.0
 
 LIVE DEMO: [FileUploader demo](http://www.web-forge.info/projects/fileUploader)
 
@@ -35,7 +35,7 @@ There are some options that can passed to constructor in the form:
 
 **useLoadingBars**: show a progress bar while reading each file (default true)
 
-**resultContainer**: set the element to be used as container for reader's results (by default this is the hidden $(.result) element of the fileUploader; can be any jQuery wrapped DOM element)
+**resultContainer**: set the class of the element to be used as container for reader's results (by default this is the hidden $(.result) element of the fileUploader); can be the class of any DOM element inside the fileUploader markup
 
 **resultFileContainerClass**: custom class to use for each reader's result container (default "file-")
 
@@ -53,7 +53,16 @@ If needed it is possible to change them:
 
 **resultInputNames** custom array of names for the 4 result elements created for each file (ordered)
 
-#### Callbacks
+### Methods
+**get**: obtain parameters from the fileUploader instance:
+    - **currentTotalSize**: total size of currently loaded files
+    - **currentAvailableSize**: available size left
+
+(example):
+
+    $('#fileUploader1').fileUploader('get', 'currentTotalSize')
+
+### Callbacks
 Together with the options object it is possible to define some callbacks:
 
 **onload**: called at plugin start; receives the resultContainer element (jQuery) as first parameter
@@ -117,6 +126,11 @@ Use --port option to serve it on another port; example:
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
 ##### History
+2.0.0
+-----
+- added get method
+- code improvements
+
 1.1.6
 -----
 - fixed bug for drag and drop

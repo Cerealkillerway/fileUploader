@@ -238,7 +238,7 @@
         availableLabel.children('span').html(Math.round((this._options.totalMaxSize - currentTotalSize) * 100) / 100);
 
         // onload callback
-        this._options.onload($resultContainer);
+        this._options.onload($resultContainer, files);
 
         // lookup for previously loaded files
         var Uploader = this;

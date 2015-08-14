@@ -71,11 +71,16 @@
 </body>
 
 <script tyle="text/javascript">
+    var files = ['one', 'two', 'thres'];
+
     $('.fileUploader').fileUploader({
         useFileIcons: false,
         fileMaxSize: 1.7,
         totalMaxSize: 5,
         debug: true,
+        onload: function(files) {
+            console.log(files);
+        }
     });
 
     $('#save1').click(function() {

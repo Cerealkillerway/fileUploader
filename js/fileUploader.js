@@ -285,9 +285,7 @@
 
                 globalIndex++;
             });
-
         }
-
 
         // files read function
         this._filesRead = function(event) {

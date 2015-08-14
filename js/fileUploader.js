@@ -243,7 +243,10 @@
 
         // reload files
         if (this._options.reloadArray.length > 0) {
-            console.log(this._options.reloadArray);
+            this._options.reloadArray.forEach(function(file, index) {
+
+                self._createUploaderContainer(index, file.fileName, file.fileExt);
+            });
         }
 
         // lookup for previously loaded files

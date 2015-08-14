@@ -1,5 +1,5 @@
 /*
-* fileUploader v2.0.0
+* fileUploader v2.3.0
 * available under MIT license
 * 
 * */
@@ -203,6 +203,17 @@
             return container;
         };
 
+        this._createResultContainer = function(Uploader, index, name, type, result, size) {
+            var resultElemContainer = $('<div data-index="' + index + '" class="' + Uploader._options.resultFileContainerClass + '"></div>');
+            resultElemContainer.append($('<div>File: ' + index + '</div>'));
+            resultElemContainer.append($('<input/>').attr({type: 'text', name: Uploader._options.resultPrefix + '[' + index + '][' + Uploader._options.resultInputNames[0] + ']', value: name}));
+            resultElemContainer.append($('<input/>').attr({type: 'text', name: Uploader._options.resultPrefix + '[' + index + '][' + Uploader._options.resultInputNames[1] + ']', value: type}));
+            resultElemContainer.append($('<input/>').attr({type: 'text', name: Uploader._options.resultPrefix + '[' + index + '][' + Uploader._options.resultInputNames[2] + ']', value: result}));
+            resultElemContainer.append($('<input/>').attr({type: 'text', name: Uploader._options.resultPrefix + '[' + index + '][' + Uploader._options.resultInputNames[3] + ']', value: size}));
+
+            $resultContainer.append(resultElemContainer);
+        };
+
         var globalIndex = 0;
         var $resultContainer = $el.find('.' + this._options.resultContainer);
         var $loadBtn = $el.find('.fileLoader');
@@ -241,15 +252,7 @@
         // onload callback
         this._options.onload($resultContainer);
 
-        // reload files
-        if (this._options.reloadArray.length > 0) {
-            this._options.reloadArray.forEach(function(file, index) {
-
-                self._createUploaderContainer(index, file.fileName, file.fileExt);
-            });
-        }
-
-        // lookup for previously loaded files
+        // lookup for previously loaded files placed in the result container directly
         var Uploader = this;
         $.each($resultContainer.children('.' + this._options.resultFileContainerClass), function(index, element) {
             Uploader._logger('found previously uploaded file: index = ' + $(element).data('index'), 2);
@@ -266,6 +269,24 @@
             loadedFile.addClass(Uploader._options.reloadedFilesClass);
             globalIndex++;
         });
+
+        // reload files from provided array
+        if (this._options.reloadArray.length > 0) {
+            this._options.reloadArray.forEach(function(file, index) {
+                // re-create visible elements
+                loadedFile = self._createUploaderContainer(index, file.name, file.ext);
+                loadedFile.children('.loadBar').children('div').css({width: '100%'});
+                loadedFile.addClass(Uploader._options.reloadedFilesClass);
+
+                self._logger('found previously uploaded file: index = ' + index, 2);
+
+                // re-create results
+                self._createResultContainer(self, index, file.name, file.ext, file.data, file.size);
+
+                globalIndex++;
+            });
+
+        }
 
 
         // files read function
@@ -312,17 +333,6 @@
                     }
                 };
 
-                function createResultContainer(index, name, type, result) {
-                    var resultElemContainer = $('<div data-index="' + index + '" class="' + Uploader._options.resultFileContainerClass + '"></div>');
-                    resultElemContainer.append($('<div>File: ' + index + '</div>'));
-                    resultElemContainer.append($('<input/>').attr({type: 'text', name: Uploader._options.resultPrefix + '[' + index + '][' + Uploader._options.resultInputNames[0] + ']', value: name}));
-                    resultElemContainer.append($('<input/>').attr({type: 'text', name: Uploader._options.resultPrefix + '[' + index + '][' + Uploader._options.resultInputNames[1] + ']', value: type}));
-                    resultElemContainer.append($('<input/>').attr({type: 'text', name: Uploader._options.resultPrefix + '[' + index + '][' + Uploader._options.resultInputNames[2] + ']', value: result}));
-                    resultElemContainer.append($('<input/>').attr({type: 'text', name: Uploader._options.resultPrefix + '[' + index + '][' + Uploader._options.resultInputNames[3] + ']', value: size}));
-
-                    $resultContainer.append(resultElemContainer);
-                }
-
                 reader.onloadend = function() {
                     var type = file.type;
                     var name = file.name;
@@ -337,7 +347,7 @@
                     if (type === "") type = Uploader._options.defaultMimeType;
                     if (name.indexOf('.') < 0 && Uploader._options.defaultFileExt !== "") name = name + '.' + Uploader._options.defaultFileExt;
 
-                    createResultContainer(index, name, type, result);
+                    Uploader._createResultContainer(Uploader, index, name, type, result, size);
 
                     //set direct link on file see button
                     currentElement.children('.fileActions').children('a').attr('href', result);

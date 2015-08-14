@@ -12,7 +12,7 @@
 
 <body>
     <header>
-        <h2>File Uploader v2.0.0</h2>
+        <h2>File Uploader v2.3.0</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader api
         </p>  
@@ -73,21 +73,32 @@
 <script tyle="text/javascript">
     var files = [
         {
-            fileName: "try1",
-            fileExt: "jpeg"
+            name: "try1",
+            ext: "jpeg",
+            data: "ldjahflòksdjòflaksjdflk",
+            size: 0.3
         },
         {
-            fileName: "try2",
-            fileExt: "pdf"
+            name: "try2",
+            ext: "pdf",
+            data: "dgjhakjhsdjkhjhjklasdikfj asdilfj",
+            size: 1.2
         }
     ];
 
-    $('.fileUploader').fileUploader({
+    $('#one').fileUploader({
         useFileIcons: false,
         fileMaxSize: 1.7,
         totalMaxSize: 5,
         debug: true,
         reloadArray: files
+    });
+
+    $('#two').fileUploader({
+        useFileIcons: false,
+        fileMaxSize: 1.7,
+        totalMaxSize: 5,
+        debug: true
     });
 
     $('#save1').click(function() {
@@ -100,10 +111,10 @@
     });
 
     $('#getCurrentTotalSize1').click(function() {
-        console.log("Current total size uploader 1:" + $('#one').fileUploader('get', 'currentTotalSize'));
+        console.log("Current total size uploader 1: " + $('#one').fileUploader('get', 'currentTotalSize'));
     });
     $('#getCurrentTotalSize2').click(function() {
-        console.log("Current total size uploader 2:" + $('#two').fileUploader('get', 'currentTotalSize'));
+        console.log("Current total size uploader 2: " + $('#two').fileUploader('get', 'currentTotalSize'));
     });
 
 </script>

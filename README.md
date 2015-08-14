@@ -1,4 +1,4 @@
-## File Uploader v2.0.0
+## File Uploader v2.3.0
 
 LIVE DEMO: [FileUploader demo](http://www.web-forge.info/projects/fileUploader)
 
@@ -26,6 +26,15 @@ There are some options that can passed to constructor in the form:
 **fileMaxSize**: maximum allowed file size in MB (default 50)
 
 **totalMaxSize**: maximum allowd upload size for all files together (default 1000)
+
+**reloadArray**: an array of objects representing previously loaded files; each object is in the form:
+    
+    {
+        name: "file name",
+        ext: "jpeg"                    // or whatever the extension is...
+        data: "asodifulejflsfilse..."  // the base64 string
+        size: 1.2                      // size in MB of the file
+    }
 
 **useFileIcons**: use icons for each file depending on file type (default true)
 
@@ -115,6 +124,26 @@ Example:
 
     var result = $('.fileUploader').fileUploader('getData');
 
+### Reloaded files
+What if you have some files already uploaded to your server (ex. in a previous session) and you want fileUploder to init with them?
+There are 2 possibilities:
+
+*1*
+You can re-create the result DOM inside the fileUploader's result container, and the plugin will create visual element such as progress bar, icon, ect... automatically;
+
+    // example of DOM to place in result container for a file:
+    <div data-index="0" class="uploadedFile"><div>File: 0</div>
+        <input type="text" name="fileUploader[0][title]" value="try1">
+        <input type="text" name="fileUploader[0][extension]" value="jpeg">
+        <input type="text" name="fileUploader[0][value]" value="ldjahflòksdjòflaksjdflk...">
+        <input type="text" name="fileUploader[0][size]" value="0.3">
+    </div>
+
+(the class *uploadedFile* is used for the styling of files already there when plugin initializes; basically it is just a different color, easily customizable editing $reloadedColor variable in fileUploader.scss)
+
+*2*
+You can push all your already uploaded files' data into an array and pass it to the plugin througth the **reloadArray** option (see above in the *Options* section for more details)
+
 ### Grunt
 It is provided with livereload and sass version of stylesheet;
 use "grunt" to execute it and point your browser on "localhost:7000" (prerequisites: ruby, sass ("gem install sass"), grunt-cli, grunt and needed plugins ("npm install"), browser livereload extension);
@@ -126,6 +155,11 @@ Use --port option to serve it on another port; example:
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
 ##### History
+2.3.0
+-----
+- added reloadArray option
+- re-organized some functions
+
 2.0.0
 -----
 - added get method

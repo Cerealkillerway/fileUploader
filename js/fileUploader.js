@@ -22,6 +22,7 @@
             defaultMimeType: "",                                           // MIME type to use for files with no extension 
             fileMaxSize: 50,                                               // maximum allowed file size (in MB)
             totalMaxSize: 1000,                                            // total maximum allowed size of all files
+            reloadArray: [],                                               // array of files to be reloade at plugin startup
             onload: function() {},                                         // callback on plugin initialization
             onfileloadStart: function() {},                                // callback on file reader start
             onfileloadEnd: function() {},                                  // callback on file reader end
@@ -238,7 +239,12 @@
         availableLabel.children('span').html(Math.round((this._options.totalMaxSize - currentTotalSize) * 100) / 100);
 
         // onload callback
-        this._options.onload($resultContainer, files);
+        this._options.onload($resultContainer);
+
+        // reload files
+        if (this._options.reloadArray.length > 0) {
+            console.log(this._options.reloadArray);
+        }
 
         // lookup for previously loaded files
         var Uploader = this;

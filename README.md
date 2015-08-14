@@ -1,5 +1,7 @@
 ## File Uploader v2.3.0
 
+![FileUploader](http://144.76.103.88/webforge_static/appLogos/fileUploader.png)
+
 LIVE DEMO: [FileUploader demo](http://www.web-forge.info/projects/fileUploader)
 
 A file uploader skeleton that uses HTML5 file reader API.

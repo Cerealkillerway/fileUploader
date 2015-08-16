@@ -18,6 +18,8 @@
             resultFileContainerClass: "uploadedFile",                      // class for every file result container span
             resultPrefix: "fileUploader",                                  // prefix for inputs in the file result container
             resultInputNames: ["title", "extension", "value", "size"],     // name suffix to be used for result inputs
+            linkShowText: 'L',
+            linkDeleteText: 'X',
             defaultFileExt: "",                                            // extension to use for files with no extension
             defaultMimeType: "",                                           // MIME type to use for files with no extension 
             fileMaxSize: 50,                                               // maximum allowed file size (in MB)
@@ -172,15 +174,15 @@
 
             var container = $('<div class="newElement" data-index="' + parseInt(index) + '" style="' + containerStyle + '"></div');
             $fileThumbsContainer.append(container);
-            
+
             var fileButtonsContainer = $('<div class="fileActions"></div>');
             container.append(fileButtonsContainer);
             // file "see" link
-            var seeFileLink = $('<a target="_blank"><div class="fileSee">L</div></a>');
+            var seeFileLink = $('<a target="_blank"><div class="fileSee">' + this._options.linkShowText + '</div></a>');
             fileButtonsContainer.append(seeFileLink);
 
             // delete button
-            var deleteBtn = $('<div data-delete="' + parseInt(index) + '" class="fileDelete">X</div>');
+            var deleteBtn = $('<div data-delete="' + parseInt(index) + '" class="fileDelete">' + this._options.linkDeleteText + '</div>');
             fileButtonsContainer.append(deleteBtn);
             deleteBtn.click({Uploader: this, element: container}, this._fileDelete);
 
@@ -242,13 +244,6 @@
         var currentTotalSize = 0;
         var self = this;
 
-        $.each($resultContainer.children('.uploadedFile'), function(index, item) {
-            currentTotalSize = currentTotalSize + parseFloat($(item).children('input[name="' + self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[3] + ']"]').val());
-        });
-
-        this._logger("current total size: " + currentTotalSize);
-        availableLabel.children('span').html(Math.round((this._options.totalMaxSize - currentTotalSize) * 100) / 100);
-
         // onload callback
         this._options.onload($resultContainer);
 
@@ -258,7 +253,7 @@
             Uploader._logger('found previously uploaded file: index = ' + $(element).data('index'), 2);
 
             var fileData = $(element).children();
-            var fileNameArray = $(fileData[1]).val().split('.');
+            var fileNameArray = $(fileData[0]).val().split('.');
             var fileExt = fileNameArray[fileNameArray.length - 1];
                 fileNameArray.pop();
 
@@ -286,6 +281,13 @@
                 globalIndex++;
             });
         }
+
+        $.each($resultContainer.find('input[name*="' + this._options.resultInputNames[3] + '"]'), function() {
+            currentTotalSize = currentTotalSize + parseFloat($(this).val());
+        });
+
+        this._logger("current total size: " + currentTotalSize);
+        availableLabel.children('span').html(Math.round((this._options.totalMaxSize - currentTotalSize) * 100) / 100);
 
         // files read function
         this._filesRead = function(event) {

@@ -6,12 +6,14 @@
 (function($) {
 
     var FileUploader = function($el, options, translation) {
+        var self = this;
 
         // default options
         this._defaults = {
             lang: 'en',
             useFileIcons: true,
             debug: false,                                                  // activate console logs for debug
+            debugLogStyle: "color: #9900ff",                               // style for debug console logs in js console
             useLoadingBars: true,                                          // insert loading bar for files
             reloadedFilesClass: 'reloadedElement',                         // class for previously uploaded files
             resultContainer: 'result',                                     // result container's class (where to place result files data)
@@ -72,7 +74,7 @@
                         message = '\u27A1 ' + message;
                     }
                 }
-                console.log(message);
+                console.log("%c " + message, this._options.debugLogStyle);
             }
         };
 
@@ -238,24 +240,22 @@
             $('<div class="debug sizeAvailable">Size still available: <span>' + this._options.totalMaxSize + '</span> MB</div>').insertBefore($resultContainer);
         }
 
+        // onload callback
+        this._options.onload($resultContainer);
+
+
+
+        // FILES RELOAD SECTION
+        // lookup for previously loaded files placed in the result container directly
         var availableLabel = $el.find(".sizeAvailable");
         var currentTotalSize = 0;
-        var self = this;
 
         $.each($resultContainer.children('.uploadedFile'), function(index, item) {
             currentTotalSize = currentTotalSize + parseFloat($(item).children('input[name="' + self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[3] + ']"]').val());
         });
 
-        this._logger("current total size: " + currentTotalSize);
-        availableLabel.children('span').html(Math.round((this._options.totalMaxSize - currentTotalSize) * 100) / 100);
-
-        // onload callback
-        this._options.onload($resultContainer);
-
-        // lookup for previously loaded files placed in the result container directly
-        var Uploader = this;
         $.each($resultContainer.children('.' + this._options.resultFileContainerClass), function(index, element) {
-            Uploader._logger('found previously uploaded file: index = ' + $(element).data('index'), 2);
+            self._logger('found previously uploaded file: index = ' + $(element).data('index'), 2);
 
             var fileData = $(element).children();
             var fileNameArray = $(fileData[1]).val().split('.');
@@ -264,9 +264,9 @@
 
             var fileName = fileNameArray.join('.');
 
-            loadedFile = Uploader._createUploaderContainer(globalIndex, fileName, fileExt);
+            loadedFile = self._createUploaderContainer(globalIndex, fileName, fileExt);
             loadedFile.children('.loadBar').children('div').css({width: '100%'});
-            loadedFile.addClass(Uploader._options.reloadedFilesClass);
+            loadedFile.addClass(self._options.reloadedFilesClass);
             globalIndex++;
         });
 
@@ -276,7 +276,7 @@
                 // re-create visible elements
                 loadedFile = self._createUploaderContainer(index, file.name, file.ext);
                 loadedFile.children('.loadBar').children('div').css({width: '100%'});
-                loadedFile.addClass(Uploader._options.reloadedFilesClass);
+                loadedFile.addClass(self._options.reloadedFilesClass);
 
                 self._logger('found previously uploaded file: index = ' + index, 2);
 
@@ -286,6 +286,11 @@
                 globalIndex++;
             });
         }
+
+        this._logger("current total size: " + currentTotalSize);
+        availableLabel.children('span').html(Math.round((this._options.totalMaxSize - currentTotalSize) * 100) / 100);
+
+
 
         // files read function
         this._filesRead = function(event) {

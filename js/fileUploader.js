@@ -172,7 +172,7 @@
 
             var container = $('<div class="newElement" data-index="' + parseInt(index) + '" style="' + containerStyle + '"></div');
             $fileThumbsContainer.append(container);
-            
+
             var fileButtonsContainer = $('<div class="fileActions"></div>');
             container.append(fileButtonsContainer);
             // file "see" link
@@ -242,13 +242,6 @@
         var currentTotalSize = 0;
         var self = this;
 
-        $.each($resultContainer.children('.uploadedFile'), function(index, item) {
-            currentTotalSize = currentTotalSize + parseFloat($(item).children('input[name="' + self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[3] + ']"]').val());
-        });
-
-        this._logger("current total size: " + currentTotalSize);
-        availableLabel.children('span').html(Math.round((this._options.totalMaxSize - currentTotalSize) * 100) / 100);
-
         // onload callback
         this._options.onload($resultContainer);
 
@@ -258,7 +251,7 @@
             Uploader._logger('found previously uploaded file: index = ' + $(element).data('index'), 2);
 
             var fileData = $(element).children();
-            var fileNameArray = $(fileData[1]).val().split('.');
+            var fileNameArray = $(fileData[0]).val().split('.');
             var fileExt = fileNameArray[fileNameArray.length - 1];
                 fileNameArray.pop();
 
@@ -286,6 +279,13 @@
                 globalIndex++;
             });
         }
+
+        $.each($resultContainer.find('input[name*="' + this._options.resultInputNames[3] + '"]'), function() {
+            currentTotalSize = currentTotalSize + parseFloat($(this).val());
+        });
+
+        this._logger("current total size: " + currentTotalSize);
+        availableLabel.children('span').html(Math.round((this._options.totalMaxSize - currentTotalSize) * 100) / 100);
 
         // files read function
         this._filesRead = function(event) {

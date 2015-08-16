@@ -1,5 +1,7 @@
 $mainColor: #333 !default;
 $mainColorText: #ddd !default;
+$secondaryColor: #424242 !default;
+$secondaryColorText: #ddd !default;
 $linkColor: #b71c1c !default;
 
 
@@ -30,6 +32,14 @@ main {
     padding: 15px 35px;
     flex: 1 0 auto;
 
+    .left {
+        float: left;
+    }
+
+    .right {
+        float: right;
+    }
+
     .ckBtn {
         background-color: $mainColor;
         color: $mainColorText;
@@ -51,6 +61,24 @@ main {
         padding: 15px 35px;
         border: solid 3px darken($mainColor, 15%);
     }
+
+    .staticBar {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: $secondaryColor;
+        color: $secondaryColorText;
+        border: solid 3px $mainColor;
+
+        .innerBar {
+            padding: 15px 35px;
+        }   
+
+        .ckBtn {
+            background-color: darken($mainColor, 15%);
+        }
+    }
 }
 
 header {
@@ -64,6 +92,7 @@ footer {
     background-color: $mainColor;
     color: $mainColorText;
     text-align: center;
+    z-index: 99;
     
     a:link , a:visited {
         text-transform: uppercase;

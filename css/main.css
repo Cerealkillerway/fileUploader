@@ -21,6 +21,10 @@ body {
 main {
   padding: 15px 35px;
   flex: 1 0 auto; }
+  main .left {
+    float: left; }
+  main .right {
+    float: right; }
   main .ckBtn {
     background-color: #333;
     color: #ddd;
@@ -37,6 +41,18 @@ main {
     font-weight: bold;
     padding: 15px 35px;
     border: solid 3px #0d0d0d; }
+  main .staticBar {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #424242;
+    color: #ddd;
+    border: solid 3px #333; }
+    main .staticBar .innerBar {
+      padding: 15px 35px; }
+    main .staticBar .ckBtn {
+      background-color: #0d0d0d; }
 
 header {
   padding: 25px 35px;
@@ -47,7 +63,8 @@ footer {
   padding: 25px 35px;
   background-color: #333;
   color: #ddd;
-  text-align: center; }
+  text-align: center;
+  z-index: 99; }
   footer a:link, footer a:visited {
     text-transform: uppercase;
     color: #b71c1c;

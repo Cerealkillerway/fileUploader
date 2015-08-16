@@ -12,7 +12,7 @@
 
 <body>
     <header>
-        <h2>File Uploader v2.3.3</h2>
+        <h2>File Uploader v2.5.0</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader api
         </p>  
@@ -22,6 +22,9 @@
         <h2>Multi uploader example</h2>
         <h3>fileUploader 1</h3>
         <h5>(Example with files reloaded from array):</h5>
+
+        <div class="customTotalSize">Custom total size displayer: <span></span></div>
+
         <div class="fileUploader" id="one">
             <p class="introMsg"></p>
             <div>
@@ -106,7 +109,13 @@
         fileMaxSize: 1.7,
         totalMaxSize: 5,
         debug: true,
-        reloadArray: files
+        reloadArray: files,
+        onload: function(options, totalSize) {
+            $(".customTotalSize").children("span").html(totalSize + " MB");
+        },
+        onfileloadEnd: function(index, file, totalSize) {
+            $(".customTotalSize").children("span").html(totalSize + " MB");
+        }
     });
 
     $('#two').fileUploader({

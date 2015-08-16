@@ -1,4 +1,4 @@
-## File Uploader v2.3.3
+## File Uploader v2.5.0
 
 ![FileUploader](http://144.76.103.88/webforge_static/appLogos/fileUploader.png)
 
@@ -68,8 +68,9 @@ If needed it is possible to change them:
 
 ### Methods
 **get**: obtain parameters from the fileUploader instance:
-    - **currentTotalSize**: total size of currently loaded files
-    - **currentAvailableSize**: available size left
+
+- **currentTotalSize**: total size of currently loaded files
+- **currentAvailableSize**: available size left
 
 (example):
 
@@ -78,11 +79,17 @@ If needed it is possible to change them:
 ### Callbacks
 Together with the options object it is possible to define some callbacks:
 
-**onload**: called at plugin start; receives the resultContainer element (jQuery) as first parameter
+**onload(options, totalSize)**: called at plugin start; parameters:
+- *options*: the options object for the current plugin's instance
+- *totalSize*: current total size (or reloaded files, 0 if none)
 
-**onfileloadStart**: called on every file read start; receives the new file index as first parameter
+**onfileloadStart(index)**: called on every file read start; paremeters:
+- *index*: the index used for the new file's DOM
 
-**onfileloadEnd**: callled on every file read end; receives the file index as first parameter and the result base64 strint as second
+**onfileloadEnd(index, file, totalSize)**: callled on every file read end; parameters:
+- *index*: the index used for the new file's DOM
+- *file*: the file object for the file just loaded (contains name, type, data (the base64 string) and size)
+- *totalSize*: current total size (this file included)
 
 (example)
 

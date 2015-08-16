@@ -42,6 +42,15 @@ main {
             background-color: darken($mainColor, 20%);
         }
     }
+
+    .customTotalSize {
+        background-color: $mainColor;
+        color: $mainColorText;
+        font-size: 18px;
+        font-weight: bold;
+        padding: 15px 35px;
+        border: solid 3px darken($mainColor, 15%);
+    }
 }
 
 header {

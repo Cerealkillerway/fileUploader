@@ -30,6 +30,13 @@ main {
     cursor: pointer; }
     main .ckBtn:hover {
       background-color: black; }
+  main .customTotalSize {
+    background-color: #333;
+    color: #ddd;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 15px 35px;
+    border: solid 3px #0d0d0d; }
 
 header {
   padding: 25px 35px;

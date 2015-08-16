@@ -1,5 +1,5 @@
 /*
-* fileUploader v2.3.3
+* fileUploader v2.5.0
 * available under MIT license
 * 
 * */
@@ -46,12 +46,13 @@
             }
         };
 
+        // extend options with instance ones
         this._options = $.extend(true, {}, this._defaults, options);
 
+        // add more options
         this.options = function(options) {
             return (options) ? $.extend(true, this._options, options) : this._options;
         };
-
 
         // return data
         this.get = function(parameter) {
@@ -240,9 +241,6 @@
             $('<div class="debug sizeAvailable">Size still available: <span>' + this._options.totalMaxSize + '</span> MB</div>').insertBefore($resultContainer);
         }
 
-        // onload callback
-        this._options.onload($resultContainer);
-
 
 
         // FILES RELOAD SECTION
@@ -287,10 +285,15 @@
             });
         }
 
+        currentTotalSize = Math.round(currentTotalSize * 100) / 100;
+
         this._logger("current total size: " + currentTotalSize);
-        availableLabel.children('span').html(Math.round((this._options.totalMaxSize - currentTotalSize) * 100) / 100);
+        availableLabel.children('span').html(this._options.totalMaxSize - currentTotalSize);
 
 
+
+        // onload callback
+        this._options.onload(this._options, currentTotalSize);
 
         // files read function
         this._filesRead = function(event) {
@@ -359,7 +362,14 @@
                     var totalUploaded = parseInt($('#debugUploaded').html()) + 1;
                     $('#debugUploaded').html(totalUploaded);
 
-                    Uploader._options.onfileloadEnd(index, result);
+                    var resultObject = {
+                        name: file.name,
+                        type: file.type,
+                        data: result,
+                        size: size
+                    };
+
+                    Uploader._options.onfileloadEnd(index, resultObject, Math.round(currentTotalSize * 100) / 100);
                 };
 
                 if ((size <= Uploader._options.fileMaxSize) && ((currentTotalSize + size) <= Uploader._options.totalMaxSize)) {

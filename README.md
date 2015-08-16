@@ -43,14 +43,6 @@ There are some options that can passed to constructor in the form:
 
 **reloadedFilesClass**: a class to style previously uploaded files (files uploaded during a previous session and now retrieved and placed in the result container) (default 'reloadedElement')
 
-**debug**: enable debug mode (default false)
-
-**debugLogStyle**: custom CSS rules for style debug logs in browser's javascript console (only for browsers that supports this feature, default: *"color: #9900ff"*, purple logs)
-
-**name**: a name for current fileUploader's instance, used in debug logs if provided (default: undefined)
-
-**pluginName**: the plugin's name used in debug logs alongside with name (default: *"FileUploader*)
-
 **useLoadingBars**: show a progress bar while reading each file (default true)
 
 **resultContainer**: set the class of the element to be used as container for reader's results (by default this is the hidden $(.result) element of the fileUploader); can be the class of any DOM element inside the fileUploader markup
@@ -70,6 +62,16 @@ If needed it is possible to change them:
 **resultPrefix** custom name-prefix for result elements
 
 **resultInputNames** custom array of names for the 4 result elements created for each file (ordered)
+
+##### DEBUG OPTIONS
+
+**debug**: enable debug mode (default false)
+
+**debugLogStyle**: custom CSS rules for style debug logs in browser's javascript console (only for browsers that supports this feature, default: *"color: #9900ff"*, purple logs)
+
+**name**: a name for current fileUploader's instance, used in debug logs if provided (default: undefined)
+
+**pluginName**: the plugin's name used in debug logs alongside with name (default: *"FileUploader*)
 
 ### Methods
 **get**: obtain parameters from the fileUploader instance:

@@ -1,4 +1,4 @@
-## File Uploader v2.5.3
+## File Uploader v2.5.4
 
 ![FileUploader](http://144.76.103.88/webforge_static/appLogos/fileUploader.png)
 
@@ -46,6 +46,10 @@ There are some options that can passed to constructor in the form:
 **debug**: enable debug mode (default false)
 
 **debugLogStyle**: custom CSS rules for style debug logs in browser's javascript console (only for browsers that supports this feature, default: *"color: #9900ff"*, purple logs)
+
+**name**: a name for current fileUploader's instance, used in debug logs if provided (default: undefined)
+
+**pluginName**: the plugin's name used in debug logs alongside with name (default: *"FileUploader*)
 
 **useLoadingBars**: show a progress bar while reading each file (default true)
 
@@ -171,6 +175,10 @@ Use --port option to serve it on another port; example:
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
 ##### History
+2.5.4
+-----
+- improved debug logs
+
 2.5.3
 -----
 - updated callbacks for better usability

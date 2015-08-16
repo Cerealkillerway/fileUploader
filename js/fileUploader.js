@@ -1,5 +1,5 @@
 /*
-* fileUploader v2.5.3
+* fileUploader v2.5.4
 * available under MIT license
 * 
 * */
@@ -12,8 +12,12 @@
         this._defaults = {
             lang: 'en',
             useFileIcons: true,
+
             debug: false,                                                  // activate console logs for debug
             debugLogStyle: "color: #9900ff",                               // style for debug console logs in js console
+            name: undefined,                                               // a name for plugin's instance (useful for debug purposes)
+            pluginName: "FileUploader",                                    // plugin's name (used in debug logs alongside with name)
+
             useLoadingBars: true,                                          // insert loading bar for files
             reloadedFilesClass: 'reloadedElement',                         // class for previously uploaded files
             resultContainer: 'result',                                     // result container's class (where to place result files data)
@@ -78,6 +82,9 @@
                         message = '\u27A1 ' + message;
                     }
                 }
+                if (this._options.name) {
+                    message = "[" + this._options.pluginName + " - " + this._options.name + "] " + message; 
+                }
                 console.log("%c " + message, this._options.debugLogStyle);
             }
         };
@@ -111,7 +118,7 @@
             // get file size
             var fileSize = $resultContainer.find('input[name="' + Uploader._options.resultPrefix + '[' + index + '][' + Uploader._options.resultInputNames[3] + ']"]').val();
 
-            currentTotalSize = currentTotalSize - fileSize;
+            currentTotalSize = Math.round((currentTotalSize - fileSize) * 100) / 100;
             var availableSize = Uploader._options.totalMaxSize - currentTotalSize;
 
             availableLabel.children('span').html(availableSize);
@@ -233,6 +240,10 @@
 
 
         // initialization
+        if (this._options.name) {
+            this._logger("INITIALIZED INSTANCE: " + this._options.name);
+        }
+
         $el.find('.introMsg').html(currentLangObj.intro_msg);
         $(dropZone).html(currentLangObj.dropZone_msg); 
         if (!this._options.debug) {

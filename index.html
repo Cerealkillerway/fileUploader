@@ -12,7 +12,7 @@
 
 <body>
     <header>
-        <h2>File Uploader v2.3.0</h2>
+        <h2>File Uploader v2.3.3</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader api
         </p>  
@@ -21,6 +21,7 @@
     <main>
         <h2>Multi uploader example</h2>
         <h3>fileUploader 1</h3>
+        <h5>(Example with files reloaded from array):</h5>
         <div class="fileUploader" id="one">
             <p class="introMsg"></p>
             <div>
@@ -37,6 +38,7 @@
         </div>
     
         <h3>fileUploader 2</h3>
+        <h5>(Example with files reloaded placed directly in result container):</h5>
         <div class="fileUploader" id="two">
             <p class="introMsg"></p>
             <div>
@@ -49,7 +51,20 @@
                     <div style="clear:both;"></div>
                 </div>
             </div>
-            <div class="result"></div>
+            <div class="result">
+                <div data-index="0" class="uploadedFile">
+                    <div>File: 0</div><input type="text" name="fileUploader[0][title]" value="Example1.pdf">
+                    <input type="text" name="fileUploader[0][extension]" value="pdf">
+                    <input type="text" name="fileUploader[0][value]" value="dgjhakjhsdjkhjhjklasdikfj asdilfj">
+                    <input type="text" name="fileUploader[0][size]" value="1.5">
+                </div>
+                <div data-index="1" class="uploadedFile">
+                    <div>File: 1</div><input type="text" name="fileUploader[1][title]" value="Example2.jpg">
+                    <input type="text" name="fileUploader[1][extension]" value="pdf">
+                    <input type="text" name="fileUploader[1][value]" value="hfljsjklsdjfklsjlsdfff">
+                    <input type="text" name="fileUploader[1][size]" value="0.9">
+                </div>
+            </div>
         </div>
         
         <br>

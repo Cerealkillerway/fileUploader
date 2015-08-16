@@ -1,5 +1,5 @@
 /*
-* fileUploader v2.3.0
+* fileUploader v2.3.3
 * available under MIT license
 * 
 * */
@@ -250,23 +250,22 @@
         var availableLabel = $el.find(".sizeAvailable");
         var currentTotalSize = 0;
 
-        $.each($resultContainer.children('.uploadedFile'), function(index, item) {
-            currentTotalSize = currentTotalSize + parseFloat($(item).children('input[name="' + self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[3] + ']"]').val());
-        });
-
         $.each($resultContainer.children('.' + this._options.resultFileContainerClass), function(index, element) {
             self._logger('found previously uploaded file: index = ' + $(element).data('index'), 2);
 
+            // pay attention to index used on fileData here: index 0 is the title DIV!
             var fileData = $(element).children();
-            var fileNameArray = $(fileData[1]).val().split('.');
-            var fileExt = fileNameArray[fileNameArray.length - 1];
-                fileNameArray.pop();
+            var fileName = $(fileData[1]).val();
+            var fileExt = $(fileData[2]).val();
+            var fileSize = $(fileData[4]).val();
 
-            var fileName = fileNameArray.join('.');
+            fileName = fileName.substr(0, fileName.lastIndexOf('.'));
 
             loadedFile = self._createUploaderContainer(globalIndex, fileName, fileExt);
             loadedFile.children('.loadBar').children('div').css({width: '100%'});
             loadedFile.addClass(self._options.reloadedFilesClass);
+
+            currentTotalSize = currentTotalSize + parseFloat(fileSize);
             globalIndex++;
         });
 
@@ -283,6 +282,7 @@
                 // re-create results
                 self._createResultContainer(self, index, file.name, file.ext, file.data, file.size);
 
+                currentTotalSize = currentTotalSize + parseFloat(file.size);
                 globalIndex++;
             });
         }

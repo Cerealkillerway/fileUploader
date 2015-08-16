@@ -44,6 +44,8 @@ There are some options that can passed to constructor in the form:
 
 **debug**: enable debug mode (default false)
 
+**debugLogStyle**: custom CSS rules for style debug logs in browser's javascript console (only for browsers that supports this feature, default: *"color: #9900ff"*, purple logs)
+
 **useLoadingBars**: show a progress bar while reading each file (default true)
 
 **resultContainer**: set the class of the element to be used as container for reader's results (by default this is the hidden $(.result) element of the fileUploader); can be the class of any DOM element inside the fileUploader markup
@@ -157,6 +159,11 @@ Use --port option to serve it on another port; example:
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
 ##### History
+2.3.3
+-----
+- fixed bug for total size of reloaded files
+- added option to customize debug logs
+
 2.3.0
 -----
 - added reloadArray option

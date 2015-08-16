@@ -18,6 +18,8 @@
             resultFileContainerClass: "uploadedFile",                      // class for every file result container span
             resultPrefix: "fileUploader",                                  // prefix for inputs in the file result container
             resultInputNames: ["title", "extension", "value", "size"],     // name suffix to be used for result inputs
+            linkShowText: 'L',
+            linkDeleteText: 'X',
             defaultFileExt: "",                                            // extension to use for files with no extension
             defaultMimeType: "",                                           // MIME type to use for files with no extension 
             fileMaxSize: 50,                                               // maximum allowed file size (in MB)
@@ -176,11 +178,11 @@
             var fileButtonsContainer = $('<div class="fileActions"></div>');
             container.append(fileButtonsContainer);
             // file "see" link
-            var seeFileLink = $('<a target="_blank"><div class="fileSee">L</div></a>');
+            var seeFileLink = $('<a target="_blank"><div class="fileSee">' + this._options.linkShowText + '</div></a>');
             fileButtonsContainer.append(seeFileLink);
 
             // delete button
-            var deleteBtn = $('<div data-delete="' + parseInt(index) + '" class="fileDelete">X</div>');
+            var deleteBtn = $('<div data-delete="' + parseInt(index) + '" class="fileDelete">' + this._options.linkDeleteText + '</div>');
             fileButtonsContainer.append(deleteBtn);
             deleteBtn.click({Uploader: this, element: container}, this._fileDelete);
 

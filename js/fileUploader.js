@@ -1,5 +1,5 @@
 /*
-* fileUploader v2.5.0
+* fileUploader v2.5.3
 * available under MIT license
 * 
 * */
@@ -25,9 +25,12 @@
             fileMaxSize: 50,                                               // maximum allowed file size (in MB)
             totalMaxSize: 1000,                                            // total maximum allowed size of all files
             reloadArray: [],                                               // array of files to be reloade at plugin startup
+
             onload: function() {},                                         // callback on plugin initialization
             onfileloadStart: function() {},                                // callback on file reader start
             onfileloadEnd: function() {},                                  // callback on file reader end
+            onfileDelete: function() {},                                   // callback on file delete
+
             langs: {
                 "en": {
                     intro_msg: "(Add attachments...)",
@@ -119,6 +122,8 @@
             if ($('.innerFileThumbs').children().length === 0) $('.filesContainer').addClass('filesContainerEmpty');
 
             event.data.Uploader._logger('Deleted file N: ' + index, 2);
+
+            Uploader._options.onfileDelete(index, currentTotalSize);
         };
 
         // method to rename file in result container accordingly to modifications by user

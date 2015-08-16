@@ -1,8 +1,9 @@
-## File Uploader v2.5.0
+## File Uploader v2.5.3
 
 ![FileUploader](http://144.76.103.88/webforge_static/appLogos/fileUploader.png)
 
 LIVE DEMO: [FileUploader demo](http://www.web-forge.info/projects/fileUploader)
+(live demo can be outdated for a while; if live demo version is not the same of current plugin version, please use the included demo instead)
 
 A file uploader skeleton that uses HTML5 file reader API.
 
@@ -91,6 +92,10 @@ Together with the options object it is possible to define some callbacks:
 - *file*: the file object for the file just loaded (contains name, type, data (the base64 string) and size)
 - *totalSize*: current total size (this file included)
 
+**onfileDelete(index, totalSize)**: called after a file has been removed; parameters:
+- *index*: index for the removed file's DOM
+- *totalSize*: current total size (already decreased by deleted file' size)
+
 (example)
 
     $('.fileUploader').fileUploader({
@@ -166,6 +171,11 @@ Use --port option to serve it on another port; example:
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
 ##### History
+2.5.3
+-----
+- updated callbacks for better usability
+- added onfileDelete callback
+
 2.3.3
 -----
 - fixed bug for total size of reloaded files

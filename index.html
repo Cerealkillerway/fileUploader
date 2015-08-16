@@ -12,7 +12,7 @@
 
 <body>
     <header>
-        <h2>File Uploader v2.5.0</h2>
+        <h2>File Uploader v2.5.3</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader api
         </p>  
@@ -114,6 +114,9 @@
             $(".customTotalSize").children("span").html(totalSize + " MB");
         },
         onfileloadEnd: function(index, file, totalSize) {
+            $(".customTotalSize").children("span").html(totalSize + " MB");
+        },
+        onfileDelete: function(index, totalSize) {
             $(".customTotalSize").children("span").html(totalSize + " MB");
         }
     });

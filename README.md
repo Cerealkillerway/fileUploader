@@ -8,10 +8,31 @@ LIVE DEMO: [FileUploader demo](http://www.web-forge.info/projects/fileUploader)
 A file uploader skeleton that uses HTML5 file reader API.
 
 ### Usage
-Just call **fileUploader()** on any jquery element.<br>
+Put the needed HTML inside your page:
+
+    <div class="fileUploader" id="one">
+        <p class="introMsg"></p>
+        <div>
+            <div class="inputContainer">
+                <input class="fileLoader" type="file" id="attachments" name="attachments" multiple />
+            </div>
+            <div class="dropZone"></div>
+            <div class="filesContainer filesContainerEmpty">
+                <div class="innerFileThumbs"></div>
+                <div style="clear:both;"></div>
+            </div>
+        </div>
+        <div class="result"></div>
+    </div>
+
+and then just call **fileUploader()** on it.<br>
 Example:
 
-     $('.fileUploader').fileUploader();
+    $(".fileUploader").fileUploader();
+
+or 
+
+    $("#one").fileUploader();
 
 This skeleton handle the client-side file reading; then the files must be sended (ex. with an ajax call) to a server procedure that will save them somewhere (filesystem, db, ...).
 You can use the "getData" method to get all files' data and then or handle everything on your own by iterating result container's children elements;

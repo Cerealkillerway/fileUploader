@@ -1,4 +1,4 @@
-## File Uploader v2.5.5
+## File Uploader v2.5.6
 
 ![FileUploader](http://144.76.103.88/webforge_static/appLogos/fileUploader.png)
 
@@ -199,6 +199,11 @@ Use --port option to serve it on another port; example:
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
 ##### History
+2.5.6
+-----
+- fixed round bug for available size
+- cleaned code
+
 2.5.5
 -----
 - fixed dropzone bug

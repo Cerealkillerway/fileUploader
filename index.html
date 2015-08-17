@@ -12,7 +12,7 @@
 
 <body>
     <header>
-        <h2>File Uploader v2.5.5</h2>
+        <h2>File Uploader v2.5.6</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader api
         </p>  
@@ -58,13 +58,15 @@
             </div>
             <div class="result">
                 <div data-index="0" class="uploadedFile">
-                    <div>File: 0</div><input type="text" name="fileUploader[0][title]" value="Example1.pdf">
+                    <div>File: 0</div>
+                    <input type="text" name="fileUploader[0][title]" value="Example1.pdf">
                     <input type="text" name="fileUploader[0][extension]" value="pdf">
                     <input type="text" name="fileUploader[0][value]" value="dgjhakjhsdjkhjhjklasdikfj asdilfj">
                     <input type="text" name="fileUploader[0][size]" value="1.5">
                 </div>
                 <div data-index="1" class="uploadedFile">
-                    <div>File: 1</div><input type="text" name="fileUploader[1][title]" value="Example2.jpg">
+                    <div>File: 1</div>
+                    <input type="text" name="fileUploader[1][title]" value="Example2.jpg">
                     <input type="text" name="fileUploader[1][extension]" value="pdf">
                     <input type="text" name="fileUploader[1][value]" value="hfljsjklsdjfklsjlsdfff">
                     <input type="text" name="fileUploader[1][size]" value="0.9">
@@ -99,19 +101,20 @@
 <script tyle="text/javascript">
     var files = [
         {
-            name: "try1",
+            name: "fromArray1",
             ext: "jpeg",
             data: "ldjahflòksdjòflaksjdflk",
             size: 0.3
         },
         {
-            name: "try2",
+            name: "fromArray2",
             ext: "pdf",
             data: "dgjhakjhsdjkhjhjklasdikfj asdilfj",
             size: 1.2
         }
     ];
 
+    // fileUploader example 1
     $('#one').fileUploader({
         useFileIcons: false,
         fileMaxSize: 1.7,
@@ -130,6 +133,7 @@
         }
     });
 
+    // fileUploader example 2
     $('#two').fileUploader({
         useFileIcons: false,
         fileMaxSize: 1.7,
@@ -139,6 +143,8 @@
         debugLogStyle: "color: #ff5500"
     });
 
+
+    // buttons
     $('#save1').click(function() {
         var result = $('#one').fileUploader('getData');
         //do what you need with result (ex. send ajax call to remote procedure to persist files)

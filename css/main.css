@@ -57,11 +57,13 @@ main {
 header {
   padding: 25px 35px;
   background-color: #333;
-  color: #ddd; }
+  color: #ddd;
+  border-bottom: solid 3px #0d0d0d; }
 
 footer {
   padding: 25px 35px;
   background-color: #333;
+  border-top: solid 3px #0d0d0d;
   color: #ddd;
   text-align: center;
   z-index: 99; }

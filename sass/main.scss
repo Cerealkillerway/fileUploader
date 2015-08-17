@@ -85,11 +85,13 @@ header {
     padding: 25px 35px;
     background-color: $mainColor;
     color: $mainColorText;
+    border-bottom: solid 3px darken($mainColor, 15%);
 }
 
 footer {
     padding: 25px 35px;
     background-color: $mainColor;
+    border-top: solid 3px darken($mainColor, 15%);
     color: $mainColorText;
     text-align: center;
     z-index: 99;

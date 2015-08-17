@@ -44,13 +44,13 @@
       max-height: 130px;
       margin: auto; }
     .fileUploader .filesContainer .reloadedElement .fileTitle {
-      color: #00c853 !important; }
+      color: #1b5e20 !important; }
     .fileUploader .filesContainer .reloadedElement .loadBar {
-      border: solid 2px #00c853 !important; }
+      border: solid 2px #1b5e20 !important; }
       .fileUploader .filesContainer .reloadedElement .loadBar div {
-        background-color: #00c853 !important; }
+        background-color: #1b5e20 !important; }
     .fileUploader .filesContainer .reloadedElement .fileActions a, .fileUploader .filesContainer .reloadedElement .fileActions .fileDelete {
-      color: #00c853 !important; }
+      color: #1b5e20 !important; }
     .fileUploader .filesContainer .newElement {
       width: 100%;
       height: 40px;

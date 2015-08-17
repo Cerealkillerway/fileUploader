@@ -175,7 +175,8 @@ There are 2 possibilities:
 You can re-create the result DOM inside the fileUploader's result container, and the plugin will create visual element such as progress bar, icon, ect... automatically;
 
     // example of DOM to place in result container for a file:
-    <div data-index="0" class="uploadedFile"><div>File: 0</div>
+    <div data-index="0" class="uploadedFile">
+        <div>File: 0</div>
         <input type="text" name="fileUploader[0][title]" value="try1">
         <input type="text" name="fileUploader[0][extension]" value="jpeg">
         <input type="text" name="fileUploader[0][value]" value="ldjahflòksdjòflaksjdflk...">

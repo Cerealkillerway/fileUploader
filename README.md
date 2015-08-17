@@ -198,6 +198,10 @@ Use --port option to serve it on another port; example:
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
 ##### History
+2.5.5
+-----
+- fixed dropzone bug
+
 2.5.4
 -----
 - improved debug logs

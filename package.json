@@ -1,6 +1,6 @@
 {
   "name": "fileUploader",
-  "version": "2.5.7",
+  "version": "2.5.8",
   "description": "A HTML5 file uploader skeleton",
   "devDependencies": {
     "grunt": "~0.4.5",

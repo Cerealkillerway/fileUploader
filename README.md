@@ -1,4 +1,4 @@
-## File Uploader v2.5.7
+## File Uploader v2.5.8
 
 ![FileUploader](http://144.76.103.88/webforge_static/appLogos/fileUploader.png)
 
@@ -203,6 +203,10 @@ Use --port option to serve it on another port; example:
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
 ##### History
+2.5.8
+-----
+- fixed bug for delete button using custom HTML
+
 2.5.7
 -----
 - added options for custom buttons content ("linkButtonContent" and "linkButtonContent")
@@ -240,6 +244,7 @@ Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT
 - added get method
 - code improvements
 
+##### Old versions
 1.1.6
 -----
 - fixed bug for drag and drop

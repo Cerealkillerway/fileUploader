@@ -1,5 +1,5 @@
 /*
-* fileUploader v2.5.7
+* fileUploader v2.5.8
 * available under MIT license
 * 
 * */
@@ -115,6 +115,10 @@
             var element = event.data.element;
             var index = $(event.target).data('delete');
             var id = $(event.target).data('id');
+
+            if (!index) {
+                index = $(event.target).closest('div[data-delete]').data('delete');
+            }
 
             // remove file block
             if (self._options.useFileIcons) {

@@ -75,7 +75,7 @@
         };
         
         // debug logs function
-        this._logger = function(message, level) {
+        this._logger = function(message, level, data) {
             if (this._options.debug) {
                 if (level) {
                     for (var i = 0; i < level; i++) {
@@ -85,7 +85,13 @@
                 if (this._options.name) {
                     message = "[" + this._options.pluginName + " - " + this._options.name + "] " + message; 
                 }
-                console.log("%c " + message, this._options.debugLogStyle);
+
+                if (data) {
+                    console.log("%c " + message, this._options.debugLogStyle, data);
+                }
+                else {
+                    console.log("%c " + message, this._options.debugLogStyle);
+                }
             }
         };
 
@@ -169,7 +175,7 @@
                 data.push(file);
             });
 
-            this._logger(data);
+            this._logger("%O", 0 ,data);
 
             return data;
         };
@@ -325,7 +331,7 @@
                 this._logger('files array source: dropzone (drag & drop event)', 1);
                 filesList = event.dataTransfer.files;
             }
-            this._logger(filesList);
+            this._logger("%O", 0, filesList);
 
             $fileContainer.removeClass('filesContainerEmpty');
             // set selected file's name to fleNameContainer

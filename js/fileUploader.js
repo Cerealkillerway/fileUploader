@@ -1,5 +1,5 @@
 /*
-* fileUploader v2.5.4
+* fileUploader v2.5.5
 * available under MIT license
 * 
 * */
@@ -467,10 +467,10 @@
             event.stopPropagation();
             event.preventDefault();
             event.data = {
-                Uploader: Uploader,
+                Uploader: self,
                 DOM: $el
             };
-            Uploader._filesRead(event);
+            self._filesRead(event);
         }
 
         dropZone.addEventListener('dragover', handleDragOver, false);

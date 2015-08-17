@@ -1,5 +1,5 @@
 /*
-* fileUploader v2.5.8
+* fileUploader v3.0.0
 * available under MIT license
 * 
 * */
@@ -28,9 +28,27 @@
             defaultMimeType: "",                                           // MIME type to use for files with no extension 
             fileMaxSize: 50,                                               // maximum allowed file size (in MB)
             totalMaxSize: 1000,                                            // total maximum allowed size of all files
-            reloadArray: [],                                               // array of files to be reloade at plugin startup
+            reloadArray: [],                                               // array of files to be reloaded at plugin startup
+            reloadHTML: undefined,                                         // HTML for reloaded files to place directly in result container
             linkButtonContent: 'L',                                        // HTML content for link button
             deleteButtonContent: 'X',                                      // HTML content for delete button
+
+            HTMLTemplate: function() {
+                return [
+                    '<p class="introMsg"></p>',
+                    '<div>',
+                    '    <div class="inputContainer">',
+                    '        <input class="fileLoader" type="file" multiple />',
+                    '    </div>',
+                    '    <div class="dropZone"></div>',
+                    '    <div class="filesContainer filesContainerEmpty">',
+                    '        <div class="innerFileThumbs"></div>',
+                    '        <div style="clear:both;"></div>',
+                    '    </div>',
+                    '</div>',
+                    '<div class="result"></div>'
+                ].join("\n");
+            },
 
             onload: function() {},                                         // callback on plugin initialization
             onfileloadStart: function() {},                                // callback on file reader start
@@ -243,6 +261,15 @@
             $resultContainer.append(resultElemContainer);
         };
 
+        // initialization
+        if (this._options.name) {
+            this._logger("INITIALIZED INSTANCE: " + this._options.name);
+        }
+        // build HTML template
+        var template = $(this._options.HTMLTemplate());
+
+        $el.append(template);
+
         var globalIndex = 0;
         var $resultContainer = $el.find('.' + this._options.resultContainer);
         var $loadBtn = $el.find('.fileLoader');
@@ -252,11 +279,11 @@
         var dropZone = $el.find('.dropZone')[0];
         var currentLangObj = this._options.langs[this._options.lang];
 
-
-        // initialization
-        if (this._options.name) {
-            this._logger("INITIALIZED INSTANCE: " + this._options.name);
+        // place reloaded files' HTML in result container directly (if provided)
+        if (this._options.reloadHTML) {
+            $resultContainer.html(this._options.reloadHTML);
         }
+
 
         $el.find('.introMsg').html(currentLangObj.intro_msg);
         $(dropZone).html(currentLangObj.dropZone_msg); 

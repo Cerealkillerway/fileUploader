@@ -12,7 +12,7 @@
 
 <body>
     <header>
-        <h2>File Uploader v2.5.8</h2>
+        <h2>File Uploader v3.0.0</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader api
         </p>  
@@ -25,54 +25,13 @@
 
         <div class="customTotalSize">Custom total size displayer: <span></span></div>
 
-        <div class="fileUploader" id="one">
-            <p class="introMsg"></p>
-            <div>
-                <div class="inputContainer">
-                    <input class="fileLoader" type="file" multiple />
-                </div>
-                <div class="dropZone"></div>
-                <div class="filesContainer filesContainerEmpty">
-                    <div class="innerFileThumbs"></div>
-                    <div style="clear:both;"></div>
-                </div>
-            </div>
-            <div class="result"></div>
-        </div>
+        <div class="fileUploader" id="one"></div>
 
         <br><br>
     
         <h3>fileUploader 2</h3>
         <h5>(Example with files reloaded placed directly in result container):</h5>
-        <div class="fileUploader" id="two">
-            <p class="introMsg"></p>
-            <div>
-                <div class="inputContainer">
-                    <input class="fileLoader" type="file" multiple />
-                </div>
-                <div class="dropZone"></div>
-                <div class="filesContainer filesContainerEmpty">
-                    <div class="innerFileThumbs"></div>
-                    <div style="clear:both;"></div>
-                </div>
-            </div>
-            <div class="result">
-                <div data-index="0" class="uploadedFile">
-                    <div>File: 0</div>
-                    <input type="text" name="fileUploader[0][title]" value="Example1.pdf">
-                    <input type="text" name="fileUploader[0][extension]" value="pdf">
-                    <input type="text" name="fileUploader[0][value]" value="dgjhakjhsdjkhjhjklasdikfj asdilfj">
-                    <input type="text" name="fileUploader[0][size]" value="1.5">
-                </div>
-                <div data-index="1" class="uploadedFile">
-                    <div>File: 1</div>
-                    <input type="text" name="fileUploader[1][title]" value="Example2.jpg">
-                    <input type="text" name="fileUploader[1][extension]" value="pdf">
-                    <input type="text" name="fileUploader[1][value]" value="hfljsjklsdjfklsjlsdfff">
-                    <input type="text" name="fileUploader[1][size]" value="0.9">
-                </div>
-            </div>
-        </div>
+        <div class="fileUploader" id="two"></div>
         
         <div class="staticBar">
             <div class="innerBar">
@@ -99,7 +58,7 @@
 </body>
 
 <script tyle="text/javascript">
-    var files = [
+    var filesArray = [
         {
             name: "fromArray1",
             ext: "jpeg",
@@ -114,6 +73,23 @@
         }
     ];
 
+    var filesHTML = [
+        '<div data-index="0" class="uploadedFile">',
+        '    <div>File: 0</div>',
+        '    <input type="text" name="fileUploader[0][title]" value="Example1.pdf">',
+        '    <input type="text" name="fileUploader[0][extension]" value="pdf">',
+        '    <input type="text" name="fileUploader[0][value]" value="dgjhakjhsdjkhjhjklasdikfj asdilfj">',
+        '    <input type="text" name="fileUploader[0][size]" value="1.5">',
+        '</div>',
+        '<div data-index="1" class="uploadedFile">',
+        '    <div>File: 1</div>',
+        '    <input type="text" name="fileUploader[1][title]" value="Example2.jpg">',
+        '    <input type="text" name="fileUploader[1][extension]" value="pdf">',
+        '    <input type="text" name="fileUploader[1][value]" value="hfljsjklsdjfklsjlsdfff">',
+        '    <input type="text" name="fileUploader[1][size]" value="0.9">',
+        '</div>',
+    ].join("\n");
+
     // fileUploader example 1
     $('#one').fileUploader({
         useFileIcons: false,
@@ -121,7 +97,7 @@
         totalMaxSize: 5,
         debug: true,
         name: "one",
-        reloadArray: files,
+        reloadArray: filesArray,
         linkButtonContent: '<i>Open</i>',
         deleteButtonContent: '<i>Remove</i>',
         onload: function(options, totalSize) {
@@ -142,7 +118,8 @@
         totalMaxSize: 5,
         debug: true,
         name: "two",
-        debugLogStyle: "color: #ff5500"
+        debugLogStyle: "color: #ff5500",
+        reloadHTML: filesHTML,
     });
 
 

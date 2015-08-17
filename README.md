@@ -1,4 +1,4 @@
-## File Uploader v2.5.8
+## File Uploader v3.0.0
 
 ![FileUploader](http://144.76.103.88/webforge_static/appLogos/fileUploader.png)
 
@@ -10,20 +10,7 @@ A file uploader skeleton that uses HTML5 file reader API.
 ### Usage
 Put the needed HTML inside your page:
 
-    <div class="fileUploader" id="one">
-        <p class="introMsg"></p>
-        <div>
-            <div class="inputContainer">
-                <input class="fileLoader" type="file" id="attachments" name="attachments" multiple />
-            </div>
-            <div class="dropZone"></div>
-            <div class="filesContainer filesContainerEmpty">
-                <div class="innerFileThumbs"></div>
-                <div style="clear:both;"></div>
-            </div>
-        </div>
-        <div class="result"></div>
-    </div>
+    <div class="fileUploader" id="one"></div>
 
 and then just call **fileUploader()** on it.<br>
 Example:
@@ -34,7 +21,7 @@ or
 
     $("#one").fileUploader();
 
-This skeleton handle the client-side file reading; then the files must be sended (ex. with an ajax call) to a server procedure that will save them somewhere (filesystem, db, ...).
+This skeleton handles the client-side file reading; then the files must be sended (ex. with an ajax call) to a server procedure that will save them somewhere (filesystem, db, ...).
 You can use the "getData" method to get all files' data and then or handle everything on your own by iterating result container's children elements;
 If needed you can also populate the result container with previously uploaded file's data (onload callback is suitable for this purpose).
 
@@ -60,11 +47,28 @@ There are some options that can passed to constructor in the form:
         size: 1.2                      // size in MB of the file
     }
 
+**reloadHTML**: a string containing the HTML to place in result container directly for previously loaded files; see section ["Reloaded files"](#reloadedFiles) for futher details
+
 **useFileIcons**: use icons for each file depending on file type (default true)
 
 **linkButtonContent**: markup for the link button (default "L")
 
 **deleteButtonContent**: markup for the delete button (default "X")
+
+**HTMLTemplate**: a function that returns the HTML template for the plugin; you can edit this, but you must provide the HTML elements needed by the plugin to work; the default is:
+
+    <p class="introMsg"></p>
+    <div>
+        <div class="inputContainer">
+            <input class="fileLoader" type="file" multiple />
+        </div>
+        <div class="dropZone"></div>
+        <div class="filesContainer filesContainerEmpty">
+            <div class="innerFileThumbs"></div>
+            <div style="clear:both;"></div>
+        </div>
+    </div>
+    <div class="result"></div>
 
 **reloadedFilesClass**: a class to style previously uploaded files (files uploaded during a previous session and now retrieved and placed in the result container) (default 'reloadedElement')
 
@@ -171,12 +175,13 @@ Example:
 
     var result = $('.fileUploader').fileUploader('getData');
 
-### Reloaded files
+### <a name="reloadedFiles"></a>Reloaded files
 What if you have some files already uploaded to your server (ex. in a previous session) and you want fileUploder to init with them?
 There are 2 possibilities:
 
 *1*
 You can re-create the result DOM inside the fileUploader's result container, and the plugin will create visual element such as progress bar, icon, ect... automatically;
+the reloaded files' HTML must be a string, passed to **reloadHTML** option in the constructor, and must be in the form:
 
     // example of DOM to place in result container for a file:
     <div data-index="0" class="uploadedFile">
@@ -203,6 +208,12 @@ Use --port option to serve it on another port; example:
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
 ##### History
+3.0.0
+-----
+- moved plugin's HTML into js
+- added option reloadHTML
+
+##### Old versions
 2.5.8
 -----
 - fixed bug for delete button using custom HTML
@@ -244,44 +255,4 @@ Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT
 - added get method
 - code improvements
 
-##### Old versions
-1.1.6
------
-- fixed bug for drag and drop
-
-1.1.5
------
-- fixed retrieving already loaded files' size bug
-
-1.1.3
------
-- added support for total max size
-
-1.0.0
-------
-- complete repackage following jquery best practices for jquery plugins
-- solved "reload same file" bug
-- code improvements
-- graphical improvements
-
-0.0.7
-------
-- added support for previously uploaded files
-- added callbacks
-- minor bug fixes
-
-0.0.5
-------
-- fixed bug for files without extension
-- added file size limit parameter
-- improved debug mode
-
-0.0.3
-------
-- real progress indicator
-- fixed flickering of loaded elements
-- fixed Gruntfile
-
-0.0.0
-------
-- first version
+[...]

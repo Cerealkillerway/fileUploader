@@ -274,10 +274,10 @@
             self._logger('found previously uploaded file: index = ' + $(element).data('index'), 2);
 
             // pay attention to index used on fileData here: index 0 is the title DIV!
-            var fileData = $(element).children();
-            var fileName = $(fileData[1]).val();
-            var fileExt = $(fileData[2]).val();
-            var fileSize = $(fileData[4]).val();
+            var fileData = $(element).children('input');
+            var fileName = $(fileData[0]).val();
+            var fileExt = $(fileData[1]).val();
+            var fileSize = $(fileData[3]).val();
 
             fileName = fileName.substr(0, fileName.lastIndexOf('.'));
 

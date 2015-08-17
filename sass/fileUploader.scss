@@ -1,4 +1,4 @@
-// v2.5.6
+// v2.5.7
 $mainColor: #333 !default;
 $reloadedColor: #1b5e20 !default;
 $errorColor: #aa00ff !default;
@@ -153,8 +153,12 @@ $resultColor: #ff0000 !default;
                 @extend %borderBoxed;
 
                 div {
-                    width: 30px;
+                    //width: 30px;
                     display: inline-block;
+
+                    &:first-child {
+                        margin-right: 25px;
+                    }
                 }
 
                 a {

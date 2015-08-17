@@ -1,4 +1,4 @@
-## File Uploader v2.5.6
+## File Uploader v2.5.7
 
 ![FileUploader](http://144.76.103.88/webforge_static/appLogos/fileUploader.png)
 
@@ -61,6 +61,10 @@ There are some options that can passed to constructor in the form:
     }
 
 **useFileIcons**: use icons for each file depending on file type (default true)
+
+**linkButtonContent**: markup for the link button (default "L")
+
+**deleteButtonContent**: markup for the delete button (default "X")
 
 **reloadedFilesClass**: a class to style previously uploaded files (files uploaded during a previous session and now retrieved and placed in the result container) (default 'reloadedElement')
 

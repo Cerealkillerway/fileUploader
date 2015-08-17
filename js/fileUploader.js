@@ -1,5 +1,5 @@
 /*
-* fileUploader v2.5.6
+* fileUploader v2.5.7
 * available under MIT license
 * 
 * */
@@ -29,6 +29,8 @@
             fileMaxSize: 50,                                               // maximum allowed file size (in MB)
             totalMaxSize: 1000,                                            // total maximum allowed size of all files
             reloadArray: [],                                               // array of files to be reloade at plugin startup
+            linkButtonContent: 'L',                                        // HTML content for link button
+            deleteButtonContent: 'X',                                      // HTML content for delete button
 
             onload: function() {},                                         // callback on plugin initialization
             onfileloadStart: function() {},                                // callback on file reader start
@@ -199,11 +201,11 @@
             var fileButtonsContainer = $('<div class="fileActions"></div>');
             container.append(fileButtonsContainer);
             // file "see" link
-            var seeFileLink = $('<a target="_blank"><div class="fileSee">L</div></a>');
+            var seeFileLink = $('<a target="_blank"><div class="fileSee">' + self._options.linkButtonContent + '</div></a>');
             fileButtonsContainer.append(seeFileLink);
 
             // delete button
-            var deleteBtn = $('<div data-delete="' + parseInt(index) + '" class="fileDelete">X</div>');
+            var deleteBtn = $('<div data-delete="' + parseInt(index) + '" class="fileDelete">' + self._options.deleteButtonContent + '</div>');
             fileButtonsContainer.append(deleteBtn);
             deleteBtn.click({element: container}, this._fileDelete);
 

@@ -87,8 +87,9 @@
         position: relative;
         top: 10px; }
         .fileUploader .filesContainer .newElement .fileActions div {
-          width: 30px;
           display: inline-block; }
+          .fileUploader .filesContainer .newElement .fileActions div:first-child {
+            margin-right: 25px; }
         .fileUploader .filesContainer .newElement .fileActions a {
           text-decoration: none !important;
           color: #333;

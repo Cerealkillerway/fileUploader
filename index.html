@@ -12,7 +12,7 @@
 
 <body>
     <header>
-        <h2>File Uploader v2.5.6</h2>
+        <h2>File Uploader v2.5.7</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader api
         </p>  
@@ -122,6 +122,8 @@
         debug: true,
         name: "one",
         reloadArray: files,
+        linkButtonContent: '<i>Open</i>',
+        deleteButtonContent: '<i>Remove</i>',
         onload: function(options, totalSize) {
             $(".customTotalSize").children("span").html(totalSize + " MB");
         },

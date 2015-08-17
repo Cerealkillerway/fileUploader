@@ -203,6 +203,10 @@ Use --port option to serve it on another port; example:
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
 ##### History
+2.5.7
+-----
+- added options for custom buttons content ("linkButtonContent" and "linkButtonContent")
+
 2.5.6
 -----
 - fixed round bug for available size

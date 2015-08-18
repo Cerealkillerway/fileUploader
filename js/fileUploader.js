@@ -1,10 +1,8 @@
 /*
-* fileUploader v3.0.0
-* available under MIT license
-* 
-* */
+* fileUploader v3.0.2
+* Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
+ */
 (function($) {
-
     var FileUploader = function($el, options, translation) {
         var self = this;
 
@@ -14,18 +12,18 @@
             useFileIcons: true,
 
             debug: false,                                                  // activate console logs for debug
-            debugLogStyle: "color: #9900ff",                               // style for debug console logs in js console
+            debugLogStyle: 'color: #9900ff',                               // style for debug console logs in js console
             name: undefined,                                               // a name for plugin's instance (useful for debug purposes)
-            pluginName: "FileUploader",                                    // plugin's name (used in debug logs alongside with name)
+            pluginName: 'FileUploader',                                    // plugin's name (used in debug logs alongside with name)
 
             useLoadingBars: true,                                          // insert loading bar for files
             reloadedFilesClass: 'reloadedElement',                         // class for previously uploaded files
             resultContainer: 'result',                                     // result container's class (where to place result files data)
-            resultFileContainerClass: "uploadedFile",                      // class for every file result container span
-            resultPrefix: "fileUploader",                                  // prefix for inputs in the file result container
-            resultInputNames: ["title", "extension", "value", "size"],     // name suffix to be used for result inputs
-            defaultFileExt: "",                                            // extension to use for files with no extension
-            defaultMimeType: "",                                           // MIME type to use for files with no extension 
+            resultFileContainerClass: 'uploadedFile',                      // class for every file result container span
+            resultPrefix: 'fileUploader',                                  // prefix for inputs in the file result container
+            resultInputNames: ['title', 'extension', 'value', 'size'],     // name suffix to be used for result inputs
+            defaultFileExt: '',                                            // extension to use for files with no extension
+            defaultMimeType: '',                                           // MIME type to use for files with no extension 
             fileMaxSize: 50,                                               // maximum allowed file size (in MB)
             totalMaxSize: 1000,                                            // total maximum allowed size of all files
             reloadArray: [],                                               // array of files to be reloaded at plugin startup
@@ -56,20 +54,13 @@
             onfileDelete: function() {},                                   // callback on file delete
 
             langs: {
-                "en": {
-                    intro_msg: "(Add attachments...)",
-                    dropZone_msg: "Drop your files here",
-                    maxSizeExceeded_msg: "File too large",
-                    totalMaxSizeExceeded_msg: "Total size exceeded",
-                    name_placeHolder: "name"
-                },
-                "it": {
-                    intro_msg: "(Aggiungi documenti allegati...)",
-                    dropZone_msg: "Trascina qui i tuoi files...",
-                    maxSizeExceeded_msg: "File troppo grande",
-                    totalMaxSizeExceeded_msg: "Dimensione max. superata",
-                    name_placeHolder: "nome"
-                }
+                'en': {
+                    intro_msg: '(Add attachments...)',
+                    dropZone_msg: 'Drop your files here',
+                    maxSizeExceeded_msg: 'File too large',
+                    totalMaxSizeExceeded_msg: 'Total size exceeded',
+                    name_placeHolder: 'name'
+                }                
             }
         };
 
@@ -86,10 +77,10 @@
             var self = this;
 
             switch (parameter) {
-                case "currentTotalSize":
+                case 'currentTotalSize':
                 return Math.round(currentTotalSize * 100) / 100;
 
-                case "currentAvailableSize":
+                case 'currentAvailableSize':
                 return Math.round((self._options.totalMaxSize - currentTotalSize) * 100) / 100;
             }
         };
@@ -103,14 +94,14 @@
                     }
                 }
                 if (this._options.name) {
-                    message = "[" + this._options.pluginName + " - " + this._options.name + "] " + message; 
+                    message = '[' + this._options.pluginName + ' - ' + this._options.name + '] ' + message; 
                 }
 
                 if (data) {
-                    console.log("%c " + message, this._options.debugLogStyle, data);
+                    console.log('%c ' + message, this._options.debugLogStyle, data);
                 }
                 else {
-                    console.log("%c " + message, this._options.debugLogStyle);
+                    console.log('%c ' + message, this._options.debugLogStyle);
                 }
             }
         };
@@ -201,7 +192,7 @@
                 data.push(file);
             });
 
-            this._logger("%O", 0 ,data);
+            this._logger('%O', 0 ,data);
 
             return data;
         };
@@ -209,7 +200,7 @@
         // create container for file uploading elements (icon, progress bar, etc...)
         this._createUploaderContainer = function(index, fileName, fileExt) {
             // create current element's DOM
-            var containerStyle = "position: relative;";
+            var containerStyle = 'position: relative;';
 
             //insert file icon if requested
             if (this._options.useFileIcons) {
@@ -263,7 +254,7 @@
 
         // initialization
         if (this._options.name) {
-            this._logger("INITIALIZED INSTANCE: " + this._options.name);
+            this._logger('INITIALIZED INSTANCE: ' + this._options.name);
         }
         // build HTML template
         var template = $(this._options.HTMLTemplate());
@@ -298,11 +289,9 @@
             $('<div class="debug sizeAvailable">Size still available: <span>' + this._options.totalMaxSize + '</span> MB</div>').insertBefore($resultContainer);
         }
 
-
-
-        // FILES RELOAD SECTION
+        // --- FILES RELOAD SECTION ---
         // lookup for previously loaded files placed in the result container directly
-        var availableLabel = $el.find(".sizeAvailable");
+        var availableLabel = $el.find('.sizeAvailable');
         var currentTotalSize = 0;
 
         $.each($resultContainer.children('.' + this._options.resultFileContainerClass), function(index, element) {
@@ -314,7 +303,9 @@
             var fileExt = $(fileData[1]).val();
             var fileSize = $(fileData[3]).val();
 
-            fileName = fileName.substr(0, fileName.lastIndexOf('.'));
+            if (fileName.lastIndexOf('.') > 0) {
+                fileName = fileName.substr(0, fileName.lastIndexOf('.'));
+            }
 
             loadedFile = self._createUploaderContainer(globalIndex, fileName, fileExt);
             loadedFile.children('.loadBar').children('div').css({width: '100%'});
@@ -344,10 +335,9 @@
 
         currentTotalSize = Math.round(currentTotalSize * 100) / 100;
 
-        this._logger("current total size: " + currentTotalSize);
+        this._logger('current total size: ' + currentTotalSize);
         availableLabel.children('span').html(this._options.totalMaxSize - currentTotalSize);
-
-
+        // --- END FILES RELOAD SECTION ---
 
         // onload callback
         this._options.onload(this._options, currentTotalSize);
@@ -365,7 +355,7 @@
                 this._logger('files array source: dropzone (drag & drop event)', 1);
                 filesList = event.dataTransfer.files;
             }
-            this._logger("%O", 0, filesList);
+            this._logger('%O', 0, filesList);
 
             $fileContainer.removeClass('filesContainerEmpty');
             // set selected file's name to fleNameContainer
@@ -373,7 +363,7 @@
 
             function readFile(reader, file, index, DOM) {
                 var currentElement = DOM.find('.innerFileThumbs').children().filter(function() { 
-                    return $(this).data("index") === index ;
+                    return $(this).data('index') === index ;
                 });
 
                 var size = Math.round(file.size / 1000000 * 100) / 100;      // size in MB
@@ -441,10 +431,10 @@
 
                     if (size > self._options.fileMaxSize) {
                         errorMsg = currentLangObj.maxSizeExceeded_msg;
-                        self._logger("FILE REJECTED: Max size exceeded - max size: " + self._options.fileMaxSize + ' MB - file size: ' + size + ' MB');
+                        self._logger('FILE REJECTED: Max size exceeded - max size: ' + self._options.fileMaxSize + ' MB - file size: ' + size + ' MB');
                     }
                     else {
-                        self._logger("FILE REJECTED: Max total size exceeded - max size: " + self._options.totalMaxSizeExceeded_msg + ' MB - current total size: ' + (currentTotalSize + size) + ' MB');
+                        self._logger('FILE REJECTED: Max total size exceeded - max size: ' + self._options.totalMaxSizeExceeded_msg + ' MB - current total size: ' + (currentTotalSize + size) + ' MB');
                     }
 
                     currentElement.addClass('error');
@@ -531,7 +521,6 @@
     };
 
     $.fn.fileUploader = function(methodOrOptions) {
-
         var method = (typeof methodOrOptions === 'string') ? methodOrOptions : undefined;
 
         function getFileUploader() {
@@ -582,7 +571,5 @@
 
             return this.each(init);
         }
-
     };
-
 })(jQuery);

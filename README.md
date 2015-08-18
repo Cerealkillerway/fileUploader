@@ -1,4 +1,4 @@
-## File Uploader v3.0.0
+## File Uploader v3.0.2
 
 ![FileUploader](http://144.76.103.88/webforge_static/appLogos/fileUploader.png)
 
@@ -151,7 +151,7 @@ Together with the options object it is possible to define some callbacks:
     });
 
 ### Translations
-It comes with english and italian translations built-in;
+It comes with english built-in;
 it is possible to override them or add a custom translation by defining it in "langs" object in the constructor
 
     $('.fileUploader').fileUploader({
@@ -163,6 +163,13 @@ it is possible to override them or add a custom translation by defining it in "l
                 maxSizeExceeded_msg: "Archivo demasiado grande",
                 totalMaxSizeExceeded_msg: "Tamaño total superado",
                 name_placeHolder: "nombre"
+            },
+            "it": {
+                intro_msg: "(Aggiungi documenti allegati...)",
+                dropZone_msg: "Trascina qui i tuoi files...",
+                maxSizeExceeded_msg: "File troppo grande",
+                totalMaxSizeExceeded_msg: "Dimensione max. superata",
+                name_placeHolder: "nome"
             }
         }
     });
@@ -208,6 +215,11 @@ Use --port option to serve it on another port; example:
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
 ##### History
+3.0.2
+-----
+- fixed bug for reloaded files without ext
+- uniformed code
+
 3.0.0
 -----
 - moved plugin's HTML into js

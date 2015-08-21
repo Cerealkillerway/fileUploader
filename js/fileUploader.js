@@ -1,7 +1,7 @@
 /*
 * fileUploader v3.2.3
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
- */
+*/
 (function($) {
     var FileUploader = function($el, options, translation) {
         var self = this;

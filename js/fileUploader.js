@@ -12,7 +12,7 @@
             useFileIcons: true,
 
             debug: false,                                                  // activate console logs for debug
-            debugLogStyle: 'color: #9900ff',                               // style for debug console logs in js console
+            debugLogStyle: 'color: #9900ff',                               // css style for debug console logs in js console
             name: undefined,                                               // a name for plugin's instance (useful for debug purposes)
             pluginName: 'FileUploader',                                    // plugin's name (used in debug logs alongside with name)
 

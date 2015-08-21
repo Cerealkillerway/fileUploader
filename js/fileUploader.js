@@ -1,5 +1,5 @@
 /*
-* fileUploader v3.0.2
+* fileUploader v3.1.0
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
  */
 (function($) {
@@ -18,7 +18,7 @@
 
             useLoadingBars: true,                                          // insert loading bar for files
             reloadedFilesClass: 'reloadedElement',                         // class for previously uploaded files
-            resultContainer: 'result',                                     // result container's class (where to place result files data)
+            resultContainerClass: 'result',                                // result container's class (where to place result files data)
             resultFileContainerClass: 'uploadedFile',                      // class for every file result container span
             resultPrefix: 'fileUploader',                                  // prefix for inputs in the file result container
             resultInputNames: ['title', 'extension', 'value', 'size'],     // name suffix to be used for result inputs
@@ -30,6 +30,7 @@
             reloadHTML: undefined,                                         // HTML for reloaded files to place directly in result container
             linkButtonContent: 'L',                                        // HTML content for link button
             deleteButtonContent: 'X',                                      // HTML content for delete button
+            allowDuplicates: false,                                        // allow upload duplicates
 
             HTMLTemplate: function() {
                 return [
@@ -179,7 +180,6 @@
         this.getData = function() {
             this._logger('RECEIVED SAVE COMMAND:', 0);
 
-            //var $resultContainer = this._options.resultContainer;
             var data = [];
 
             $.each($resultContainer.children('.' + this._options.resultFileContainerClass), function(index, element) {
@@ -262,7 +262,7 @@
         $el.append(template);
 
         var globalIndex = 0;
-        var $resultContainer = $el.find('.' + this._options.resultContainer);
+        var $resultContainer = $el.find('.' + this._options.resultContainerClass);
         var $loadBtn = $el.find('.fileLoader');
         var $fileContainer = $el.find('.filesContainer');
         var $fileNameContainer = $el.find('.fileNameContainer');
@@ -346,6 +346,7 @@
         this._filesRead = function(event) {
             var DOM = event.data.DOM;
             var filesList;
+            var approvedList = false;
 
             if (event.target.files) {
                 this._logger('files array source: file selector (click event)', 1);
@@ -356,6 +357,34 @@
                 filesList = event.dataTransfer.files;
             }
             this._logger('%O', 0, filesList);
+
+            // build approved list
+            if (!self._options.allowDuplicates) {
+                var loadedFiles = [];
+                var newFiles = [];
+                var resultFiles = [];
+
+                approvedList = [];
+
+                // build already loaded files list
+                $.each($resultContainer.children(), function(index, file) {
+                    loadedFiles.push($(file).children('input').first().val());
+                });
+
+                // build current selected files list
+                for (i = 0; i < filesList.length; i++) {
+                    newFiles.push(filesList[i].name);
+                }
+
+                // avoid load twice the same file
+                newFiles.forEach(function(newFile, index) {
+                    var fileIndex = loadedFiles.indexOf(newFile);
+
+                    if (fileIndex < 0) {
+                        approvedList.push(newFile);
+                    }
+                });
+            }
 
             $fileContainer.removeClass('filesContainerEmpty');
             // set selected file's name to fleNameContainer
@@ -464,6 +493,11 @@
                 var file = filesList[i];
                 var reader = new FileReader();
 
+                if (approvedList && approvedList.indexOf(file.name) < 0) {
+                    this._logger('File duplicated: ' + file.name + ' -> skipping...', 2);
+                    continue;
+                }
+
                 var fileName, fileExt;
                 if (file.name.lastIndexOf('.') > 0) {
                     fileName = file.name.substring(0, file.name.lastIndexOf('.'));
@@ -475,6 +509,7 @@
                 }
                 
                 this._createUploaderContainer(globalIndex, fileName, fileExt);
+
                 // now read!
                 readFile(reader, file, globalIndex, DOM);
                 globalIndex++;
@@ -506,16 +541,9 @@
         });
 
         // fileUploader events
-        $loadBtn.click({DOM: $el}, function(event) {
-            var elements = event.data.DOM.find('.innerFileThumbs').children();
-
-            //avoid loading twice the same file
-            if (elements.length === 0) {
-                this.value = null;
-            }
-        });
         $loadBtn.change({DOM: $el}, function(event) {
             self._filesRead(event);
+            this.value = null;
         });
 
     };

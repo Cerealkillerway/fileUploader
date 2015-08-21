@@ -1,4 +1,4 @@
-## File Uploader v3.0.2
+## File Uploader v3.1.0
 
 ![FileUploader](http://144.76.103.88/webforge_static/appLogos/fileUploader.png)
 
@@ -74,13 +74,15 @@ There are some options that can passed to constructor in the form:
 
 **useLoadingBars**: show a progress bar while reading each file (default true)
 
-**resultContainer**: set the class of the element to be used as container for reader's results (by default this is the hidden $(.result) element of the fileUploader); can be the class of any DOM element inside the fileUploader markup
+**resultContainerClass**: set the class of the element to be used as container for reader's results (by default this is the hidden $(.result) element of the fileUploader); can be the class of any DOM element inside the fileUploader markup
 
 **resultFileContainerClass**: custom class to use for each reader's result container (default "file-")
 
 **defaultFileExt**: extension to use for files with no extension (default "")
 
 **defaultMimeType**: MIME type to use for files with no extension (default "")
+
+**allowDuplicates**: allow to upload more than once the same file (based on file name, default false)
 
 In the result container, each reader's result is inserted as a DIV with 4 nested INPUT elements (title, extension, value (the base64 string) and size (in MB)); each of these 4 elements has a name attribute in the form "prefix[index][name]"
 
@@ -215,6 +217,11 @@ Use --port option to serve it on another port; example:
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
 ##### History
+3.1.0
+-----
+- added check for duplicates
+- added options allowDuplicates
+
 3.0.2
 -----
 - fixed bug for reloaded files without ext

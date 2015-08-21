@@ -1,5 +1,5 @@
 /*
-* fileUploader v3.2.0
+* fileUploader v3.2.3
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
  */
 (function($) {
@@ -516,7 +516,9 @@
                     continue;
                 }
                 else {
-                    fileName = nameTest;
+                    if (nameTest !== undefined && nameTest !== true) {
+                        fileName = nameTest;
+                    }
                 }
                 
                 this._createUploaderContainer(globalIndex, fileName, fileExt);

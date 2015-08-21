@@ -1,4 +1,4 @@
-## File Uploader v3.2.0
+## File Uploader v3.2.3
 
 ![FileUploader](http://144.76.103.88/webforge_static/appLogos/fileUploader.png)
 
@@ -152,6 +152,47 @@ Together with the options object it is possible to define some callbacks:
         }
     });
 
+**fileNameTest(fileName, fileExt, $container)**: a function used on every file upload (*before onfileloadStart*) useful to take actions baed on file name or extension; if it returns false, the file will be skipped; otherwise it must return true to upload the file without changes or a string representing a new name to use for the current file; parameters:
+- *fileName*: the name of the file currently being processed
+- *fileExt*: the extension of the file currently being processed
+- *$container*: the fileUploader's jQuery element that contains visual elements for uploaded files (if needed can be used to append a warning or error message for the user)
+
+(example)
+
+    filenameTest: function(fileName, fileExt, $container) {
+        var allowedExts = ["jpg", "jpeg"];
+        var $info = $('<div class="center"></div>');
+        var proceed = true;
+
+        // length check
+        if (fileName.length > 13) {
+            $info.html('Name too long...');
+            proceed = false;
+        }
+        // replace not allowed characters
+        fileName = fileName.replace(" ", "-");
+
+        // extension check
+        if (allowedExts.indexOf(fileExt) < 0) {
+            $info.html('Extension not allowed...');
+            proceed = false;
+        }
+        
+        // show an error message
+        if (!proceed) {
+            $container.append($info);
+
+            setTimeout(function() {
+                $info.animate({opacity: 0}, 300, function() {
+                    $(this).remove();
+                });
+            }, 2000);
+            return false;
+        }
+
+        return fileName;
+    }
+
 ### Translations
 It comes with english built-in;
 it is possible to override them or add a custom translation by defining it in "langs" object in the constructor
@@ -217,6 +258,10 @@ Use --port option to serve it on another port; example:
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
 ##### History
+3.2.3
+-----
+- Added filenameTest callback
+
 3.1.0
 -----
 - added check for duplicates

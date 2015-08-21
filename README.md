@@ -158,40 +158,42 @@ Together with the options object it is possible to define some callbacks:
 - *$container*: the fileUploader's jQuery element that contains visual elements for uploaded files (if needed can be used to append a warning or error message for the user)
 
 (example)
+    
+    $('.fileUploader').fileUploader({
+        filenameTest: function(fileName, fileExt, $container) {
+            var allowedExts = ["jpg", "jpeg"];
+            var $info = $('<div class="center"></div>');
+            var proceed = true;
 
-    filenameTest: function(fileName, fileExt, $container) {
-        var allowedExts = ["jpg", "jpeg"];
-        var $info = $('<div class="center"></div>');
-        var proceed = true;
+            // length check
+            if (fileName.length > 13) {
+                $info.html('Name too long...');
+                proceed = false;
+            }
+            // replace not allowed characters
+            fileName = fileName.replace(" ", "-");
 
-        // length check
-        if (fileName.length > 13) {
-            $info.html('Name too long...');
-            proceed = false;
+            // extension check
+            if (allowedExts.indexOf(fileExt) < 0) {
+                $info.html('Extension not allowed...');
+                proceed = false;
+            }
+            
+            // show an error message
+            if (!proceed) {
+                $container.append($info);
+
+                setTimeout(function() {
+                    $info.animate({opacity: 0}, 300, function() {
+                        $(this).remove();
+                    });
+                }, 2000);
+                return false;
+            }
+
+            return fileName;
         }
-        // replace not allowed characters
-        fileName = fileName.replace(" ", "-");
-
-        // extension check
-        if (allowedExts.indexOf(fileExt) < 0) {
-            $info.html('Extension not allowed...');
-            proceed = false;
-        }
-        
-        // show an error message
-        if (!proceed) {
-            $container.append($info);
-
-            setTimeout(function() {
-                $info.animate({opacity: 0}, 300, function() {
-                    $(this).remove();
-                });
-            }, 2000);
-            return false;
-        }
-
-        return fileName;
-    }
+    });
 
 ### Translations
 It comes with english built-in;

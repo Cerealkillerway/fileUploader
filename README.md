@@ -1,4 +1,4 @@
-## File Uploader v3.1.0
+## File Uploader v3.2.0
 
 ![FileUploader](http://144.76.103.88/webforge_static/appLogos/fileUploader.png)
 

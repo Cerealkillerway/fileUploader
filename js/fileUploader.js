@@ -1,5 +1,5 @@
 /*
-* fileUploader v3.1.0
+* fileUploader v3.2.0
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
  */
 (function($) {
@@ -53,6 +53,7 @@
             onfileloadStart: function() {},                                // callback on file reader start
             onfileloadEnd: function() {},                                  // callback on file reader end
             onfileDelete: function() {},                                   // callback on file delete
+            filenameTest: function() {},                                   // callback for testing filenames
 
             langs: {
                 'en': {
@@ -474,7 +475,6 @@
                             if (self._options.useFileIcons) {
                                 $(this).prev('img').remove();
                             }
-
                             $(this).remove();
                         });
                     }, 2000);
@@ -493,6 +493,7 @@
                 var file = filesList[i];
                 var reader = new FileReader();
 
+                // test for duplicates
                 if (approvedList && approvedList.indexOf(file.name) < 0) {
                     this._logger('File duplicated: ' + file.name + ' -> skipping...', 2);
                     continue;
@@ -506,6 +507,16 @@
                 else {
                     fileName = file.name;
                     fileExt = this._options.defaultFileExt;
+                }
+
+                // test for filenames
+                var nameTest = this._options.filenameTest(fileName, fileExt, $fileThumbsContainer);
+                if (nameTest === false) {
+                    this._logger('Invalid file name: ' + file.name, 2);
+                    continue;
+                }
+                else {
+                    fileName = nameTest;
                 }
                 
                 this._createUploaderContainer(globalIndex, fileName, fileExt);
@@ -533,7 +544,9 @@
 
         dropZone.addEventListener('dragover', handleDragOver, false);
         dropZone.addEventListener('drop', (function(passedInElement) {
-            return function(e) {handleDrop(e, passedInElement); };
+            return function(e) {
+                handleDrop(e, passedInElement);
+            };
         }) (this), false);
 
         $(dropZone).click(function(event) {

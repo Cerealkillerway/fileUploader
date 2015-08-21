@@ -12,7 +12,7 @@
 
 <body>
     <header>
-        <h2>File Uploader v3.1.0</h2>
+        <h2>File Uploader v3.2.0</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader api
         </p>  
@@ -108,6 +108,38 @@
         },
         onfileDelete: function(index, totalSize) {
             $(".customTotalSize").children("span").html(totalSize + " MB");
+        },
+        filenameTest: function(fileName, fileExt, $container) {
+            var allowedExts = ["jpg", "jpeg"];
+            var $info = $('<div></div>');
+            var proceed = true;
+
+            // length check
+            if (fileName.length > 13) {
+                $info.html('Name too long');
+                proceed = false;
+            }
+            // replace not allowed characters
+            fileName = fileName.replace(" ", "-");
+
+            // extension check
+            if (allowedExts.indexOf(fileExt) < 0) {
+                $info.html('Extension not allowed');
+                proceed = false;
+            }
+
+            if (!proceed) {
+                $container.append($info);
+
+                setTimeout(function() {
+                    $info.animate({opacity: 0}, 300, function() {
+                        $(this).remove();
+                    });
+                }, 2000);
+                return false;
+            }
+
+            return fileName;
         }
     });
 

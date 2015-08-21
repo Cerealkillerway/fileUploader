@@ -3,6 +3,7 @@ $mainColorText: #ddd !default;
 $secondaryColor: #424242 !default;
 $secondaryColorText: #ddd !default;
 $linkColor: #b71c1c !default;
+$errorColor: #283593 !default;
 
 
 ::-webkit-scrollbar {
@@ -38,6 +39,14 @@ main {
 
     .right {
         float: right;
+    }
+
+    .center {
+        margin: 25px auto;
+        text-align: center;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: $errorColor;
     }
 
     .ckBtn {

@@ -111,12 +111,12 @@
         },
         filenameTest: function(fileName, fileExt, $container) {
             var allowedExts = ["jpg", "jpeg"];
-            var $info = $('<div></div>');
+            var $info = $('<div class="center"></div>');
             var proceed = true;
 
             // length check
             if (fileName.length > 13) {
-                $info.html('Name too long');
+                $info.html('Name too long...');
                 proceed = false;
             }
             // replace not allowed characters
@@ -124,7 +124,7 @@
 
             // extension check
             if (allowedExts.indexOf(fileExt) < 0) {
-                $info.html('Extension not allowed');
+                $info.html('Extension not allowed...');
                 proceed = false;
             }
 

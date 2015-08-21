@@ -25,6 +25,12 @@ main {
     float: left; }
   main .right {
     float: right; }
+  main .center {
+    margin: 25px auto;
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #283593; }
   main .ckBtn {
     background-color: #333;
     color: #ddd;

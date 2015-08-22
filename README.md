@@ -8,11 +8,11 @@ LIVE DEMO: [FileUploader demo](http://www.web-forge.info/projects/fileUploader)
 A file uploader skeleton that uses HTML5 file reader API.
 
 ### Usage
-Put the needed HTML inside your page:
+FileUploader is a jQuery plugin; just put a container for it in your HTML page:
 
     <div class="fileUploader" id="one"></div>
 
-and then just call **fileUploader()** on it.<br>
+and call **fileUploader()** on it.<br>
 Example:
 
     $(".fileUploader").fileUploader();

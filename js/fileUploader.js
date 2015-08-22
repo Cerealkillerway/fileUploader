@@ -1,5 +1,5 @@
 /*
-* fileUploader v3.2.3
+* fileUploader v3.4.2
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function($) {
@@ -170,24 +170,27 @@
             var element = event.data.element;
             var $this = $(event.target);
             var ext = element.children('.fileExt').html();
-            var text;
+            var text = $this.val();
             var index = element.data('index');
+            var $input = $resultContainer.find('div[data-index="' + index + '"] input:first');
+            var nameTest = self._options.filenameTest(text, ext, $fileThumbsContainer);
+
+            if (nameTest !== undefined && nameTest !== true) {
+                text = nameTest;
+                $this.val(text);
+            }
 
             if (ext.length > 0) {
-                text = $this.val() + '.' + ext;
-            }
-            else {
-                text = $this.val();
+                text = text + '.' + ext;
             }
 
-            var $input = $resultContainer.find('div[data-index="' + index + '"] input:first');
             $input.val(text);
         };
 
         this.getData = function() {
-            this._logger('RECEIVED SAVE COMMAND:', 0);
-
             var data = [];
+
+            this._logger('RECEIVED SAVE COMMAND:', 0);
 
             $.each($resultContainer.children('.' + this._options.resultFileContainerClass), function(index, element) {
                 var file = {
@@ -200,7 +203,6 @@
             });
 
             this._logger('%O', 0 ,data);
-
             return data;
         };
 

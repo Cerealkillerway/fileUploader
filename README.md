@@ -1,4 +1,4 @@
-## File Uploader v3.2.3
+## File Uploader v3.4.2
 
 ![FileUploader](http://144.76.103.88/webforge_static/appLogos/fileUploader.png)
 
@@ -260,6 +260,11 @@ Use --port option to serve it on another port; example:
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
 ##### History
+3.4.2
+-----
+- Fixed file rename bug
+- code review
+
 3.2.3
 -----
 - Added filenameTest callback

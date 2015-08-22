@@ -74,16 +74,21 @@
             return (options) ? $.extend(true, this._options, options) : this._options;
         };
 
+        // round number
+        this._round = function(value) {
+            return Math.round(value * 100) / 100;
+        };
+
         // return data
         this.get = function(parameter) {
             var self = this;
 
             switch (parameter) {
                 case 'currentTotalSize':
-                return Math.round(currentTotalSize * 100) / 100;
+                return self._round(currentTotalSize);
 
                 case 'currentAvailableSize':
-                return Math.round((self._options.totalMaxSize - currentTotalSize) * 100) / 100;
+                return self._round(self._options.totalMaxSize - currentTotalSize);
             }
         };
         
@@ -140,19 +145,21 @@
             // get file size
             var fileSize = $resultContainer.find('input[name="' + self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[3] + ']"]').val();
 
-            fileSize = Math.round(fileSize *100) / 100;
+            fileSize = self._round(fileSize);
 
-            currentTotalSize = Math.round((currentTotalSize - fileSize) * 100) / 100;
+            currentTotalSize = self._round(currentTotalSize - fileSize);
 
             var availableSize = self._options.totalMaxSize - currentTotalSize;
 
-            availableSize = Math.round(availableSize * 100) / 100;
+            availableSize = self._round(availableSize);
             availableLabel.children('span').html(availableSize);
             
             // remove result block
             $resultContainer.children('div[data-index="' + index + '"]').remove();
 
-            if ($('.innerFileThumbs').children().length === 0) $('.filesContainer').addClass('filesContainerEmpty');
+            if ($('.innerFileThumbs').children().length === 0) {
+                $('.filesContainer').addClass('filesContainerEmpty');
+            }
 
             self._logger('Deleted file N: ' + index, 2);
 
@@ -214,6 +221,7 @@
             
             var fileButtonsContainer = $('<div class="fileActions"></div>');
             container.append(fileButtonsContainer);
+
             // file "see" link
             var seeFileLink = $('<a target="_blank"><div class="fileSee">' + self._options.linkButtonContent + '</div></a>');
             fileButtonsContainer.append(seeFileLink);
@@ -231,6 +239,7 @@
 
             var currentTitle = $('<input placeholder="nome" class="fileTitle"></input>');
             var currentExtension = $('<div class="fileExt"></div>');
+
             container.prepend(currentExtension);
             container.prepend(currentTitle);
 
@@ -244,6 +253,7 @@
 
         this._createResultContainer = function(index, name, type, result, size) {
             var resultElemContainer = $('<div data-index="' + index + '" class="' + self._options.resultFileContainerClass + '"></div>');
+
             resultElemContainer.append($('<div>File: ' + index + '</div>'));
             resultElemContainer.append($('<input/>').attr({type: 'text', name: self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[0] + ']', value: name}));
             resultElemContainer.append($('<input/>').attr({type: 'text', name: self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[1] + ']', value: type}));
@@ -306,7 +316,7 @@
                     return $(this).data('index') === index ;
                 });
 
-                var size = Math.round(file.size / 1000000 * 100) / 100;      // size in MB
+                var size = self._round(file.size / 1000000);      // size in MB
 
                 reader.onloadstart = function() {
                     self._options.onfileloadStart(index);
@@ -315,7 +325,7 @@
 
                 reader.onprogress = function(event) {
                     if (event.lengthComputable) {
-                        var percentLoaded = Math.round((event.loaded / event.total) * 100);
+                        var percentLoaded = self._round((event.loaded / event.total) * 100);
                         self._logger('File ' + index + ' loaded: ' + percentLoaded, 3);
                         
                         // Increase the progress bar length.
@@ -336,8 +346,12 @@
                         result = "data:" + self._options.defaultMimeType + result.substring(result.indexOf(';'), result.length);
                     }
 
-                    if (type === "") type = self._options.defaultMimeType;
-                    if (name.indexOf('.') < 0 && self._options.defaultFileExt !== "") name = name + '.' + self._options.defaultFileExt;
+                    if (type === "") {
+                        type = self._options.defaultMimeType;
+                    }
+                    if (name.indexOf('.') < 0 && self._options.defaultFileExt !== "") {
+                        name = name + '.' + self._options.defaultFileExt;
+                    }
 
                     self._createResultContainer(index, name, type, result, size);
 
@@ -346,6 +360,7 @@
                     self._logger('END read file: ' + index, 4);
 
                     var totalUploaded = parseInt($('#debugUploaded').html()) + 1;
+
                     $('#debugUploaded').html(totalUploaded);
 
                     var resultObject = {
@@ -355,7 +370,7 @@
                         size: size
                     };
 
-                    self._options.onfileloadEnd(index, resultObject, Math.round(currentTotalSize * 100) / 100);
+                    self._options.onfileloadEnd(index, resultObject, self._round(currentTotalSize));
                 };
 
                 if ((size <= self._options.fileMaxSize) && ((currentTotalSize + size) <= self._options.totalMaxSize)) {
@@ -363,8 +378,10 @@
 
                     // update total size
                     currentTotalSize = currentTotalSize + size;
+
                     var currentAvailableSize = self._options.totalMaxSize - currentTotalSize;
-                    availableLabel.children('span').html(Math.round(currentAvailableSize * 100) / 100);
+
+                    availableLabel.children('span').html(self._round(currentAvailableSize));
                 }
                 else {
                     var errorMsg = currentLangObj.totalMaxSizeExceeded_msg;
@@ -395,7 +412,10 @@
             }
 
             var startIndex = $('#innerFileThumbs').children().last().attr('id');
-            if (startIndex !== undefined) startIndex = parseInt(startIndex.substring(startIndex.indexOf('-') + 1, startIndex.length)) + 1;
+
+            if (startIndex !== undefined) {
+                startIndex = parseInt(startIndex.substring(startIndex.indexOf('-') + 1, startIndex.length)) + 1;
+            }
             else startIndex = 0;
 
             // create a new div containing thumb, delete button and title field for each target file
@@ -525,7 +545,7 @@
             });
         }
 
-        currentTotalSize = Math.round(currentTotalSize * 100) / 100;
+        currentTotalSize = self._round(currentTotalSize);
 
         this._logger('current total size: ' + currentTotalSize);
         availableLabel.children('span').html(this._options.totalMaxSize - currentTotalSize);

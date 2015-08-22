@@ -253,96 +253,6 @@
             $resultContainer.append(resultElemContainer);
         };
 
-        // initialization
-        if (this._options.name) {
-            this._logger('INITIALIZED INSTANCE: ' + this._options.name);
-        }
-        // build HTML template
-        var template = $(this._options.HTMLTemplate());
-
-        $el.append(template);
-
-        var globalIndex = 0;
-        var $resultContainer = $el.find('.' + this._options.resultContainerClass);
-        var $loadBtn = $el.find('.fileLoader');
-        var $fileContainer = $el.find('.filesContainer');
-        var $fileNameContainer = $el.find('.fileNameContainer');
-        var $fileThumbsContainer = $el.find('.innerFileThumbs');
-        var dropZone = $el.find('.dropZone')[0];
-        var currentLangObj = this._options.langs[this._options.lang];
-
-        // place reloaded files' HTML in result container directly (if provided)
-        if (this._options.reloadHTML) {
-            $resultContainer.html(this._options.reloadHTML);
-        }
-
-
-        $el.find('.introMsg').html(currentLangObj.intro_msg);
-        $(dropZone).html(currentLangObj.dropZone_msg); 
-        if (!this._options.debug) {
-            $resultContainer.addClass('hide');
-        }
-        else {
-            $('<p class="debugMode">Debug mode: on</p>').insertBefore($resultContainer);
-            $('<div class="debug">Uploaded files: <span id="debugUploaded">0</span> | Rejected files: <span id="debugRejected">0</span></div>').insertBefore($resultContainer);
-            $('<div class="debug">Current MAX FILE SIZE: ' + this._options.fileMaxSize + ' MB</div>').insertBefore($resultContainer);
-            $('<div class="debug">Current MAX TOTAL SIZE: ' + this._options.totalMaxSize + ' MB</div>').insertBefore($resultContainer);
-            $('<div class="debug sizeAvailable">Size still available: <span>' + this._options.totalMaxSize + '</span> MB</div>').insertBefore($resultContainer);
-        }
-
-        // --- FILES RELOAD SECTION ---
-        // lookup for previously loaded files placed in the result container directly
-        var availableLabel = $el.find('.sizeAvailable');
-        var currentTotalSize = 0;
-
-        $.each($resultContainer.children('.' + this._options.resultFileContainerClass), function(index, element) {
-            self._logger('found previously uploaded file: index = ' + $(element).data('index'), 2);
-
-            // pay attention to index used on fileData here: index 0 is the title DIV!
-            var fileData = $(element).children('input');
-            var fileName = $(fileData[0]).val();
-            var fileExt = $(fileData[1]).val();
-            var fileSize = $(fileData[3]).val();
-
-            if (fileName.lastIndexOf('.') > 0) {
-                fileName = fileName.substr(0, fileName.lastIndexOf('.'));
-            }
-
-            loadedFile = self._createUploaderContainer(globalIndex, fileName, fileExt);
-            loadedFile.children('.loadBar').children('div').css({width: '100%'});
-            loadedFile.addClass(self._options.reloadedFilesClass);
-
-            currentTotalSize = currentTotalSize + parseFloat(fileSize);
-            globalIndex++;
-        });
-
-        // reload files from provided array
-        if (this._options.reloadArray.length > 0) {
-            this._options.reloadArray.forEach(function(file, index) {
-                // re-create visible elements
-                loadedFile = self._createUploaderContainer(index, file.name, file.ext);
-                loadedFile.children('.loadBar').children('div').css({width: '100%'});
-                loadedFile.addClass(self._options.reloadedFilesClass);
-
-                self._logger('found previously uploaded file: index = ' + index, 2);
-
-                // re-create results
-                self._createResultContainer(index, file.name, file.ext, file.data, file.size);
-
-                currentTotalSize = currentTotalSize + parseFloat(file.size);
-                globalIndex++;
-            });
-        }
-
-        currentTotalSize = Math.round(currentTotalSize * 100) / 100;
-
-        this._logger('current total size: ' + currentTotalSize);
-        availableLabel.children('span').html(this._options.totalMaxSize - currentTotalSize);
-        // --- END FILES RELOAD SECTION ---
-
-        // onload callback
-        this._options.onload(this._options, currentTotalSize);
-
         // files read function
         this._filesRead = function(event) {
             var DOM = event.data.DOM;
@@ -528,6 +438,101 @@
                 globalIndex++;
             }
         };
+
+        /*
+        *  -------------------------------------------------------------
+        *  |                       MAIN FLOW                           |
+        *  -------------------------------------------------------------
+        */
+        // initialization
+        if (this._options.name) {
+            this._logger('INITIALIZED INSTANCE: ' + this._options.name);
+        }
+        // build HTML template
+        var template = $(this._options.HTMLTemplate());
+
+        $el.append(template);
+
+        var globalIndex = 0;
+        var $resultContainer = $el.find('.' + this._options.resultContainerClass);
+        var $loadBtn = $el.find('.fileLoader');
+        var $fileContainer = $el.find('.filesContainer');
+        var $fileNameContainer = $el.find('.fileNameContainer');
+        var $fileThumbsContainer = $el.find('.innerFileThumbs');
+        var dropZone = $el.find('.dropZone')[0];
+        var currentLangObj = this._options.langs[this._options.lang];
+
+        // place reloaded files' HTML in result container directly (if provided)
+        if (this._options.reloadHTML) {
+            $resultContainer.html(this._options.reloadHTML);
+        }
+
+
+        $el.find('.introMsg').html(currentLangObj.intro_msg);
+        $(dropZone).html(currentLangObj.dropZone_msg); 
+        if (!this._options.debug) {
+            $resultContainer.addClass('hide');
+        }
+        else {
+            $('<p class="debugMode">Debug mode: on</p>').insertBefore($resultContainer);
+            $('<div class="debug">Uploaded files: <span id="debugUploaded">0</span> | Rejected files: <span id="debugRejected">0</span></div>').insertBefore($resultContainer);
+            $('<div class="debug">Current MAX FILE SIZE: ' + this._options.fileMaxSize + ' MB</div>').insertBefore($resultContainer);
+            $('<div class="debug">Current MAX TOTAL SIZE: ' + this._options.totalMaxSize + ' MB</div>').insertBefore($resultContainer);
+            $('<div class="debug sizeAvailable">Size still available: <span>' + this._options.totalMaxSize + '</span> MB</div>').insertBefore($resultContainer);
+        }
+
+        // --- FILES RELOAD SECTION ---
+        // lookup for previously loaded files placed in the result container directly
+        var availableLabel = $el.find('.sizeAvailable');
+        var currentTotalSize = 0;
+
+        $.each($resultContainer.children('.' + this._options.resultFileContainerClass), function(index, element) {
+            self._logger('found previously uploaded file: index = ' + $(element).data('index'), 2);
+
+            // pay attention to index used on fileData here: index 0 is the title DIV!
+            var fileData = $(element).children('input');
+            var fileName = $(fileData[0]).val();
+            var fileExt = $(fileData[1]).val();
+            var fileSize = $(fileData[3]).val();
+
+            if (fileName.lastIndexOf('.') > 0) {
+                fileName = fileName.substr(0, fileName.lastIndexOf('.'));
+            }
+
+            loadedFile = self._createUploaderContainer(globalIndex, fileName, fileExt);
+            loadedFile.children('.loadBar').children('div').css({width: '100%'});
+            loadedFile.addClass(self._options.reloadedFilesClass);
+
+            currentTotalSize = currentTotalSize + parseFloat(fileSize);
+            globalIndex++;
+        });
+
+        // reload files from provided array
+        if (this._options.reloadArray.length > 0) {
+            this._options.reloadArray.forEach(function(file, index) {
+                // re-create visible elements
+                loadedFile = self._createUploaderContainer(index, file.name, file.ext);
+                loadedFile.children('.loadBar').children('div').css({width: '100%'});
+                loadedFile.addClass(self._options.reloadedFilesClass);
+
+                self._logger('found previously uploaded file: index = ' + index, 2);
+
+                // re-create results
+                self._createResultContainer(index, file.name, file.ext, file.data, file.size);
+
+                currentTotalSize = currentTotalSize + parseFloat(file.size);
+                globalIndex++;
+            });
+        }
+
+        currentTotalSize = Math.round(currentTotalSize * 100) / 100;
+
+        this._logger('current total size: ' + currentTotalSize);
+        availableLabel.children('span').html(this._options.totalMaxSize - currentTotalSize);
+        // --- END FILES RELOAD SECTION ---
+
+        // onload callback
+        this._options.onload(this._options, currentTotalSize);
 
         // Drag events
         function handleDragOver(event) {

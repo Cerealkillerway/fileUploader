@@ -250,14 +250,15 @@
             return container;
         };
 
-        this._createResultContainer = function(index, name, type, result, size) {
+        this._createResultContainer = function(fileData) {
+            var index = fileData.index;
             var resultElemContainer = $('<div data-index="' + index + '" class="' + self._options.resultFileContainerClass + '"></div>');
 
             resultElemContainer.append($('<div>File: ' + index + '</div>'));
-            resultElemContainer.append($('<input/>').attr({type: 'text', name: self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[0] + ']', value: name}));
-            resultElemContainer.append($('<input/>').attr({type: 'text', name: self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[1] + ']', value: type}));
-            resultElemContainer.append($('<input/>').attr({type: 'text', name: self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[2] + ']', value: result}));
-            resultElemContainer.append($('<input/>').attr({type: 'text', name: self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[3] + ']', value: size}));
+            resultElemContainer.append($('<input/>').attr({type: 'text', name: self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[0] + ']', value: fileData.name}));
+            resultElemContainer.append($('<input/>').attr({type: 'text', name: self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[1] + ']', value: fileData.type}));
+            resultElemContainer.append($('<input/>').attr({type: 'text', name: self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[2] + ']', value: fileData.result}));
+            resultElemContainer.append($('<input/>').attr({type: 'text', name: self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[3] + ']', value: fileData.size}));
 
             $resultContainer.append(resultElemContainer);
         };
@@ -283,7 +284,6 @@
             if (!self._options.allowDuplicates) {
                 var loadedFiles = [];
                 var newFiles = [];
-                var resultFiles = [];
 
                 approvedList = [];
 
@@ -353,7 +353,15 @@
                         name = name + '.' + self._options.defaultFileExt;
                     }
 
-                    self._createResultContainer(index, name, type, result, size);
+                    var newFile = {
+                        index: index,
+                        name: name,
+                        type: type,
+                        result: result,
+                        size: size
+                    };
+
+                    self._createResultContainer(newFile);
 
                     //set direct link on file see button
                     currentElement.children('.fileActions').children('a').attr('href', result);
@@ -541,7 +549,15 @@
                 self._logger('found previously uploaded file: index = ' + index, 2);
 
                 // re-create results
-                self._createResultContainer(index, file.name, file.ext, file.data, file.size);
+                var newFile = {
+                    index: index,
+                    name: file.name,
+                    type: file.ext,
+                    result: file.data,
+                    size: file.size
+                };
+
+                self._createResultContainer(newFile);
 
                 currentTotalSize = currentTotalSize + parseFloat(file.size);
                 globalIndex++;

@@ -3,7 +3,7 @@
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function($) {
-    var FileUploader = function($el, options, translation) {
+    var FileUploader = function($el, options) {
         var self = this;
 
         // default options
@@ -130,7 +130,6 @@
         this._fileDelete = function(event) {
             var element = event.data.element;
             var index = $(event.target).data('delete');
-            var id = $(event.target).data('id');
 
             if (!index) {
                 index = $(event.target).closest('div[data-delete]').data('delete');
@@ -268,6 +267,7 @@
             var DOM = event.data.DOM;
             var filesList;
             var approvedList = false;
+            var i = 0;
 
             if (event.target.files) {
                 this._logger('files array source: file selector (click event)', 1);
@@ -298,7 +298,7 @@
                 }
 
                 // avoid load twice the same file
-                newFiles.forEach(function(newFile, index) {
+                newFiles.forEach(function(newFile) {
                     var fileIndex = loadedFiles.indexOf(newFile);
 
                     if (fileIndex < 0) {
@@ -416,10 +416,12 @@
             if (startIndex !== undefined) {
                 startIndex = parseInt(startIndex.substring(startIndex.indexOf('-') + 1, startIndex.length)) + 1;
             }
-            else startIndex = 0;
+            else {
+                startIndex = 0;
+            }
 
             // create a new div containing thumb, delete button and title field for each target file
-            for (var i = 0; i < filesList.length; i++) {
+            for (i = 0; i < filesList.length; i++) {
                 var file = filesList[i];
                 var reader = new FileReader();
 
@@ -505,6 +507,7 @@
         // lookup for previously loaded files placed in the result container directly
         var availableLabel = $el.find('.sizeAvailable');
         var currentTotalSize = 0;
+        var loadedFile;
 
         $.each($resultContainer.children('.' + this._options.resultFileContainerClass), function(index, element) {
             self._logger('found previously uploaded file: index = ' + $(element).data('index'), 2);
@@ -576,7 +579,7 @@
             };
         }) (this), false);
 
-        $(dropZone).click(function(event) {
+        $(dropZone).click(function() {
             $loadBtn.trigger('click');
         });
 

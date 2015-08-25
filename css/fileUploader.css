@@ -17,6 +17,9 @@
     line-height: 150px;
     font-size: 36px;
     color: gray; }
+  .fileUploader .highlight {
+    color: #76ff03;
+    border-color: #76ff03; }
   .fileUploader .filesContainer .newElement .fileTitle, .fileUploader .filesContainer .newElement .loadBar, .fileUploader .filesContainer .newElement .fileActions, .fileUploader .result > div {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;

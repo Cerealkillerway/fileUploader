@@ -1,4 +1,4 @@
-## File Uploader v3.4.9
+## File Uploader v3.4.11
 
 ![FileUploader](http://144.76.103.88/webforge_static/appLogos/fileUploader.png)
 
@@ -262,6 +262,10 @@ Use --port option to serve it on another port; example:
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
 ##### History
+3.4.11
+------
+- added highlight class for dropzone's dragover
+
 3.4.9
 -----
 - fixed and improved name test function (on file rename)

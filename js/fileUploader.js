@@ -1,5 +1,5 @@
 /*
-* fileUploader v3.4.9
+* fileUploader v3.4.11
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function($) {
@@ -600,11 +600,13 @@
 
         // Drag events
         function handleDragOver(event) {
+            $(dropZone).addClass('highlight');
             event.stopPropagation();
             event.preventDefault();
             event.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
         }
         function handleDrop(event) {
+            $(dropZone).removeClass('highlight');
             event.stopPropagation();
             event.preventDefault();
             event.data = {
@@ -613,6 +615,9 @@
             self._filesRead(event);
         }
 
+        dropZone.addEventListener('dragleave', function() {
+            $(dropZone).removeClass('highlight');
+        });
         dropZone.addEventListener('dragover', handleDragOver, false);
         dropZone.addEventListener('drop', (function(passedInElement) {
             return function(e) {

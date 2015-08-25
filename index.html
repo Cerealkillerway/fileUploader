@@ -12,7 +12,7 @@
 
 <body>
     <header>
-        <h2>File Uploader v3.4.2</h2>
+        <h2>File Uploader v3.4.9</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader api
         </p>  
@@ -95,6 +95,7 @@
         useFileIcons: false,
         fileMaxSize: 1.7,
         totalMaxSize: 5,
+        loadingBarsClasses: ['striped', 'hoverable'],
         debug: true,
         name: "one",
         reloadArray: filesArray,
@@ -111,7 +112,7 @@
         },
         filenameTest: function(fileName, fileExt, $container) {
             var allowedExts = ["jpg", "jpeg"];
-            var $info = $('<div class="center"></div>');
+            var $info = $('<div class="errorLabel center"></div>');
             var proceed = true;
 
             // length check
@@ -129,7 +130,7 @@
             }
 
             // show an error message
-            if (!proceed) {
+            if (!proceed && $container.children('.errorLabel').length < 1) {
                 $container.append($info);
 
                 setTimeout(function() {
@@ -137,6 +138,8 @@
                         $(this).remove();
                     });
                 }, 2000);
+            }
+            if (!proceed) {
                 return false;
             }
 

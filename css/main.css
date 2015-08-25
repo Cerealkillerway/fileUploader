@@ -27,7 +27,8 @@ main {
     float: right; }
   main .center {
     margin: 25px auto;
-    text-align: center;
+    text-align: center; }
+  main .errorLabel {
     font-weight: bold;
     text-transform: uppercase;
     color: #283593; }

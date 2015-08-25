@@ -44,6 +44,9 @@ main {
     .center {
         margin: 25px auto;
         text-align: center;
+    }
+
+    .errorLabel {
         font-weight: bold;
         text-transform: uppercase;
         color: $errorColor;

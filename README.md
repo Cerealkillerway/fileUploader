@@ -1,4 +1,4 @@
-## File Uploader v3.4.2
+## File Uploader v3.4.9
 
 ![FileUploader](http://144.76.103.88/webforge_static/appLogos/fileUploader.png)
 
@@ -73,6 +73,8 @@ There are some options that can passed to constructor in the form:
 **reloadedFilesClass**: a class to style previously uploaded files (files uploaded during a previous session and now retrieved and placed in the result container) (default 'reloadedElement')
 
 **useLoadingBars**: show a progress bar while reading each file (default true)
+
+**loadingBarsClasses**: an array of strings representing custom classes to assign to each loading bar
 
 **resultContainerClass**: set the class of the element to be used as container for reader's results (by default this is the hidden $(.result) element of the fileUploader); can be the class of any DOM element inside the fileUploader markup
 

@@ -1,5 +1,5 @@
 /*
-* fileUploader v3.4.2
+* fileUploader v3.4.9
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function($) {
@@ -17,6 +17,7 @@
             pluginName: 'FileUploader',                                    // plugin's name (used in debug logs alongside with name)
 
             useLoadingBars: true,                                          // insert loading bar for files
+            loadingBarsClasses: [],                                        // array of strings for classnames for loading bars
             reloadedFilesClass: 'reloadedElement',                         // class for previously uploaded files
             resultContainerClass: 'result',                                // result container's class (where to place result files data)
             resultFileContainerClass: 'uploadedFile',                      // class for every file result container span
@@ -175,16 +176,25 @@
             var $input = $resultContainer.find('div[data-index="' + index + '"] input:first');
             var nameTest = self._options.filenameTest(text, ext, $fileThumbsContainer);
 
+            if (nameTest === false) {
+                event.preventDefault();
+                return false;
+            }
             if (nameTest !== undefined && nameTest !== true) {
+
                 text = nameTest;
                 $this.val(text);
-            }
 
-            if (ext.length > 0) {
-                text = text + '.' + ext;
-            }
+                // update input
+                if (ext.length > 0) {
+                    text = text + '.' + ext;
+                }
 
-            $input.val(text);
+                $input.val(text);
+
+                // restore selection range
+                $this[0].setSelectionRange(event.data.start, event.data.stop);
+            }
         };
 
         this.getData = function() {
@@ -234,7 +244,13 @@
 
             //insert loading bars if requested
             if (this._options.useLoadingBars) {
-                var currentLoadBar = $('<div class="loadBar"><div></div></div>');
+                var classes = self._options.loadingBarsClasses;
+
+                if (classes.length > 0) {
+                    classes = classes.join(' ');
+                }
+
+                var currentLoadBar = $('<div class="loadBar ' + classes + '"><div></div></div>');
                 container.prepend(currentLoadBar);
             }
 
@@ -244,7 +260,14 @@
             container.prepend(currentExtension);
             container.prepend(currentTitle);
 
-            currentTitle.keyup({element: container}, this._fileRename);
+            //currentTitle.keypress({element: container}, this._fileRename);
+            currentTitle.on('keypress keyup paste', function(event) {
+                event.data = {};
+                event.data.element = container;
+                event.data.start = this.selectionStart;
+                event.data.stop = this.selectionEnd;
+                self._fileRename(event);
+            });
 
             currentTitle.val(fileName);
             currentExtension.html(fileExt);

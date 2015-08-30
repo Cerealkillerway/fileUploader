@@ -211,6 +211,7 @@ it is possible to override it or add a custom translation by defining it in "lan
                 dropZone_msg: "Arrastre los archivos aquí",
                 maxSizeExceeded_msg: "Archivo demasiado grande",
                 totalMaxSizeExceeded_msg: "Tamaño total superado",
+                duplicated_msg: "Duplicate File (ignorado)",
                 name_placeHolder: "nombre"
             },
             "it": {
@@ -218,6 +219,7 @@ it is possible to override it or add a custom translation by defining it in "lan
                 dropZone_msg: "Trascina qui i tuoi files...",
                 maxSizeExceeded_msg: "File troppo grande",
                 totalMaxSizeExceeded_msg: "Dimensione max. superata",
+                duplicated_msg: "File duplicato (ignorato)",
                 name_placeHolder: "nome"
             }
         }

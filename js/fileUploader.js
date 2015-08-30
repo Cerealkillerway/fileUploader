@@ -1,5 +1,5 @@
 /*
-* fileUploader v3.4.11
+* fileUploader v3.6.7
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function($) {
@@ -32,6 +32,7 @@
             linkButtonContent: 'L',                                        // HTML content for link button
             deleteButtonContent: 'X',                                      // HTML content for delete button
             allowDuplicates: false,                                        // allow upload duplicates
+            duplicatesWarning: false,                                      // show a message in the loading area when trying to load a duplicated file
 
             HTMLTemplate: function() {
                 return [
@@ -62,7 +63,8 @@
                     dropZone_msg: 'Drop your files here',
                     maxSizeExceeded_msg: 'File too large',
                     totalMaxSizeExceeded_msg: 'Total size exceeded',
-                    name_placeHolder: 'name'
+                    duplicated_msg: 'File duplicated (skipped)',
+                    name_placeHolder: 'name',
                 }                
             }
         };
@@ -453,6 +455,14 @@
                 startIndex = 0;
             }
 
+            function appendMessage($message) {
+                setTimeout(function() {
+                    $message.animate({opacity: 0}, 300, function() {
+                        $(this).remove();
+                    });
+                }, 2000);
+            }
+
             // create a new div containing thumb, delete button and title field for each target file
             for (i = 0; i < filesList.length; i++) {
                 var file = filesList[i];
@@ -460,6 +470,14 @@
 
                 // test for duplicates
                 if (approvedList && approvedList.indexOf(file.name) < 0) {
+                    if (self._options.duplicatesWarning) {
+                        var $info = $('<div class="errorLabel center"></div>');
+
+                        $info.html(currentLangObj.duplicated_msg);
+                        $fileThumbsContainer.append($info);
+                        appendMessage($info);                        
+                    }
+
                     this._logger('File duplicated: ' + file.name + ' -> skipping...', 2);
                     continue;
                 }

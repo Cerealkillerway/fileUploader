@@ -1,10 +1,17 @@
-// v3.4.11
-$mainColor: #333 !default;
-$reloadedColor: #1b5e20 !default;
-$errorColor: #aa00ff !default;
-$resultColor: #ff0000 !default;
-$highlightColor: #76ff03 !default;
+// v3.6.7
+@import "fileUploaderVars";
 
+
+%borderBoxed {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+%transitioned {
+    transition: all $defaultTransitionDuration;
+    -webkit-transition: all $defaultTransitionDuration;
+}
 
 .fileUploader {
     color: $mainColor;
@@ -32,17 +39,12 @@ $highlightColor: #76ff03 !default;
         line-height: 150px;
         font-size: 36px;
         color: lighten($mainColor, 30%);
+        @extend %transitioned;
     }
 
     .highlight {
         color: $highlightColor;
         border-color: $highlightColor;
-    }
-
-    %borderBoxed {
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
     }
 
     .filesContainer {

@@ -12,7 +12,7 @@
 
 <body>
     <header>
-        <h2>File Uploader v3.4.11</h2>
+        <h2>File Uploader v3.6.7</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader api
         </p>  
@@ -101,6 +101,7 @@
         reloadArray: filesArray,
         linkButtonContent: '<i>Open</i>',
         deleteButtonContent: '<i>Remove</i>',
+        duplicatesWarning: true,
         onload: function(options, totalSize) {
             $(".customTotalSize").children("span").html(totalSize + " MB");
         },
@@ -111,7 +112,7 @@
             $(".customTotalSize").children("span").html(totalSize + " MB");
         },
         filenameTest: function(fileName, fileExt, $container) {
-            var allowedExts = ["jpg", "jpeg"];
+            var allowedExts = ["jpg", "jpeg", ""];
             var $info = $('<div class="errorLabel center"></div>');
             var proceed = true;
 

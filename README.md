@@ -1,4 +1,4 @@
-## File Uploader v3.4.11
+## File Uploader v3.6.7
 
 ![FileUploader](http://144.76.103.88/webforge_static/appLogos/fileUploader.png)
 
@@ -85,6 +85,8 @@ There are some options that can passed to constructor in the form:
 **defaultMimeType**: MIME type to use for files with no extension (default "")
 
 **allowDuplicates**: allow to upload more than once the same file (based on file name, default false)
+
+**duplicatesWarning**: if *allowDuplicates* is false, set this option to true to show a warning message when trying to load a duplicated file
 
 In the result container, each reader's result is inserted as a DIV with 4 nested INPUT elements (title, extension, value (the base64 string) and size (in MB)); each of these 4 elements has a name attribute in the form "prefix[index][name]"
 
@@ -199,7 +201,7 @@ Together with the options object it is possible to define some callbacks:
 
 ### Translations
 It comes with english built-in;
-it is possible to override them or add a custom translation by defining it in "langs" object in the constructor
+it is possible to override it or add a custom translation by defining it in "langs" object in the constructor
 
     $('.fileUploader').fileUploader({
         lang: 'es',
@@ -262,6 +264,12 @@ Use --port option to serve it on another port; example:
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
 ##### History
+3.6.7
+-----
+- reorganized files for better usability
+- added sass task at startup in gruntfile
+- minor improvements (duplicatesWarning, css transitions)
+
 3.4.11
 ------
 - added highlight class for dropzone's dragover

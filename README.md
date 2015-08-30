@@ -262,7 +262,7 @@ use "grunt" to execute it and point your browser on "localhost:7000" (prerequisi
 Use --port option to serve it on another port; example:
 **grunt --port=9000**
 
-Use **grunt uglify** to rebuild the minified version of fileUploader.js
+Use **grunt uglify** or **grunt minify** to rebuild the minified version of fileUploader.js
 
 ### License
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).

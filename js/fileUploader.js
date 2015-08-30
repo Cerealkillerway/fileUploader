@@ -1,5 +1,5 @@
 /*
-* fileUploader v3.6.7
+* fileUploader v3.7.1
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function($) {

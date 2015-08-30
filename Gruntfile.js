@@ -35,11 +35,19 @@ module.exports = function(grunt) {
                 ],
             }
         },
+        uglify: {
+            fileUploader: {
+                files: {
+                    'js/fileUploader.min.js': ['js/fileUploader.js']
+                }
+            }
+        }
     });
 
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
 
     grunt.registerTask('default', ['connect', 'sass', 'watch']);
 };

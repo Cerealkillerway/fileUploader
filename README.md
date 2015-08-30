@@ -1,4 +1,4 @@
-## File Uploader v3.6.7
+## File Uploader v3.7.1
 
 ![FileUploader](http://144.76.103.88/webforge_static/appLogos/fileUploader.png)
 
@@ -260,10 +260,17 @@ use "grunt" to execute it and point your browser on "localhost:7000" (prerequisi
 Use --port option to serve it on another port; example:
 **grunt --port=9000**
 
+Use **grunt uglify** to rebuild the minified version of fileUploader.js
+
 ### License
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
 ##### History
+3.7.1
+-----
+- added minified version of fileUploader.js
+- added grunt uglify task
+
 3.6.7
 -----
 - reorganized files for better usability

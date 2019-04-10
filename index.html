@@ -12,12 +12,12 @@
 
 <body>
     <header>
-        <h2>File Uploader v3.7.1</h2>
+        <h2>File Uploader v3.7.3</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader api
-        </p>  
+        </p>
     </header>
-    
+
     <main>
         <h2>Multi uploader example</h2>
         <h3>fileUploader 1</h3>
@@ -28,11 +28,11 @@
         <div class="fileUploader" id="one"></div>
 
         <br><br>
-    
+
         <h3>fileUploader 2</h3>
         <h5>(Example with files reloaded placed directly in result container):</h5>
         <div class="fileUploader" id="two"></div>
-        
+
         <div class="staticBar">
             <div class="innerBar">
                 <div class="left">
@@ -48,7 +48,7 @@
             </div>
         </div>
     </main>
-    
+
     <footer>
         <p>
             File Uploader<br><br>
@@ -103,16 +103,16 @@
         deleteButtonContent: '<i>Remove</i>',
         duplicatesWarning: true,
         onload: function(options, totalSize) {
-            $(".customTotalSize").children("span").html(totalSize + " MB");
+            $('.customTotalSize').children('span').html(totalSize + ' MB');
         },
         onfileloadEnd: function(index, file, totalSize) {
-            $(".customTotalSize").children("span").html(totalSize + " MB");
+            $('.customTotalSize').children('span').html(totalSize + ' MB');
         },
         onfileDelete: function(index, totalSize) {
-            $(".customTotalSize").children("span").html(totalSize + " MB");
+            $('.customTotalSize').children('span').html(totalSize + ' MB');
         },
         filenameTest: function(fileName, fileExt, $container) {
-            var allowedExts = ["jpg", "jpeg", ""];
+            var allowedExts = ['jpg', 'jpeg', ''];
             var $info = $('<div class="errorLabel center"></div>');
             var proceed = true;
 
@@ -122,7 +122,7 @@
                 proceed = false;
             }
             // replace not allowed characters
-            fileName = fileName.replace(" ", "-");
+            fileName = fileName.replace(' ', '-');
 
             // extension check
             if (allowedExts.indexOf(fileExt) < 0) {
@@ -154,7 +154,7 @@
         fileMaxSize: 1.7,
         totalMaxSize: 5,
         debug: true,
-        name: "two",
+        name: 'two',
         debugLogStyle: "color: #ff5500",
         reloadHTML: filesHTML,
     });

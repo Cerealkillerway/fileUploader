@@ -1,5 +1,5 @@
 /*
-* fileUploader v3.7.1
+* fileUploader v3.7.3
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function($) {
@@ -24,7 +24,7 @@
             resultPrefix: 'fileUploader',                                  // prefix for inputs in the file result container
             resultInputNames: ['title', 'extension', 'value', 'size'],     // name suffix to be used for result inputs
             defaultFileExt: '',                                            // extension to use for files with no extension
-            defaultMimeType: '',                                           // MIME type to use for files with no extension 
+            defaultMimeType: '',                                           // MIME type to use for files with no extension
             fileMaxSize: 50,                                               // maximum allowed file size (in MB)
             totalMaxSize: 1000,                                            // total maximum allowed size of all files
             reloadArray: [],                                               // array of files to be reloaded at plugin startup
@@ -65,7 +65,7 @@
                     totalMaxSizeExceeded_msg: 'Total size exceeded',
                     duplicated_msg: 'File duplicated (skipped)',
                     name_placeHolder: 'name',
-                }                
+                }
             }
         };
 
@@ -94,7 +94,7 @@
                 return self._round(self._options.totalMaxSize - currentTotalSize);
             }
         };
-        
+
         // debug logs function
         this._logger = function(message, level, data) {
             if (this._options.debug) {
@@ -104,7 +104,7 @@
                     }
                 }
                 if (this._options.name) {
-                    message = '[' + this._options.pluginName + ' - ' + this._options.name + '] ' + message; 
+                    message = '[' + this._options.pluginName + ' - ' + this._options.name + '] ' + message;
                 }
 
                 if (data) {
@@ -155,7 +155,7 @@
 
             availableSize = self._round(availableSize);
             availableLabel.children('span').html(availableSize);
-            
+
             // remove result block
             $resultContainer.children('div[data-index="' + index + '"]').remove();
 
@@ -231,7 +231,7 @@
 
             var container = $('<div class="newElement" data-index="' + parseInt(index) + '" style="' + containerStyle + '"></div');
             $fileThumbsContainer.append(container);
-            
+
             var fileButtonsContainer = $('<div class="fileActions"></div>');
             container.append(fileButtonsContainer);
 
@@ -339,7 +339,7 @@
             $fileNameContainer.html('upload files');
 
             function readFile(reader, file, index, DOM) {
-                var currentElement = DOM.find('.innerFileThumbs').children().filter(function() { 
+                var currentElement = DOM.find('.innerFileThumbs').children().filter(function() {
                     return $(this).data('index') === index ;
                 });
 
@@ -354,7 +354,7 @@
                     if (event.lengthComputable) {
                         var percentLoaded = self._round((event.loaded / event.total) * 100);
                         self._logger('File ' + index + ' loaded: ' + percentLoaded, 3);
-                        
+
                         // Increase the progress bar length.
                         if (percentLoaded <= 100) {
                             currentElement.children('.loadBar').children('div').animate({width: '100%'}, 500);
@@ -366,6 +366,12 @@
                     var type = file.type;
                     var name = file.name;
                     var result = reader.result;
+
+                    // reading unsuccessful
+                    if (!result) {
+                        return false;
+                    }
+
                     var mimeType = result.substring(0, result.indexOf(';'));
 
                     // if file has no MIME type, replace with default one
@@ -475,7 +481,7 @@
 
                         $info.html(currentLangObj.duplicated_msg);
                         $fileThumbsContainer.append($info);
-                        appendMessage($info);                        
+                        appendMessage($info);
                     }
 
                     this._logger('File duplicated: ' + file.name + ' -> skipping...', 2);
@@ -503,7 +509,7 @@
                         fileName = nameTest;
                     }
                 }
-                
+
                 this._createUploaderContainer(globalIndex, fileName, fileExt);
 
                 // now read!
@@ -542,7 +548,7 @@
 
 
         $el.find('.introMsg').html(currentLangObj.intro_msg);
-        $(dropZone).html(currentLangObj.dropZone_msg); 
+        $(dropZone).html(currentLangObj.dropZone_msg);
         if (!this._options.debug) {
             $resultContainer.addClass('hide');
         }

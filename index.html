@@ -3,11 +3,8 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link href="dist/>css/fileUploader.css" rel="stylesheet">
-    <link href="dist/>css/main.css" rel="stylesheet">
-
-    <script type="text/javascript" src="lib/jquery-2.1.4.js"></script>
-    <script type="text/javascript" src="dist/>js/fileUploader.js"></script>
+    <link href="dist/css/fileUploader.css" rel="stylesheet">
+    <link href="dist/css/main.css" rel="stylesheet">
 </head>
 
 <body>
@@ -55,127 +52,129 @@
             Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a>
         </p>
     </footer>
+
+    <script type="text/javascript" src="lib/jquery-2.1.4.js"></script>
+    <script type="text/javascript" src="dist/js/fileUploader.js"></script>
+    <script tyle="text/javascript">
+        var filesArray = [
+            {
+                name: "fromArray1",
+                ext: "jpeg",
+                data: "ldjahflòksdjòflaksjdflk",
+                size: 0.3
+            },
+            {
+                name: "fromArray2",
+                ext: "jpg",
+                data: "dgjhakjhsdjkhjhjklasdikfj asdilfj",
+                size: 1.2
+            }
+        ];
+
+        var filesHTML = [
+            '<div data-index="0" class="uploadedFile">',
+            '    <div>File: 0</div>',
+            '    <input type="text" name="fileUploader[0][title]" value="Example1">',
+            '    <input type="text" name="fileUploader[0][extension]" value="">',
+            '    <input type="text" name="fileUploader[0][value]" value="dgjhakjhsdjkhjhjklasdikfj asdilfj">',
+            '    <input type="text" name="fileUploader[0][size]" value="1.5">',
+            '</div>',
+            '<div data-index="1" class="uploadedFile">',
+            '    <div>File: 1</div>',
+            '    <input type="text" name="fileUploader[1][title]" value="Example2.jpg">',
+            '    <input type="text" name="fileUploader[1][extension]" value="pdf">',
+            '    <input type="text" name="fileUploader[1][value]" value="hfljsjklsdjfklsjlsdfff">',
+            '    <input type="text" name="fileUploader[1][size]" value="0.9">',
+            '</div>',
+        ].join("\n");
+
+        // fileUploader example 1
+        let test1 = new FileUploader(document.querySelector('#one'), {
+            useFileIcons: false,
+            fileMaxSize: 1.7,
+            totalMaxSize: 5,
+            loadingBarsClasses: ['striped', 'hoverable'],
+            debug: true,
+            name: 'one',
+            reloadArray: filesArray,
+            linkButtonContent: '<i>Open</i>',
+            deleteButtonContent: '<i>Remove</i>',
+            duplicatesWarning: true,
+            onload: function(options, totalSize) {
+                $('.customTotalSize').children('span').html(totalSize + ' MB');
+            },
+            onfileloadEnd: function(index, file, totalSize) {
+                $('.customTotalSize').children('span').html(totalSize + ' MB');
+            },
+            onfileDelete: function(index, totalSize) {
+                $('.customTotalSize').children('span').html(totalSize + ' MB');
+            },
+            filenameTest: function(fileName, fileExt, $container) {
+                var allowedExts = ['jpg', 'jpeg', ''];
+                var $info = $('<div class="errorLabel center"></div>');
+                var proceed = true;
+
+                // length check
+                if (fileName.length > 13) {
+                    $info.html('Name too long...');
+                    proceed = false;
+                }
+                // replace not allowed characters
+                fileName = fileName.replace(' ', '-');
+
+                // extension check
+                if (allowedExts.indexOf(fileExt) < 0) {
+                    $info.html('Extension not allowed...');
+                    proceed = false;
+                }
+
+                // show an error message, but only if there is no other error message already there
+                if (!proceed && $container.children('.errorLabel').length < 1) {
+                    $container.append($info);
+
+                    setTimeout(function() {
+                        $info.animate({opacity: 0}, 300, function() {
+                            $(this).remove();
+                        });
+                    }, 2000);
+                }
+                if (!proceed) {
+                    return false;
+                }
+
+                return fileName;
+            }
+        });
+
+        // fileUploader example 2
+        let test2 = new FileUploader(document.querySelector('#two'), {
+            useFileIcons: false,
+            fileMaxSize: 1.7,
+            totalMaxSize: 5,
+            debug: true,
+            name: 'two',
+            debugLogStyle: "color: #ff5500",
+            reloadHTML: filesHTML,
+        });
+
+
+        // buttons
+        $('#save1').click(function() {
+            var result = $('#one').fileUploader('getData');
+            //do what you need with result (ex. send ajax call to remote procedure to persist files)
+        });
+        $('#save2').click(function() {
+            var result = $('#two').fileUploader('getData');
+            //do what you need with result (ex. send ajax call to remote procedure to persist files)
+        });
+
+        $('#getCurrentTotalSize1').click(function() {
+            console.log("Current total size uploader 1: " + $('#one').fileUploader('get', 'currentTotalSize'));
+        });
+        $('#getCurrentTotalSize2').click(function() {
+            console.log("Current total size uploader 2: " + $('#two').fileUploader('get', 'currentTotalSize'));
+        });
+
+    </script>
 </body>
-
-<script tyle="text/javascript">
-    var filesArray = [
-        {
-            name: "fromArray1",
-            ext: "jpeg",
-            data: "ldjahflòksdjòflaksjdflk",
-            size: 0.3
-        },
-        {
-            name: "fromArray2",
-            ext: "jpg",
-            data: "dgjhakjhsdjkhjhjklasdikfj asdilfj",
-            size: 1.2
-        }
-    ];
-
-    var filesHTML = [
-        '<div data-index="0" class="uploadedFile">',
-        '    <div>File: 0</div>',
-        '    <input type="text" name="fileUploader[0][title]" value="Example1">',
-        '    <input type="text" name="fileUploader[0][extension]" value="">',
-        '    <input type="text" name="fileUploader[0][value]" value="dgjhakjhsdjkhjhjklasdikfj asdilfj">',
-        '    <input type="text" name="fileUploader[0][size]" value="1.5">',
-        '</div>',
-        '<div data-index="1" class="uploadedFile">',
-        '    <div>File: 1</div>',
-        '    <input type="text" name="fileUploader[1][title]" value="Example2.jpg">',
-        '    <input type="text" name="fileUploader[1][extension]" value="pdf">',
-        '    <input type="text" name="fileUploader[1][value]" value="hfljsjklsdjfklsjlsdfff">',
-        '    <input type="text" name="fileUploader[1][size]" value="0.9">',
-        '</div>',
-    ].join("\n");
-
-    // fileUploader example 1
-    $('#one').fileUploader({
-        useFileIcons: false,
-        fileMaxSize: 1.7,
-        totalMaxSize: 5,
-        loadingBarsClasses: ['striped', 'hoverable'],
-        debug: true,
-        name: "one",
-        reloadArray: filesArray,
-        linkButtonContent: '<i>Open</i>',
-        deleteButtonContent: '<i>Remove</i>',
-        duplicatesWarning: true,
-        onload: function(options, totalSize) {
-            $('.customTotalSize').children('span').html(totalSize + ' MB');
-        },
-        onfileloadEnd: function(index, file, totalSize) {
-            $('.customTotalSize').children('span').html(totalSize + ' MB');
-        },
-        onfileDelete: function(index, totalSize) {
-            $('.customTotalSize').children('span').html(totalSize + ' MB');
-        },
-        filenameTest: function(fileName, fileExt, $container) {
-            var allowedExts = ['jpg', 'jpeg', ''];
-            var $info = $('<div class="errorLabel center"></div>');
-            var proceed = true;
-
-            // length check
-            if (fileName.length > 13) {
-                $info.html('Name too long...');
-                proceed = false;
-            }
-            // replace not allowed characters
-            fileName = fileName.replace(' ', '-');
-
-            // extension check
-            if (allowedExts.indexOf(fileExt) < 0) {
-                $info.html('Extension not allowed...');
-                proceed = false;
-            }
-
-            // show an error message, but only if there is no other error message already there
-            if (!proceed && $container.children('.errorLabel').length < 1) {
-                $container.append($info);
-
-                setTimeout(function() {
-                    $info.animate({opacity: 0}, 300, function() {
-                        $(this).remove();
-                    });
-                }, 2000);
-            }
-            if (!proceed) {
-                return false;
-            }
-
-            return fileName;
-        }
-    });
-
-    // fileUploader example 2
-    $('#two').fileUploader({
-        useFileIcons: false,
-        fileMaxSize: 1.7,
-        totalMaxSize: 5,
-        debug: true,
-        name: 'two',
-        debugLogStyle: "color: #ff5500",
-        reloadHTML: filesHTML,
-    });
-
-
-    // buttons
-    $('#save1').click(function() {
-        var result = $('#one').fileUploader('getData');
-        //do what you need with result (ex. send ajax call to remote procedure to persist files)
-    });
-    $('#save2').click(function() {
-        var result = $('#two').fileUploader('getData');
-        //do what you need with result (ex. send ajax call to remote procedure to persist files)
-    });
-
-    $('#getCurrentTotalSize1').click(function() {
-        console.log("Current total size uploader 1: " + $('#one').fileUploader('get', 'currentTotalSize'));
-    });
-    $('#getCurrentTotalSize2').click(function() {
-        console.log("Current total size uploader 2: " + $('#two').fileUploader('get', 'currentTotalSize'));
-    });
-
-</script>
 </html>

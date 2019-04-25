@@ -1,10 +1,14 @@
+import deepMerge from 'deepmerge';
+
+
 /*
 * fileUploader v4.0.0
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
-(function($) {
-    var FileUploader = function($el, options) {
-        var self = this;
+(function(context) {
+    context.FileUploader = function($el, options) {
+        let instance = this;
+        console.log(instance);
 
         // default options
         this._defaults = {
@@ -34,28 +38,26 @@
             allowDuplicates: false,                                        // allow upload duplicates
             duplicatesWarning: false,                                      // show a message in the loading area when trying to load a duplicated file
 
-            HTMLTemplate: function() {
-                return [
-                    '<p class="introMsg"></p>',
-                    '<div>',
-                    '    <div class="inputContainer">',
-                    '        <input class="fileLoader" type="file" multiple />',
-                    '    </div>',
-                    '    <div class="dropZone"></div>',
-                    '    <div class="filesContainer filesContainerEmpty">',
-                    '        <div class="innerFileThumbs"></div>',
-                    '        <div style="clear:both;"></div>',
-                    '    </div>',
-                    '</div>',
-                    '<div class="result"></div>'
-                ].join("\n");
+            HTMLTemplate: () => {
+                return `<p class="introMsg"></p>
+                    <div>
+                        <div class="inputContainer">
+                            <input class="fileLoader" type="file" multiple />
+                        </div>
+                        <div class="dropZone"></div>
+                        <div class="filesContainer filesContainerEmpty">
+                            <div class="innerFileThumbs"></div>
+                            <div style="clear:both;"></div>
+                        </div>
+                    </div>
+                    <div class="result"></div>`
             },
 
-            onload: function() {},                                         // callback on plugin initialization
-            onfileloadStart: function() {},                                // callback on file reader start
-            onfileloadEnd: function() {},                                  // callback on file reader end
-            onfileDelete: function() {},                                   // callback on file delete
-            filenameTest: function() {},                                   // callback for testing filenames
+            onload: () => {},                                         // callback on plugin initialization
+            onfileloadStart: () => {},                                // callback on file reader start
+            onfileloadEnd: () => {},                                  // callback on file reader end
+            onfileDelete: () => {},                                   // callback on file delete
+            filenameTest: () => {},                                   // callback for testing filenames
 
             langs: {
                 'en': {
@@ -70,36 +72,34 @@
         };
 
         // extend options with instance ones
-        this._options = $.extend(true, {}, this._defaults, options);
+        this._options = deepMerge(this._defaults, options);
 
         // add more options
-        this.options = function(options) {
-            return (options) ? $.extend(true, this._options, options) : this._options;
+        this.options = (options) => {
+            return (options) ? deepMerge(this._options, options) : this._options;
         };
 
         // round number
-        this._round = function(value) {
+        this._round = (value) => {
             return Math.round(value * 100) / 100;
         };
 
         // return data
-        this.get = function(parameter) {
-            var self = this;
-
+        this.get = (parameter) => {
             switch (parameter) {
                 case 'currentTotalSize':
-                return self._round(currentTotalSize);
+                return this._round(currentTotalSize);
 
                 case 'currentAvailableSize':
-                return self._round(self._options.totalMaxSize - currentTotalSize);
+                return this._round(this._options.totalMaxSize - currentTotalSize);
             }
         };
 
         // debug logs function
-        this._logger = function(message, level, data) {
+        this._logger = (message, level, data) => {
             if (this._options.debug) {
                 if (level) {
-                    for (var i = 0; i < level; i++) {
+                    for (let i = 0; i < level; i++) {
                         message = '\u27A1 ' + message;
                     }
                 }
@@ -117,9 +117,9 @@
         };
 
         // file type identificator
-        this._fileType = function(fileName) {
-            var ext = fileName.substring(fileName.lastIndexOf('.') + 1, fileName.length);
-            var icons = ['pdf', 'jpg', 'png'];
+        this._fileType = (fileName) => {
+            let ext = fileName.substring(fileName.lastIndexOf('.') + 1, fileName.length);
+            let icons = ['pdf', 'jpg', 'png'];
 
             if (icons.indexOf(ext) >= 0) {
                 return ext;
@@ -130,30 +130,30 @@
         };
 
         // method for deleting a reader's result from result container
-        this._fileDelete = function(event) {
-            var element = event.data.element;
-            var index = $(event.target).data('delete');
+        this._fileDelete = (event) => {
+            let element = event.data.element;
+            let index = event.target.dataset.delete;
 
             if (!index) {
-                index = $(event.target).closest('div[data-delete]').data('delete');
+                index = event.target.closest('div[data-delete]').dataset.delete;
             }
 
             // remove file block
-            if (self._options.useFileIcons) {
+            if (this._options.useFileIcons) {
                 element.prev('img').remove();
             }
             element.remove();
 
             // get file size
-            var fileSize = $resultContainer.find('input[name="' + self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[3] + ']"]').val();
+            var fileSize = $resultContainer.find('input[name="' + this._options.resultPrefix + '[' + index + '][' + this._options.resultInputNames[3] + ']"]').val();
 
-            fileSize = self._round(fileSize);
+            fileSize = this._round(fileSize);
 
-            currentTotalSize = self._round(currentTotalSize - fileSize);
+            currentTotalSize = this._round(currentTotalSize - fileSize);
 
-            var availableSize = self._options.totalMaxSize - currentTotalSize;
+            var availableSize = this._options.totalMaxSize - currentTotalSize;
 
-            availableSize = self._round(availableSize);
+            availableSize = this._round(availableSize);
             availableLabel.children('span').html(availableSize);
 
             // remove result block
@@ -163,20 +163,20 @@
                 $('.filesContainer').addClass('filesContainerEmpty');
             }
 
-            self._logger('Deleted file N: ' + index, 2);
+            this._logger('Deleted file N: ' + index, 2);
 
-            self._options.onfileDelete(index, currentTotalSize);
+            this._options.onfileDelete(index, currentTotalSize);
         };
 
         // method to rename file in result container accordingly to modifications by user
-        this._fileRename = function(event) {
+        this._fileRename = (event) => {
             var element = event.data.element;
             var $this = $(event.target);
             var ext = element.children('.fileExt').html();
             var text = $this.val();
             var index = element.data('index');
             var $input = $resultContainer.find('div[data-index="' + index + '"] input:first');
-            var nameTest = self._options.filenameTest(text, ext, $fileThumbsContainer);
+            var nameTest = this._options.filenameTest(text, ext, $fileThumbsContainer);
 
             if (nameTest === false) {
                 event.preventDefault();
@@ -199,7 +199,7 @@
             }
         };
 
-        this.getData = function() {
+        this.getData = () => {
             var data = [];
 
             this._logger('RECEIVED SAVE COMMAND:', 0);
@@ -219,45 +219,45 @@
         };
 
         // create container for file uploading elements (icon, progress bar, etc...)
-        this._createUploaderContainer = function(index, fileName, fileExt) {
+        this._createUploaderContainer = (index, fileName, fileExt) => {
             // create current element's DOM
-            var containerStyle = 'position: relative;';
+            let containerStyle = 'position: relative;';
 
             //insert file icon if requested
             if (this._options.useFileIcons) {
-                var currentThumb = $('<img src="/images/' + this._fileType(fileExt) + '.png" class="fileThumb" />');
+                let currentThumb = $('<img src="/images/' + this._fileType(fileExt) + '.png" class="fileThumb" />');
                 $fileThumbsContainer.append(currentThumb);
             }
 
-            var container = $('<div class="newElement" data-index="' + parseInt(index) + '" style="' + containerStyle + '"></div');
+            let container = $('<div class="newElement" data-index="' + parseInt(index) + '" style="' + containerStyle + '"></div');
             $fileThumbsContainer.append(container);
 
-            var fileButtonsContainer = $('<div class="fileActions"></div>');
+            let fileButtonsContainer = $('<div class="fileActions"></div>');
             container.append(fileButtonsContainer);
 
             // file "see" link
-            var seeFileLink = $('<a target="_blank"><div class="fileSee">' + self._options.linkButtonContent + '</div></a>');
+            let seeFileLink = $('<a target="_blank"><div class="fileSee">' + this._options.linkButtonContent + '</div></a>');
             fileButtonsContainer.append(seeFileLink);
 
             // delete button
-            var deleteBtn = $('<div data-delete="' + parseInt(index) + '" class="fileDelete">' + self._options.deleteButtonContent + '</div>');
+            let deleteBtn = $('<div data-delete="' + parseInt(index) + '" class="fileDelete">' + this._options.deleteButtonContent + '</div>');
             fileButtonsContainer.append(deleteBtn);
             deleteBtn.click({element: container}, this._fileDelete);
 
             //insert loading bars if requested
             if (this._options.useLoadingBars) {
-                var classes = self._options.loadingBarsClasses;
+                let classes = this._options.loadingBarsClasses;
 
                 if (classes.length > 0) {
                     classes = classes.join(' ');
                 }
 
-                var currentLoadBar = $('<div class="loadBar ' + classes + '"><div></div></div>');
+                let currentLoadBar = $('<div class="loadBar ' + classes + '"><div></div></div>');
                 container.prepend(currentLoadBar);
             }
 
-            var currentTitle = $('<input placeholder="nome" class="fileTitle"></input>');
-            var currentExtension = $('<div class="fileExt"></div>');
+            let currentTitle = $('<input placeholder="nome" class="fileTitle"></input>');
+            let currentExtension = $('<div class="fileExt"></div>');
 
             container.prepend(currentExtension);
             container.prepend(currentTitle);
@@ -268,7 +268,7 @@
                 event.data.element = container;
                 event.data.start = this.selectionStart;
                 event.data.stop = this.selectionEnd;
-                self._fileRename(event);
+                this._fileRename(event);
             });
 
             currentTitle.val(fileName);
@@ -277,21 +277,21 @@
             return container;
         };
 
-        this._createResultContainer = function(fileData) {
+        this._createResultContainer = (fileData) => {
             var index = fileData.index;
-            var resultElemContainer = $('<div data-index="' + index + '" class="' + self._options.resultFileContainerClass + '"></div>');
+            var resultElemContainer = $('<div data-index="' + index + '" class="' + this._options.resultFileContainerClass + '"></div>');
 
             resultElemContainer.append($('<div>File: ' + index + '</div>'));
-            resultElemContainer.append($('<input/>').attr({type: 'text', name: self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[0] + ']', value: fileData.name}));
-            resultElemContainer.append($('<input/>').attr({type: 'text', name: self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[1] + ']', value: fileData.type}));
-            resultElemContainer.append($('<input/>').attr({type: 'text', name: self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[2] + ']', value: fileData.result}));
-            resultElemContainer.append($('<input/>').attr({type: 'text', name: self._options.resultPrefix + '[' + index + '][' + self._options.resultInputNames[3] + ']', value: fileData.size}));
+            resultElemContainer.append($('<input/>').attr({type: 'text', name: this._options.resultPrefix + '[' + index + '][' + this._options.resultInputNames[0] + ']', value: fileData.name}));
+            resultElemContainer.append($('<input/>').attr({type: 'text', name: this._options.resultPrefix + '[' + index + '][' + this._options.resultInputNames[1] + ']', value: fileData.type}));
+            resultElemContainer.append($('<input/>').attr({type: 'text', name: this._options.resultPrefix + '[' + index + '][' + this._options.resultInputNames[2] + ']', value: fileData.result}));
+            resultElemContainer.append($('<input/>').attr({type: 'text', name: this._options.resultPrefix + '[' + index + '][' + this._options.resultInputNames[3] + ']', value: fileData.size}));
 
             $resultContainer.append(resultElemContainer);
         };
 
         // files read function
-        this._filesRead = function(event) {
+        this._filesRead = (event) => {
             var DOM = event.data.DOM;
             var filesList;
             var approvedList = false;
@@ -308,7 +308,7 @@
             this._logger('%O', 0, filesList);
 
             // build approved list
-            if (!self._options.allowDuplicates) {
+            if (!this._options.allowDuplicates) {
                 var loadedFiles = [];
                 var newFiles = [];
 
@@ -338,22 +338,22 @@
             // set selected file's name to fleNameContainer
             $fileNameContainer.html('upload files');
 
-            function readFile(reader, file, index, DOM) {
+            let readFile = (reader, file, index, DOM) => {
                 var currentElement = DOM.find('.innerFileThumbs').children().filter(function() {
                     return $(this).data('index') === index ;
                 });
 
-                var size = self._round(file.size / 1000000);      // size in MB
+                var size = this._round(file.size / 1000000);      // size in MB
 
-                reader.onloadstart = function() {
-                    self._options.onfileloadStart(index);
-                    self._logger('START read file: ' + index + ', size: ' + size + ' MB', 2);
+                reader.onloadstart = () => {
+                    this._options.onfileloadStart(index);
+                    this._logger('START read file: ' + index + ', size: ' + size + ' MB', 2);
                 };
 
-                reader.onprogress = function(event) {
+                reader.onprogress = (event) => {
                     if (event.lengthComputable) {
-                        var percentLoaded = self._round((event.loaded / event.total) * 100);
-                        self._logger('File ' + index + ' loaded: ' + percentLoaded, 3);
+                        var percentLoaded = this._round((event.loaded / event.total) * 100);
+                        this._logger('File ' + index + ' loaded: ' + percentLoaded, 3);
 
                         // Increase the progress bar length.
                         if (percentLoaded <= 100) {
@@ -362,7 +362,7 @@
                     }
                 };
 
-                reader.onloadend = function() {
+                reader.onloadend = () => {
                     var type = file.type;
                     var name = file.name;
                     var result = reader.result;
@@ -375,15 +375,15 @@
                     var mimeType = result.substring(0, result.indexOf(';'));
 
                     // if file has no MIME type, replace with default one
-                    if (mimeType === "data:" && self._options.defaultMimeType.length > 0) {
-                        result = "data:" + self._options.defaultMimeType + result.substring(result.indexOf(';'), result.length);
+                    if (mimeType === "data:" && this._options.defaultMimeType.length > 0) {
+                        result = "data:" + this._options.defaultMimeType + result.substring(result.indexOf(';'), result.length);
                     }
 
                     if (type === "") {
-                        type = self._options.defaultMimeType;
+                        type = this._options.defaultMimeType;
                     }
-                    if (name.indexOf('.') < 0 && self._options.defaultFileExt !== "") {
-                        name = name + '.' + self._options.defaultFileExt;
+                    if (name.indexOf('.') < 0 && this._options.defaultFileExt !== "") {
+                        name = name + '.' + this._options.defaultFileExt;
                     }
 
                     var newFile = {
@@ -394,11 +394,11 @@
                         size: size
                     };
 
-                    self._createResultContainer(newFile);
+                    this._createResultContainer(newFile);
 
                     //set direct link on file see button
                     currentElement.children('.fileActions').children('a').attr('href', result);
-                    self._logger('END read file: ' + index, 4);
+                    this._logger('END read file: ' + index, 4);
 
                     var totalUploaded = parseInt($('#debugUploaded').html()) + 1;
 
@@ -411,36 +411,36 @@
                         size: size
                     };
 
-                    self._options.onfileloadEnd(index, resultObject, self._round(currentTotalSize));
+                    this._options.onfileloadEnd(index, resultObject, this._round(currentTotalSize));
                 };
 
-                if ((size <= self._options.fileMaxSize) && ((currentTotalSize + size) <= self._options.totalMaxSize)) {
+                if ((size <= this._options.fileMaxSize) && ((currentTotalSize + size) <= this._options.totalMaxSize)) {
                     reader.readAsDataURL(file);
 
                     // update total size
                     currentTotalSize = currentTotalSize + size;
 
-                    var currentAvailableSize = self._options.totalMaxSize - currentTotalSize;
+                    var currentAvailableSize = this._options.totalMaxSize - currentTotalSize;
 
-                    availableLabel.children('span').html(self._round(currentAvailableSize));
+                    availableLabel.children('span').html(this._round(currentAvailableSize));
                 }
                 else {
                     var errorMsg = currentLangObj.totalMaxSizeExceeded_msg;
 
-                    if (size > self._options.fileMaxSize) {
+                    if (size > this._options.fileMaxSize) {
                         errorMsg = currentLangObj.maxSizeExceeded_msg;
-                        self._logger('FILE REJECTED: Max size exceeded - max size: ' + self._options.fileMaxSize + ' MB - file size: ' + size + ' MB');
+                        this._logger('FILE REJECTED: Max size exceeded - max size: ' + this._options.fileMaxSize + ' MB - file size: ' + size + ' MB');
                     }
                     else {
-                        self._logger('FILE REJECTED: Max total size exceeded - max size: ' + self._options.totalMaxSizeExceeded_msg + ' MB - current total size: ' + (currentTotalSize + size) + ' MB');
+                        this._logger('FILE REJECTED: Max total size exceeded - max size: ' + this._options.totalMaxSizeExceeded_msg + ' MB - current total size: ' + (currentTotalSize + size) + ' MB');
                     }
 
                     currentElement.addClass('error');
                     currentElement.children('.loadBar').empty().append('<div class="errorMsg">' + errorMsg + '</div>');
 
-                    setTimeout(function() {
+                    setTimeout(() => {
                         currentElement.animate({opacity: 0}, 300, function() {
-                            if (self._options.useFileIcons) {
+                            if (instance._options.useFileIcons) {
                                 $(this).prev('img').remove();
                             }
                             $(this).remove();
@@ -462,7 +462,7 @@
             }
 
             function appendMessage($message) {
-                setTimeout(function() {
+                setTimeout(() => {
                     $message.animate({opacity: 0}, 300, function() {
                         $(this).remove();
                     });
@@ -476,7 +476,7 @@
 
                 // test for duplicates
                 if (approvedList && approvedList.indexOf(file.name) < 0) {
-                    if (self._options.duplicatesWarning) {
+                    if (this._options.duplicatesWarning) {
                         var $info = $('<div class="errorLabel center"></div>');
 
                         $info.html(currentLangObj.duplicated_msg);
@@ -489,6 +489,7 @@
                 }
 
                 var fileName, fileExt;
+
                 if (file.name.lastIndexOf('.') > 0) {
                     fileName = file.name.substring(0, file.name.lastIndexOf('.'));
                     fileExt = file.name.substring(file.name.lastIndexOf('.') + 1, file.name.length);
@@ -528,18 +529,18 @@
             this._logger('INITIALIZED INSTANCE: ' + this._options.name);
         }
         // build HTML template
-        var template = $(this._options.HTMLTemplate());
+        let template = $(this._options.HTMLTemplate());
 
         $el.append(template);
 
-        var globalIndex = 0;
-        var $resultContainer = $el.find('.' + this._options.resultContainerClass);
-        var $loadBtn = $el.find('.fileLoader');
-        var $fileContainer = $el.find('.filesContainer');
-        var $fileNameContainer = $el.find('.fileNameContainer');
-        var $fileThumbsContainer = $el.find('.innerFileThumbs');
-        var dropZone = $el.find('.dropZone')[0];
-        var currentLangObj = this._options.langs[this._options.lang];
+        let globalIndex = 0;
+        let $resultContainer = $el.find('.' + this._options.resultContainerClass);
+        let $loadBtn = $el.find('.fileLoader');
+        let $fileContainer = $el.find('.filesContainer');
+        let $fileNameContainer = $el.find('.fileNameContainer');
+        let $fileThumbsContainer = $el.find('.innerFileThumbs');
+        let dropZone = $el.find('.dropZone')[0];
+        let currentLangObj = this._options.langs[this._options.lang];
 
         // place reloaded files' HTML in result container directly (if provided)
         if (this._options.reloadHTML) {
@@ -549,6 +550,7 @@
 
         $el.find('.introMsg').html(currentLangObj.intro_msg);
         $(dropZone).html(currentLangObj.dropZone_msg);
+
         if (!this._options.debug) {
             $resultContainer.addClass('hide');
         }
@@ -566,8 +568,8 @@
         var currentTotalSize = 0;
         var loadedFile;
 
-        $.each($resultContainer.children('.' + this._options.resultFileContainerClass), function(index, element) {
-            self._logger('found previously uploaded file: index = ' + $(element).data('index'), 2);
+        $.each($resultContainer.children('.' + this._options.resultFileContainerClass), (index, element) => {
+            this._logger('found previously uploaded file: index = ' + $(element).data('index'), 2);
 
             // pay attention to index used on fileData here: index 0 is the title DIV!
             var fileData = $(element).children('input');
@@ -579,9 +581,9 @@
                 fileName = fileName.substr(0, fileName.lastIndexOf('.'));
             }
 
-            loadedFile = self._createUploaderContainer(globalIndex, fileName, fileExt);
+            loadedFile = this._createUploaderContainer(globalIndex, fileName, fileExt);
             loadedFile.children('.loadBar').children('div').css({width: '100%'});
-            loadedFile.addClass(self._options.reloadedFilesClass);
+            loadedFile.addClass(this._options.reloadedFilesClass);
 
             currentTotalSize = currentTotalSize + parseFloat(fileSize);
             globalIndex++;
@@ -589,13 +591,13 @@
 
         // reload files from provided array
         if (this._options.reloadArray.length > 0) {
-            this._options.reloadArray.forEach(function(file, index) {
+            this._options.reloadArray.forEach((file, index) => {
                 // re-create visible elements
-                loadedFile = self._createUploaderContainer(index, file.name, file.ext);
+                loadedFile = this._createUploaderContainer(index, file.name, file.ext);
                 loadedFile.children('.loadBar').children('div').css({width: '100%'});
-                loadedFile.addClass(self._options.reloadedFilesClass);
+                loadedFile.addClass(this._options.reloadedFilesClass);
 
-                self._logger('found previously uploaded file: index = ' + index, 2);
+                this._logger('found previously uploaded file: index = ' + index, 2);
 
                 // re-create results
                 var newFile = {
@@ -606,14 +608,14 @@
                     size: file.size
                 };
 
-                self._createResultContainer(newFile);
+                this._createResultContainer(newFile);
 
                 currentTotalSize = currentTotalSize + parseFloat(file.size);
                 globalIndex++;
             });
         }
 
-        currentTotalSize = self._round(currentTotalSize);
+        currentTotalSize = this._round(currentTotalSize);
 
         this._logger('current total size: ' + currentTotalSize);
         availableLabel.children('span').html(this._options.totalMaxSize - currentTotalSize);
@@ -623,39 +625,39 @@
         this._options.onload(this._options, currentTotalSize);
 
         // Drag events
-        function handleDragOver(event) {
+        this.handleDragOver = (event) => {
             $(dropZone).addClass('highlight');
             event.stopPropagation();
             event.preventDefault();
             event.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
         }
-        function handleDrop(event) {
+        this.handleDrop = (event) => {
             $(dropZone).removeClass('highlight');
             event.stopPropagation();
             event.preventDefault();
             event.data = {
                 DOM: $el
             };
-            self._filesRead(event);
+            this._filesRead(event);
         }
 
-        dropZone.addEventListener('dragleave', function() {
+        dropZone.addEventListener('dragleave', () => {
             $(dropZone).removeClass('highlight');
         });
-        dropZone.addEventListener('dragover', handleDragOver, false);
-        dropZone.addEventListener('drop', (function(passedInElement) {
-            return function(e) {
-                handleDrop(e, passedInElement);
+        dropZone.addEventListener('dragover', this.handleDragOver, false);
+        dropZone.addEventListener('drop', ((passedInElement) => {
+            return (event) => {
+                this.handleDrop(event, passedInElement);
             };
         }) (this), false);
 
-        $(dropZone).click(function() {
+        $(dropZone).click(() => {
             $loadBtn.trigger('click');
         });
 
         // fileUploader events
-        $loadBtn.change({DOM: $el}, function(event) {
-            self._filesRead(event);
+        $loadBtn.change({DOM: $el}, (event) => {
+            this._filesRead(event);
             this.value = null;
         });
 
@@ -664,14 +666,14 @@
     $.fn.fileUploader = function(methodOrOptions) {
         var method = (typeof methodOrOptions === 'string') ? methodOrOptions : undefined;
 
-        function getFileUploader() {
+        const getFileUploader = () => {
             var $el          = $(this);
             var fileUploader = $el.data('fileUploader');
 
             fileUploaders.push(fileUploader);
         }
 
-        function applyMethod(index) {
+        const applyMethod = (index) => {
             var fileUploader = fileUploaders[index];
 
             if (!fileUploader) {
@@ -689,7 +691,7 @@
             }
         }
 
-        function init() {
+        const init = () => {
             var $el          = $(this);
             var fileUploader = new FileUploader($el, options);
 
@@ -701,16 +703,17 @@
 
             this.each(getFileUploader);
 
-            var args    = (arguments.length > 1) ? Array.prototype.slice.call(arguments, 1) : undefined;
+            var args = (arguments.length > 1) ? Array.prototype.slice.call(arguments, 1) : undefined;
             var results = [];
 
             this.each(applyMethod);
 
             return (results.length > 1) ? results : results[0];
-        } else {
+        }
+        else {
             var options = (typeof methodOrOptions === 'object') ? methodOrOptions : undefined;
 
             return this.each(init);
         }
     };
-})(jQuery);
+})(window);

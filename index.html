@@ -53,7 +53,6 @@
         </p>
     </footer>
 
-    <script type="text/javascript" src="lib/jquery-2.1.4.js"></script>
     <script type="text/javascript" src="dist/js/fileUploader.js"></script>
     <script tyle="text/javascript">
         var filesArray = [
@@ -101,22 +100,22 @@
             deleteButtonContent: '<i>Remove</i>',
             duplicatesWarning: true,
             onload: function(options, totalSize) {
-                $('.customTotalSize').children('span').html(totalSize + ' MB');
+                document.querySelector('.customTotalSize').children('span').html(totalSize + ' MB');
             },
             onfileloadEnd: function(index, file, totalSize) {
-                $('.customTotalSize').children('span').html(totalSize + ' MB');
+                document.querySelector('.customTotalSize').children('span').html(totalSize + ' MB');
             },
             onfileDelete: function(index, totalSize) {
-                $('.customTotalSize').children('span').html(totalSize + ' MB');
+                document.querySelector('.customTotalSize').children('span').html(totalSize + ' MB');
             },
             filenameTest: function(fileName, fileExt, $container) {
-                var allowedExts = ['jpg', 'jpeg', ''];
-                var $info = $('<div class="errorLabel center"></div>');
-                var proceed = true;
+                let allowedExts = ['jpg', 'jpeg', ''];
+                let $info = document.createElement('<div class="errorLabel center"></div>');
+                let proceed = true;
 
                 // length check
                 if (fileName.length > 13) {
-                    $info.html('Name too long...');
+                    $info.innerHTML = 'Name too long...';
                     proceed = false;
                 }
                 // replace not allowed characters
@@ -124,19 +123,19 @@
 
                 // extension check
                 if (allowedExts.indexOf(fileExt) < 0) {
-                    $info.html('Extension not allowed...');
+                    $info.innerHTML = 'Extension not allowed...';
                     proceed = false;
                 }
 
                 // show an error message, but only if there is no other error message already there
                 if (!proceed && $container.children('.errorLabel').length < 1) {
-                    $container.append($info);
+                    $container.appendChild($info);
 
-                    setTimeout(function() {
+                    /*setTimeout(function() {
                         $info.animate({opacity: 0}, 300, function() {
                             $(this).remove();
                         });
-                    }, 2000);
+                    }, 2000);*/
                 }
                 if (!proceed) {
                     return false;

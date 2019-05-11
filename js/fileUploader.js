@@ -130,8 +130,8 @@ import deepMerge from 'deepmerge';
         };
 
         // method for deleting a reader's result from result container
-        this._fileDelete = (event) => {
-            let element = event.data.element;
+        this._fileDelete = (event, data) => {
+            let element = data.element;
             let index = event.target.dataset.delete;
 
             if (!index) {
@@ -200,7 +200,7 @@ import deepMerge from 'deepmerge';
         };
 
         this.getData = () => {
-            var data = [];
+            let data = [];
 
             this._logger('RECEIVED SAVE COMMAND:', 0);
 
@@ -220,29 +220,35 @@ import deepMerge from 'deepmerge';
 
         // create container for file uploading elements (icon, progress bar, etc...)
         this._createUploaderContainer = (index, fileName, fileExt) => {
-            // create current element's DOM
-            let containerStyle = 'position: relative;';
-
             //insert file icon if requested
             if (this._options.useFileIcons) {
-                let currentThumb = $('<img src="/images/' + this._fileType(fileExt) + '.png" class="fileThumb" />');
-                $fileThumbsContainer.append(currentThumb);
+                let currentThumb = `<img src="/images/${this._fileType(fileExt)}.png" class="fileThumb" />`;
+                $fileThumbsContainer.insertAdjacentHTML('beforeend', currentThumb);
             }
 
-            let container = $('<div class="newElement" data-index="' + parseInt(index) + '" style="' + containerStyle + '"></div');
-            $fileThumbsContainer.append(container);
+            let container = document.createElement('div');
+            container.className = 'newElement';
+            container.dataset.index = parseInt(index);
+            container.style.position = 'relative';
+            $fileThumbsContainer.appendChild(container);
 
-            let fileButtonsContainer = $('<div class="fileActions"></div>');
-            container.append(fileButtonsContainer);
+            let fileButtonsContainer = document.createElement('div');
+            fileButtonsContainer.className = 'fileActions';
+            container.appendChild(fileButtonsContainer);
 
             // file "see" link
-            let seeFileLink = $('<a target="_blank"><div class="fileSee">' + this._options.linkButtonContent + '</div></a>');
-            fileButtonsContainer.append(seeFileLink);
+            let seeFileLink = `<a target="_blank"><div class="fileSee">${this._options.linkButtonContent}</div></a>`;
+            fileButtonsContainer.insertAdjacentHTML('beforeend', seeFileLink);
 
             // delete button
-            let deleteBtn = $('<div data-delete="' + parseInt(index) + '" class="fileDelete">' + this._options.deleteButtonContent + '</div>');
+            let deleteBtn = document.createElement('div');
+            deleteBtn.className = 'fileDelete';
+            deleteBtn.dataset.delete = parseInt(index);
+            deleteBtn.innerHTML = this._options.deleteButtonContent;
             fileButtonsContainer.append(deleteBtn);
-            deleteBtn.click({element: container}, this._fileDelete);
+            deleteBtn.addEventListener('click', (event) => {
+                this._fileDelete(event, {element: container});
+            });
 
             //insert loading bars if requested
             if (this._options.useLoadingBars) {
@@ -252,12 +258,18 @@ import deepMerge from 'deepmerge';
                     classes = classes.join(' ');
                 }
 
-                let currentLoadBar = $('<div class="loadBar ' + classes + '"><div></div></div>');
+                let currentLoadBar = document.createElement('div');
+                currentLoadBar.className = `loadBar ${classes}`;
+                currentLoadBar.appendChild(document.createElement('div'));
                 container.prepend(currentLoadBar);
             }
 
-            let currentTitle = $('<input placeholder="nome" class="fileTitle"></input>');
-            let currentExtension = $('<div class="fileExt"></div>');
+            let currentTitle = document.createElement('input');
+            // TODO translate placeholder
+            currentTitle.setAttribute('placeholder', 'nome');
+            currentTitle.className = 'fileTitle';
+            let currentExtension = document.createElement('div');
+            currentExtension.className = 'fileExt';
 
             container.prepend(currentExtension);
             container.prepend(currentTitle);
@@ -529,17 +541,17 @@ import deepMerge from 'deepmerge';
             this._logger('INITIALIZED INSTANCE: ' + this._options.name);
         }
         // build HTML template
-        let template = $(this._options.HTMLTemplate());
+        let template = this._options.HTMLTemplate();
 
-        $el.append(template);
+        $el.insertAdjacentHTML('beforeend', template);
 
         let globalIndex = 0;
-        let $resultContainer = $el.find('.' + this._options.resultContainerClass);
-        let $loadBtn = $el.find('.fileLoader');
-        let $fileContainer = $el.find('.filesContainer');
-        let $fileNameContainer = $el.find('.fileNameContainer');
-        let $fileThumbsContainer = $el.find('.innerFileThumbs');
-        let dropZone = $el.find('.dropZone')[0];
+        let $resultContainer = $el.querySelector('.' + this._options.resultContainerClass);
+        let $loadBtn = $el.querySelector('.fileLoader');
+        let $fileContainer = $el.querySelector('.filesContainer');
+        let $fileNameContainer = $el.querySelector('.fileNameContainer');
+        let $fileThumbsContainer = $el.querySelector('.innerFileThumbs');
+        let dropZone = $el.querySelector('.dropZone');
         let currentLangObj = this._options.langs[this._options.lang];
 
         // place reloaded files' HTML in result container directly (if provided)
@@ -548,34 +560,34 @@ import deepMerge from 'deepmerge';
         }
 
 
-        $el.find('.introMsg').html(currentLangObj.intro_msg);
-        $(dropZone).html(currentLangObj.dropZone_msg);
+        $el.querySelector('.introMsg').innerHTML = currentLangObj.intro_msg;
+        dropZone.innerHTML = currentLangObj.dropZone_msg;
 
         if (!this._options.debug) {
-            $resultContainer.addClass('hide');
+            $resultContainer.classList.add('hide');
         }
         else {
-            $('<p class="debugMode">Debug mode: on</p>').insertBefore($resultContainer);
-            $('<div class="debug">Uploaded files: <span id="debugUploaded">0</span> | Rejected files: <span id="debugRejected">0</span></div>').insertBefore($resultContainer);
-            $('<div class="debug">Current MAX FILE SIZE: ' + this._options.fileMaxSize + ' MB</div>').insertBefore($resultContainer);
-            $('<div class="debug">Current MAX TOTAL SIZE: ' + this._options.totalMaxSize + ' MB</div>').insertBefore($resultContainer);
-            $('<div class="debug sizeAvailable">Size still available: <span>' + this._options.totalMaxSize + '</span> MB</div>').insertBefore($resultContainer);
+            $resultContainer.insertAdjacentHTML('beforebegin', '<p class="debugMode">Debug mode: on</p>');
+            $resultContainer.insertAdjacentHTML('beforebegin', '<div class="debug">Uploaded files: <span id="debugUploaded">0</span> | Rejected files: <span id="debugRejected">0</span></div>');
+            $resultContainer.insertAdjacentHTML('beforebegin', '<div class="debug">Current MAX FILE SIZE: ' + this._options.fileMaxSize + ' MB</div>');
+            $resultContainer.insertAdjacentHTML('beforebegin', '<div class="debug">Current MAX TOTAL SIZE: ' + this._options.totalMaxSize + ' MB</div>');
+            $resultContainer.insertAdjacentHTML('beforebegin', '<div class="debug sizeAvailable">Size still available: <span>' + this._options.totalMaxSize + '</span> MB</div>');
         }
 
         // --- FILES RELOAD SECTION ---
         // lookup for previously loaded files placed in the result container directly
-        var availableLabel = $el.find('.sizeAvailable');
-        var currentTotalSize = 0;
-        var loadedFile;
+        let availableLabel = $el.querySelector('.sizeAvailable');
+        let currentTotalSize = 0;
+        let loadedFile;
 
-        $.each($resultContainer.children('.' + this._options.resultFileContainerClass), (index, element) => {
-            this._logger('found previously uploaded file: index = ' + $(element).data('index'), 2);
+        for (const [index, element] of $resultContainer.querySelectorAll(`:scope > .${this._options.resultFileContainerClass}`)) {
+            this._logger(`found previously uploaded file: index = ${element.dataset.index}`, 2);
 
             // pay attention to index used on fileData here: index 0 is the title DIV!
-            var fileData = $(element).children('input');
-            var fileName = $(fileData[0]).val();
-            var fileExt = $(fileData[1]).val();
-            var fileSize = $(fileData[3]).val();
+            let fileData = $(element).children('input');
+            let fileName = $(fileData[0]).val();
+            let fileExt = $(fileData[1]).val();
+            let fileSize = $(fileData[3]).val();
 
             if (fileName.lastIndexOf('.') > 0) {
                 fileName = fileName.substr(0, fileName.lastIndexOf('.'));
@@ -587,7 +599,7 @@ import deepMerge from 'deepmerge';
 
             currentTotalSize = currentTotalSize + parseFloat(fileSize);
             globalIndex++;
-        });
+        }
 
         // reload files from provided array
         if (this._options.reloadArray.length > 0) {
@@ -663,7 +675,7 @@ import deepMerge from 'deepmerge';
 
     };
 
-    $.fn.fileUploader = function(methodOrOptions) {
+    const fileUploader = function(methodOrOptions) {
         var method = (typeof methodOrOptions === 'string') ? methodOrOptions : undefined;
 
         const getFileUploader = () => {

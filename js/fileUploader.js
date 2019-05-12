@@ -71,6 +71,15 @@ import deepMerge from 'deepmerge';
             }
         };
 
+        const addMultipleListeners = function (element, events, handler) {
+            if (!(events instanceof Array)) {
+                this._logger('addMultipleListeners requires events to be an array');
+            }
+            for (const event of events) {
+                element.addEventListener(event, handler);
+            }
+        }
+
         // extend options with instance ones
         this._options = deepMerge(this._defaults, options);
 
@@ -274,8 +283,7 @@ import deepMerge from 'deepmerge';
             container.prepend(currentExtension);
             container.prepend(currentTitle);
 
-            //currentTitle.keypress({element: container}, this._fileRename);
-            currentTitle.on('keypress keyup paste', function(event) {
+            addMultipleListeners(currentTitle, ['keypress', 'keyup', 'paste'], function(event) {
                 event.data = {};
                 event.data.element = container;
                 event.data.start = this.selectionStart;
@@ -283,23 +291,24 @@ import deepMerge from 'deepmerge';
                 this._fileRename(event);
             });
 
-            currentTitle.val(fileName);
-            currentExtension.html(fileExt);
+            currentTitle.value = fileName;
+            currentExtension.innerHTML = fileExt;
 
             return container;
         };
 
         this._createResultContainer = (fileData) => {
-            var index = fileData.index;
-            var resultElemContainer = $('<div data-index="' + index + '" class="' + this._options.resultFileContainerClass + '"></div>');
+            let index = fileData.index;
+            let resultElemContainer = document.createElement('div');
 
-            resultElemContainer.append($('<div>File: ' + index + '</div>'));
-            resultElemContainer.append($('<input/>').attr({type: 'text', name: this._options.resultPrefix + '[' + index + '][' + this._options.resultInputNames[0] + ']', value: fileData.name}));
-            resultElemContainer.append($('<input/>').attr({type: 'text', name: this._options.resultPrefix + '[' + index + '][' + this._options.resultInputNames[1] + ']', value: fileData.type}));
-            resultElemContainer.append($('<input/>').attr({type: 'text', name: this._options.resultPrefix + '[' + index + '][' + this._options.resultInputNames[2] + ']', value: fileData.result}));
-            resultElemContainer.append($('<input/>').attr({type: 'text', name: this._options.resultPrefix + '[' + index + '][' + this._options.resultInputNames[3] + ']', value: fileData.size}));
-
-            $resultContainer.append(resultElemContainer);
+            resultElemContainer.className = 'this._options.resultFileContainerClass';
+            resultElemContainer.dataset.index = index;
+            resultElemContainer.insertAdjacentHTML('beforeend', `<div>File: ${index}</div>`);
+            resultElemContainer.insertAdjacentHTML('beforeend', `<input type="text" name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[0]}]" value="${fileData.name}" />`);
+            resultElemContainer.insertAdjacentHTML('beforeend', `<input type="text" name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[1]}]" value="${fileData.type}" />`);
+            resultElemContainer.insertAdjacentHTML('beforeend', `<input type="text" name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[2]}]" value="${fileData.result}" />`);
+            resultElemContainer.insertAdjacentHTML('beforeend', `<input type="text" name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[3]}]" value="${fileData.size}" />`);
+            $resultContainer.appendChild(resultElemContainer);
         };
 
         // files read function
@@ -594,7 +603,7 @@ import deepMerge from 'deepmerge';
             }
 
             loadedFile = this._createUploaderContainer(globalIndex, fileName, fileExt);
-            loadedFile.children('.loadBar').children('div').css({width: '100%'});
+            loadedFile.querySelector(':scope > .loadBar > div').style.width = '100%';
             loadedFile.addClass(this._options.reloadedFilesClass);
 
             currentTotalSize = currentTotalSize + parseFloat(fileSize);
@@ -606,13 +615,13 @@ import deepMerge from 'deepmerge';
             this._options.reloadArray.forEach((file, index) => {
                 // re-create visible elements
                 loadedFile = this._createUploaderContainer(index, file.name, file.ext);
-                loadedFile.children('.loadBar').children('div').css({width: '100%'});
-                loadedFile.addClass(this._options.reloadedFilesClass);
+                loadedFile.querySelector(':scope > .loadBar > div').style.width = '100%';
+                loadedFile.classList.add(this._options.reloadedFilesClass);
 
                 this._logger('found previously uploaded file: index = ' + index, 2);
 
                 // re-create results
-                var newFile = {
+                let newFile = {
                     index: index,
                     name: file.name,
                     type: file.ext,
@@ -630,7 +639,7 @@ import deepMerge from 'deepmerge';
         currentTotalSize = this._round(currentTotalSize);
 
         this._logger('current total size: ' + currentTotalSize);
-        availableLabel.children('span').html(this._options.totalMaxSize - currentTotalSize);
+        availableLabel.querySelector(':scope > span').innerHTML = (this._options.totalMaxSize - currentTotalSize);
         // --- END FILES RELOAD SECTION ---
 
         // onload callback
@@ -638,13 +647,13 @@ import deepMerge from 'deepmerge';
 
         // Drag events
         this.handleDragOver = (event) => {
-            $(dropZone).addClass('highlight');
+            dropZone.classList.add('highlight');
             event.stopPropagation();
             event.preventDefault();
             event.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
         }
         this.handleDrop = (event) => {
-            $(dropZone).removeClass('highlight');
+            dropZone.classList.remove('highlight');
             event.stopPropagation();
             event.preventDefault();
             event.data = {
@@ -654,7 +663,7 @@ import deepMerge from 'deepmerge';
         }
 
         dropZone.addEventListener('dragleave', () => {
-            $(dropZone).removeClass('highlight');
+            dropZone.classList.remove('highlight');
         });
         dropZone.addEventListener('dragover', this.handleDragOver, false);
         dropZone.addEventListener('drop', ((passedInElement) => {

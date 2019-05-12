@@ -100,13 +100,13 @@
             deleteButtonContent: '<i>Remove</i>',
             duplicatesWarning: true,
             onload: function(options, totalSize) {
-                document.querySelector('.customTotalSize').children('span').html(totalSize + ' MB');
+                document.querySelector('.customTotalSize').querySelector(':scope > span').innerHTML = (totalSize + ' MB');
             },
             onfileloadEnd: function(index, file, totalSize) {
-                document.querySelector('.customTotalSize').children('span').html(totalSize + ' MB');
+                document.querySelector('.customTotalSize').querySelector(':scope > span').innerHTML = (totalSize + ' MB');
             },
             onfileDelete: function(index, totalSize) {
-                document.querySelector('.customTotalSize').children('span').html(totalSize + ' MB');
+                document.querySelector('.customTotalSize').querySelector(':scope > span').innerHTML = (totalSize + ' MB');
             },
             filenameTest: function(fileName, fileExt, $container) {
                 let allowedExts = ['jpg', 'jpeg', ''];

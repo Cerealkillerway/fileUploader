@@ -565,7 +565,7 @@ import deepMerge from 'deepmerge';
 
         // place reloaded files' HTML in result container directly (if provided)
         if (this._options.reloadHTML) {
-            $resultContainer.html(this._options.reloadHTML);
+            $resultContainer.innerHTML = this._options.reloadHTML;
         }
 
 
@@ -589,14 +589,14 @@ import deepMerge from 'deepmerge';
         let currentTotalSize = 0;
         let loadedFile;
 
-        for (const [index, element] of $resultContainer.querySelectorAll(`:scope > .${this._options.resultFileContainerClass}`)) {
+        for (const [index, element] of $resultContainer.querySelectorAll(`:scope > .${this._options.resultFileContainerClass}`).entries()) {
             this._logger(`found previously uploaded file: index = ${element.dataset.index}`, 2);
 
             // pay attention to index used on fileData here: index 0 is the title DIV!
-            let fileData = $(element).children('input');
-            let fileName = $(fileData[0]).val();
-            let fileExt = $(fileData[1]).val();
-            let fileSize = $(fileData[3]).val();
+            let fileData = element.querySelectorAll(':scope > input');
+            let fileName = fileData[0].value;
+            let fileExt = fileData[1].value;
+            let fileSize = fileData[3].value;
 
             if (fileName.lastIndexOf('.') > 0) {
                 fileName = fileName.substr(0, fileName.lastIndexOf('.'));
@@ -604,7 +604,7 @@ import deepMerge from 'deepmerge';
 
             loadedFile = this._createUploaderContainer(globalIndex, fileName, fileExt);
             loadedFile.querySelector(':scope > .loadBar > div').style.width = '100%';
-            loadedFile.addClass(this._options.reloadedFilesClass);
+            loadedFile.classList.add(this._options.reloadedFilesClass);
 
             currentTotalSize = currentTotalSize + parseFloat(fileSize);
             globalIndex++;
@@ -666,36 +666,37 @@ import deepMerge from 'deepmerge';
             dropZone.classList.remove('highlight');
         });
         dropZone.addEventListener('dragover', this.handleDragOver, false);
-        dropZone.addEventListener('drop', ((passedInElement) => {
+        dropZone.addEventListener('drop', (passedInElement) => {
             return (event) => {
                 this.handleDrop(event, passedInElement);
             };
-        }) (this), false);
+        }, false);
 
-        $(dropZone).click(() => {
-            $loadBtn.trigger('click');
+        dropZone.addEventListener('click', (event) => {
+            $loadBtn.dispatchEvent(event);
         });
 
-        // fileUploader events
-        $loadBtn.change({DOM: $el}, (event) => {
+        $loadBtn.addEventListener('change', (event) => {
+            event.data = {
+                DOM: $el
+            };
             this._filesRead(event);
             this.value = null;
         });
-
     };
 
     const fileUploader = function(methodOrOptions) {
-        var method = (typeof methodOrOptions === 'string') ? methodOrOptions : undefined;
+        let method = (typeof methodOrOptions === 'string') ? methodOrOptions : undefined;
 
         const getFileUploader = () => {
-            var $el          = $(this);
-            var fileUploader = $el.data('fileUploader');
+            let $el          = $(this);
+            let fileUploader = $el.data('fileUploader');
 
             fileUploaders.push(fileUploader);
         }
 
         const applyMethod = (index) => {
-            var fileUploader = fileUploaders[index];
+            let fileUploader = fileUploaders[index];
 
             if (!fileUploader) {
                 console.warn('$.fileUploader not instantiated yet');
@@ -705,7 +706,7 @@ import deepMerge from 'deepmerge';
             }
 
             if (typeof fileUploader[method] === 'function') {
-                var result = fileUploader[method].apply(fileUploader, args);
+                let result = fileUploader[method].apply(fileUploader, args);
                 results.push(result);
             } else {
                 console.warn('Method \'' + method + '\' not defined in $.fileUploader');
@@ -713,26 +714,26 @@ import deepMerge from 'deepmerge';
         }
 
         const init = () => {
-            var $el          = $(this);
-            var fileUploader = new FileUploader($el, options);
+            let $el          = $(this);
+            let fileUploader = new FileUploader($el, options);
 
             $el.data('fileUploader', fileUploader);
         }
 
         if (method) {
-            var fileUploaders = [];
+            let fileUploaders = [];
 
             this.each(getFileUploader);
 
-            var args = (arguments.length > 1) ? Array.prototype.slice.call(arguments, 1) : undefined;
-            var results = [];
+            let args = (arguments.length > 1) ? Array.prototype.slice.call(arguments, 1) : undefined;
+            let results = [];
 
             this.each(applyMethod);
 
             return (results.length > 1) ? results : results[0];
         }
         else {
-            var options = (typeof methodOrOptions === 'object') ? methodOrOptions : undefined;
+            let options = (typeof methodOrOptions === 'object') ? methodOrOptions : undefined;
 
             return this.each(init);
         }

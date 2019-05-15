@@ -6,10 +6,8 @@ import deepMerge from 'deepmerge';
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function(context) {
-    console.log(context);
     context.FileUploader = function($el, options) {
         let instance = this;
-        console.log(instance);
 
         // default options
         this._defaults = {
@@ -178,6 +176,7 @@ import deepMerge from 'deepmerge';
             this._options.onfileDelete(index, currentTotalSize);
         };
 
+
         // method to rename file in result container accordingly to modifications by user
         this._fileRename = (event) => {
             var element = event.data.element;
@@ -209,24 +208,27 @@ import deepMerge from 'deepmerge';
             }
         };
 
+
         this.getData = () => {
             let data = [];
 
             this._logger('RECEIVED SAVE COMMAND:', 0);
 
-            $.each($resultContainer.children('.' + this._options.resultFileContainerClass), function(index, element) {
-                var file = {
-                    title: $($(element).children('input')[0]).val(),
-                    ext: $($(element).children('input')[1]).val(),
-                    value: $($(element).children('input')[2]).val()
+            for (const element of $resultContainer.querySelectorAll(`:scope > .${this._options.resultFileContainerClass}`)) {
+                let inputs = element.querySelectorAll(':scope > input');
+                let file = {
+                    title: inputs[0].value,
+                    ext: inputs[1].value,
+                    value: inputs[2].value
                 };
 
                 data.push(file);
-            });
+            }
 
             this._logger('%O', 0 ,data);
             return data;
         };
+
 
         // create container for file uploading elements (icon, progress bar, etc...)
         this._createUploaderContainer = (index, fileName, fileExt) => {
@@ -302,7 +304,7 @@ import deepMerge from 'deepmerge';
             let index = fileData.index;
             let resultElemContainer = document.createElement('div');
 
-            resultElemContainer.className = 'this._options.resultFileContainerClass';
+            resultElemContainer.className = this._options.resultFileContainerClass;
             resultElemContainer.dataset.index = index;
             resultElemContainer.insertAdjacentHTML('beforeend', `<div>File: ${index}</div>`);
             resultElemContainer.insertAdjacentHTML('beforeend', `<input type="text" name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[0]}]" value="${fileData.name}" />`);
@@ -474,7 +476,7 @@ import deepMerge from 'deepmerge';
                 }
             }
 
-            var startIndex = $('#innerFileThumbs').children().last().attr('id');
+            let startIndex = $('#innerFileThumbs').children().last().attr('id');
 
             if (startIndex !== undefined) {
                 startIndex = parseInt(startIndex.substring(startIndex.indexOf('-') + 1, startIndex.length)) + 1;
@@ -493,13 +495,13 @@ import deepMerge from 'deepmerge';
 
             // create a new div containing thumb, delete button and title field for each target file
             for (i = 0; i < filesList.length; i++) {
-                var file = filesList[i];
-                var reader = new FileReader();
+                let file = filesList[i];
+                let reader = new FileReader();
 
                 // test for duplicates
                 if (approvedList && approvedList.indexOf(file.name) < 0) {
                     if (this._options.duplicatesWarning) {
-                        var $info = $('<div class="errorLabel center"></div>');
+                        let $info = $('<div class="errorLabel center"></div>');
 
                         $info.html(currentLangObj.duplicated_msg);
                         $fileThumbsContainer.append($info);
@@ -510,7 +512,7 @@ import deepMerge from 'deepmerge';
                     continue;
                 }
 
-                var fileName, fileExt;
+                let fileName, fileExt;
 
                 if (file.name.lastIndexOf('.') > 0) {
                     fileName = file.name.substring(0, file.name.lastIndexOf('.'));
@@ -522,7 +524,7 @@ import deepMerge from 'deepmerge';
                 }
 
                 // test for filenames
-                var nameTest = this._options.filenameTest(fileName, fileExt, $fileThumbsContainer);
+                let nameTest = this._options.filenameTest(fileName, fileExt, $fileThumbsContainer);
                 if (nameTest === false) {
                     this._logger('Invalid file name: ' + file.name, 2);
                     continue;
@@ -684,9 +686,15 @@ import deepMerge from 'deepmerge';
             this._filesRead(event);
             this.value = null;
         });
+
+        return {
+            fileUploader: instance,
+            elementDOM: $el
+        };
     };
 
-    const fileUploader = function(methodOrOptions) {
+    /*const fileUploader = function(methodOrOptions) {
+        console.log('constructor');
         let method = (typeof methodOrOptions === 'string') ? methodOrOptions : undefined;
 
         const getFileUploader = () => {
@@ -738,5 +746,5 @@ import deepMerge from 'deepmerge';
 
             return this.each(init);
         }
-    };
+    };*/
 })(window);

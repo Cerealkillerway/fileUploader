@@ -19,6 +19,27 @@ $errorColor: #283593 !default;
     background-color: lighten($mainColor, 30%);
 }
 
+%ckBtn {
+    background-color: $mainColor;
+    color: $mainColorText;
+    text-transform: uppercase;
+    padding: 7px 25px;
+    display: inline-block;
+    cursor: pointer;
+
+    &:hover {
+        background-color: darken($mainColor, 20%);
+    }
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
 body {
     padding: 0;
     margin: 0;
@@ -33,14 +54,6 @@ main {
     padding: 15px 35px;
     flex: 1 0 auto;
 
-    .left {
-        float: left;
-    }
-
-    .right {
-        float: right;
-    }
-
     .center {
         margin: 25px auto;
         text-align: center;
@@ -53,16 +66,7 @@ main {
     }
 
     .ckBtn {
-        background-color: $mainColor;
-        color: $mainColorText;
-        text-transform: uppercase;
-        padding: 7px 25px;
-        display: inline-block;
-        cursor: pointer;
-
-        &:hover {
-            background-color: darken($mainColor, 20%);
-        }
+        @extend %ckBtn;
     }
 
     .customTotalSize {
@@ -72,24 +76,6 @@ main {
         font-weight: bold;
         padding: 15px 35px;
         border: solid 3px darken($mainColor, 15%);
-    }
-
-    .staticBar {
-        position: fixed;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        background-color: $secondaryColor;
-        color: $secondaryColorText;
-        border: solid 3px $mainColor;
-
-        .innerBar {
-            padding: 15px 35px;
-        }   
-
-        .ckBtn {
-            background-color: darken($mainColor, 15%);
-        }
     }
 }
 
@@ -107,7 +93,7 @@ footer {
     color: $mainColorText;
     text-align: center;
     z-index: 99;
-    
+
     a:link , a:visited {
         text-transform: uppercase;
         color: $linkColor;
@@ -117,5 +103,31 @@ footer {
     a:hover, a:active {
         text-decoration: underline;
         color: lighten($linkColor, 20%);
+    }
+}
+
+.staticBar {
+    position: sticky;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: $secondaryColor;
+    color: $secondaryColorText;
+    border-top: solid 3px darken($secondaryColor, 10%);
+    z-index: 100;
+
+    .innerBar {
+        padding: 15px 35px;
+    }
+
+    .ckBtn {
+        @extend %ckBtn;
+        background-color: darken($mainColor, 15%);
+    }
+
+    .left {
+        .ckBtn:last-child {
+            margin-right: 20px;
+        }
     }
 }

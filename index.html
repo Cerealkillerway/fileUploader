@@ -29,21 +29,6 @@
         <h3>fileUploader 2</h3>
         <h5>(Example with files reloaded placed directly in result container):</h5>
         <div class="fileUploader" id="two"></div>
-
-        <div class="staticBar">
-            <div class="innerBar">
-                <div class="left">
-                    <a id="save1" class="ckBtn">Save 1</a>
-                    <a id="save2" class="ckBtn">Save 2</a>
-                    (Logs result in console)
-                </div>
-                <div class="right">
-                    <a id="getCurrentTotalSize1" class="ckBtn">Get Total Size 1</a>
-                    <a id="getCurrentTotalSize2" class="ckBtn">Get Total Size 2</a>
-                </div>
-                <div style="clear: both;"></div>
-            </div>
-        </div>
     </main>
 
     <footer>
@@ -52,6 +37,21 @@
             Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a>
         </p>
     </footer>
+
+    <div class="staticBar">
+        <div class="innerBar">
+            <div class="left">
+                <a id="save1" class="ckBtn">Save 1</a>
+                <a id="save2" class="ckBtn">Save 2</a>
+                (Logs result in console)
+            </div>
+            <div class="right">
+                <a id="getCurrentTotalSize1" class="ckBtn">Get Total Size 1</a>
+                <a id="getCurrentTotalSize2" class="ckBtn">Get Total Size 2</a>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
 
     <script type="text/javascript" src="dist/js/fileUploader.js"></script>
     <script tyle="text/javascript">
@@ -159,19 +159,19 @@
 
         // buttons
         document.getElementById('save1').addEventListener('click', function() {
-            let result = document.getElementById('one').fileUploader('getData');
+            let result = test1.fileUploader.getData();
             //do what you need with result (ex. send ajax call to remote procedure to persist files)
         });
         document.getElementById('save2').addEventListener('click', function() {
-            let result = document.getElementById('two').fileUploader('getData');
+            let result = test2.fileUploader.getData();
             //do what you need with result (ex. send ajax call to remote procedure to persist files)
         });
 
         document.getElementById('getCurrentTotalSize1').addEventListener('click', function() {
-            console.log(`Current total size uploader 1: ${document.getElementById('one').fileUploader('get', 'currentTotalSize')}`);
+            console.log(`Current total size uploader 1: ${test1.fileUploader.get('currentTotalSize')}`);
         });
         document.getElementById('getCurrentTotalSize2').addEventListener('click', function() {
-            console.log(`Current total size uploader 2: ${document.getElementById('two').fileUploader('get', 'currentTotalSize')}`);
+            console.log(`Current total size uploader 2: ${test2.fileUploader.get('currentTotalSize')}`);
         });
 
     </script>

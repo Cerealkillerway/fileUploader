@@ -6,6 +6,7 @@ import deepMerge from 'deepmerge';
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function(context) {
+    console.log(context);
     context.FileUploader = function($el, options) {
         let instance = this;
         console.log(instance);

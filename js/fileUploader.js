@@ -153,13 +153,13 @@ import deepMerge from 'deepmerge';
             element.remove();
 
             // get file size
-            var fileSize = $resultContainer.find('input[name="' + this._options.resultPrefix + '[' + index + '][' + this._options.resultInputNames[3] + ']"]').val();
+            let fileSize = $resultContainer.querySelector(`input[name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[3]}]"]`).val();
 
             fileSize = this._round(fileSize);
 
             currentTotalSize = this._round(currentTotalSize - fileSize);
 
-            var availableSize = this._options.totalMaxSize - currentTotalSize;
+            let availableSize = this._options.totalMaxSize - currentTotalSize;
 
             availableSize = this._round(availableSize);
             availableLabel.children('span').html(availableSize);

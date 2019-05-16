@@ -278,8 +278,10 @@ import deepMerge from 'deepmerge';
                 let index = event.target.closest('.newElement').dataset.index;
                 let content = $resultContainer.querySelector(`.uploadedFile[data-index="${index}"] textarea`).value;
 
-                console.log(content);
-                window.open(`content`, '_blank');
+                /*console.log(content);
+                window.open(content, '_blank');*/
+                let win = window.open();
+                win.document.write(`<iframe src="${content}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`)
             });
 
             // delete button

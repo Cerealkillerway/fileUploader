@@ -267,8 +267,20 @@ import deepMerge from 'deepmerge';
             container.appendChild(fileButtonsContainer);
 
             // file "see" link
-            let seeFileLink = `<a target="_blank"><div class="fileSee">${this._options.linkButtonContent}</div></a>`;
-            fileButtonsContainer.insertAdjacentHTML('beforeend', seeFileLink);
+            /*let seeFileLink = `<a target="_blank"><div class="fileSee">${this._options.linkButtonContent}</div></a>`;
+            fileButtonsContainer.insertAdjacentHTML('beforeend', seeFileLink);*/
+            let seeFileLink = document.createElement('div');
+            seeFileLink.className = 'fileSee';
+            seeFileLink.innerHTML = this._options.linkButtonContent;
+            fileButtonsContainer.appendChild(seeFileLink);
+
+            seeFileLink.addEventListener('click', function(event) {
+                let index = event.target.closest('.newElement').dataset.index;
+                let content = $resultContainer.querySelector(`.uploadedFile[data-index="${index}"] textarea`).value;
+
+                console.log(content);
+                window.open(`content`, '_blank');
+            });
 
             // delete button
             let deleteBtn = document.createElement('div');
@@ -330,7 +342,7 @@ import deepMerge from 'deepmerge';
             resultElemContainer.insertAdjacentHTML('beforeend', `<div>File: ${index}</div>`);
             resultElemContainer.insertAdjacentHTML('beforeend', `<input type="text" name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[0]}]" value="${fileData.name}" />`);
             resultElemContainer.insertAdjacentHTML('beforeend', `<input type="text" name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[1]}]" value="${fileData.type}" />`);
-            resultElemContainer.insertAdjacentHTML('beforeend', `<input type="text" name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[2]}]" value="${fileData.result}" />`);
+            resultElemContainer.insertAdjacentHTML('beforeend', `<textarea name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[2]}]">${fileData.result}</textarea>`);
             resultElemContainer.insertAdjacentHTML('beforeend', `<input type="text" name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[3]}]" value="${fileData.size}" />`);
             $resultContainer.appendChild(resultElemContainer);
         };
@@ -440,7 +452,7 @@ import deepMerge from 'deepmerge';
                     this._createResultContainer(newFile);
 
                     //set direct link on file see button
-                    currentElement.querySelector(':scope > .fileActions > a').setAttribute('href', result);
+                    //currentElement.querySelector(':scope > .fileActions > a').setAttribute('href', result);
                     this._logger(`END read file: ${index}`, 4);
 
                     let debugUploaded = document.getElementById('debugUploaded');

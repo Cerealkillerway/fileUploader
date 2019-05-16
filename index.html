@@ -110,7 +110,8 @@
             },
             filenameTest: function(fileName, fileExt, $container) {
                 let allowedExts = ['jpg', 'jpeg', ''];
-                let $info = document.createElement('<div class="errorLabel center"></div>');
+                let $info = document.createElement('div');
+                $info.className = 'errorLabel center';
                 let proceed = true;
 
                 // length check
@@ -128,14 +129,15 @@
                 }
 
                 // show an error message, but only if there is no other error message already there
-                if (!proceed && $container.children('.errorLabel').length < 1) {
+                if (!proceed && !$container.querySelector(':scope > .errorLabel')) {
                     $container.appendChild($info);
 
-                    /*setTimeout(function() {
-                        $info.animate({opacity: 0}, 300, function() {
+                    setTimeout(function() {
+                        /*$info.animate({opacity: 0}, 300, function() {
                             $(this).remove();
-                        });
-                    }, 2000);*/
+                        });*/
+                        $info.remove();
+                    }, 2000);
                 }
                 if (!proceed) {
                     return false;

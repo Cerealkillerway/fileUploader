@@ -70,6 +70,8 @@ import deepMerge from 'deepmerge';
             }
         };
 
+
+        // UTILITIES
         const addMultipleListeners = function (element, events, handler) {
             if (!(events instanceof Array)) {
                 this._logger('addMultipleListeners requires events to be an array');
@@ -79,18 +81,35 @@ import deepMerge from 'deepmerge';
             }
         }
 
+        const getPreviousSibling = function(element, selector) {
+            let sibling = element.previousElementSibling;
+
+            if (!selector) return sibling;
+
+            while (sibling) {
+                if (sibling.matches(selector)) {
+                    return sibling;
+                }
+                sibling = sibling.previousElementSibling;
+            }
+        };
+
+
         // extend options with instance ones
         this._options = deepMerge(this._defaults, options);
+
 
         // add more options
         this.options = (options) => {
             return (options) ? deepMerge(this._options, options) : this._options;
         };
 
+
         // round number
         this._round = (value) => {
             return Math.round(value * 100) / 100;
         };
+
 
         // return data
         this.get = (parameter) => {
@@ -102,6 +121,7 @@ import deepMerge from 'deepmerge';
                 return this._round(this._options.totalMaxSize - currentTotalSize);
             }
         };
+
 
         // debug logs function
         this._logger = (message, level, data) => {
@@ -124,6 +144,7 @@ import deepMerge from 'deepmerge';
             }
         };
 
+
         // file type identificator
         this._fileType = (fileName) => {
             let ext = fileName.substring(fileName.lastIndexOf('.') + 1, fileName.length);
@@ -137,6 +158,7 @@ import deepMerge from 'deepmerge';
             }
         };
 
+
         // method for deleting a reader's result from result container
         this._fileDelete = (event, data) => {
             let element = data.element;
@@ -148,63 +170,59 @@ import deepMerge from 'deepmerge';
 
             // remove file block
             if (this._options.useFileIcons) {
-                element.prev('img').remove();
+                getPreviousSibling(element, 'img').remove();
             }
             element.remove();
 
             // get file size
-            let fileSize = $resultContainer.querySelector(`input[name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[3]}]"]`).val();
+            let fileSize = $resultContainer.querySelector(`input[name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[3]}]"]`).value;
 
             fileSize = this._round(fileSize);
-
             currentTotalSize = this._round(currentTotalSize - fileSize);
 
             let availableSize = this._options.totalMaxSize - currentTotalSize;
 
             availableSize = this._round(availableSize);
-            availableLabel.children('span').html(availableSize);
+            availableLabel.querySelector(':scope > span').innerHTML = availableSize;
 
             // remove result block
-            $resultContainer.children('div[data-index="' + index + '"]').remove();
+            $resultContainer.querySelector(`:scope > div[data-index="${index}"]`).remove();
 
-            if ($('.innerFileThumbs').children().length === 0) {
-                $('.filesContainer').addClass('filesContainerEmpty');
+            if (document.querySelector('.innerFileThumbs').children.length === 0) {
+                document.querySelector('.filesContainer').classList.add('filesContainerEmpty');
             }
 
             this._logger('Deleted file N: ' + index, 2);
-
             this._options.onfileDelete(index, currentTotalSize);
         };
 
 
         // method to rename file in result container accordingly to modifications by user
         this._fileRename = (event) => {
-            var element = event.data.element;
-            var $this = $(event.target);
-            var ext = element.children('.fileExt').html();
-            var text = $this.val();
-            var index = element.data('index');
-            var $input = $resultContainer.find('div[data-index="' + index + '"] input:first');
-            var nameTest = this._options.filenameTest(text, ext, $fileThumbsContainer);
+            let element = event.data.element;
+            let $this = event.target;
+            let ext = element.querySelector(':scope > .fileExt').innerHTML;
+            let text = $this.value;
+            let index = element.dataset.index;
+            let $input = $resultContainer.querySelector(`div[data-index="${index}"] input`);
+            let nameTest = this._options.filenameTest(text, ext, $fileThumbsContainer);
 
             if (nameTest === false) {
                 event.preventDefault();
                 return false;
             }
             if (nameTest !== undefined && nameTest !== true) {
-
                 text = nameTest;
-                $this.val(text);
+                $this.value = text;
 
                 // update input
-                if (ext.length > 0) {
-                    text = text + '.' + ext;
-                }
+                /*if (ext.length > 0) {
+                    text = `${text}.${ext}`;
+                }*/
 
-                $input.val(text);
-
+                $input.value = text;
                 // restore selection range
-                $this[0].setSelectionRange(event.data.start, event.data.stop);
+                $this.setSelectionRange(event.data.start, event.data.stop);
             }
         };
 
@@ -277,12 +295,14 @@ import deepMerge from 'deepmerge';
             }
 
             let currentTitle = document.createElement('input');
+
             // TODO translate placeholder
             currentTitle.setAttribute('placeholder', 'nome');
             currentTitle.className = 'fileTitle';
-            let currentExtension = document.createElement('div');
-            currentExtension.className = 'fileExt';
 
+            let currentExtension = document.createElement('div');
+
+            currentExtension.className = 'fileExt';
             container.prepend(currentExtension);
             container.prepend(currentTitle);
 
@@ -291,7 +311,7 @@ import deepMerge from 'deepmerge';
                 event.data.element = container;
                 event.data.start = this.selectionStart;
                 event.data.stop = this.selectionEnd;
-                this._fileRename(event);
+                instance._fileRename(event);
             });
 
             currentTitle.value = fileName;
@@ -299,6 +319,7 @@ import deepMerge from 'deepmerge';
 
             return container;
         };
+
 
         this._createResultContainer = (fileData) => {
             let index = fileData.index;
@@ -313,6 +334,7 @@ import deepMerge from 'deepmerge';
             resultElemContainer.insertAdjacentHTML('beforeend', `<input type="text" name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[3]}]" value="${fileData.size}" />`);
             $resultContainer.appendChild(resultElemContainer);
         };
+
 
         // files read function
         this._filesRead = (event) => {

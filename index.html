@@ -109,13 +109,13 @@
                 document.querySelector('.customTotalSize').querySelector(':scope > span').innerHTML = (totalSize + ' MB');
             },
             filenameTest: function(fileName, fileExt, $container) {
-                let allowedExts = ['jpg', 'jpeg', ''];
+                let allowedExts = ['jpg', 'jpeg', 'png', 'txt'];
                 let proceed = true;
                 let info = document.createElement('div');
                 info.className = 'errorLabel center';
 
                 // length check
-                if (fileName.length > 13) {
+                if (fileName.length > 130) {
                     info.innerHTML = 'Name too long...';
                     proceed = false;
                 }

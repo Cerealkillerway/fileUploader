@@ -267,8 +267,6 @@ import deepMerge from 'deepmerge';
             container.appendChild(fileButtonsContainer);
 
             // file "see" link
-            /*let seeFileLink = `<a target="_blank"><div class="fileSee">${this._options.linkButtonContent}</div></a>`;
-            fileButtonsContainer.insertAdjacentHTML('beforeend', seeFileLink);*/
             let seeFileLink = document.createElement('div');
             seeFileLink.className = 'fileSee';
             seeFileLink.innerHTML = this._options.linkButtonContent;
@@ -277,11 +275,9 @@ import deepMerge from 'deepmerge';
             seeFileLink.addEventListener('click', function(event) {
                 let index = event.target.closest('.newElement').dataset.index;
                 let content = $resultContainer.querySelector(`.uploadedFile[data-index="${index}"] textarea`).value;
-
-                /*console.log(content);
-                window.open(content, '_blank');*/
                 let win = window.open();
-                win.document.write(`<iframe src="${content}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`)
+
+                win.document.write(`<iframe src="${content}" frameborder="0" style="border:0; top:0px; display:block; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`)
             });
 
             // delete button
@@ -701,8 +697,6 @@ import deepMerge from 'deepmerge';
         }
         this.handleDrop = (event) => {
             dropZone.classList.remove('highlight');
-            event.stopPropagation();
-            event.preventDefault();
             event.data = {
                 DOM: $el
             };
@@ -712,12 +706,12 @@ import deepMerge from 'deepmerge';
         dropZone.addEventListener('dragleave', () => {
             dropZone.classList.remove('highlight');
         });
-        dropZone.addEventListener('dragover', this.handleDragOver, false);
-        dropZone.addEventListener('drop', (passedInElement) => {
-            return (event) => {
-                this.handleDrop(event, passedInElement);
-            };
-        }, false);
+        dropZone.addEventListener('dragover', this.handleDragOver);
+        dropZone.addEventListener('drop', () => {
+            event.stopPropagation();
+            event.preventDefault();
+            this.handleDrop(event);
+        });
 
         dropZone.addEventListener('click', (event) => {
             $loadBtn.click();

@@ -381,13 +381,12 @@ import deepMerge from 'deepmerge';
             }
 
             $fileContainer.classList.remove('filesContainerEmpty');
-            // set selected file's name to fleNameContainer
-            $fileNameContainer.innerHTML = 'upload files';
 
             let readFile = (reader, file, index, DOM) => {
-                let currentElement = DOM.querySelector('.innerFileThumbs').children.filter(function() {
-                    return this.dataset.index === index ;
+                let currentElement = Array.from(DOM.querySelector('.innerFileThumbs').children).filter(function(element) {
+                    return parseInt(element.dataset.index) === index ;
                 });
+                currentElement = currentElement[0];
                 let size = this._round(file.size / 1000000);      // size in MB
 
                 reader.onloadstart = () => {
@@ -444,7 +443,7 @@ import deepMerge from 'deepmerge';
                     currentElement.querySelector(':scope > .fileActions > a').setAttribute('href', result);
                     this._logger(`END read file: ${index}`, 4);
 
-                    let debugUploaded = document.selectElementyById('debugUploaded');
+                    let debugUploaded = document.getElementById('debugUploaded');
                     let totalUploaded = parseInt(debugUploaded.innerHTML) + 1;
 
                     debugUploaded.innerHTML = totalUploaded;
@@ -499,17 +498,17 @@ import deepMerge from 'deepmerge';
                         currentElement.remove();
                     }, 2000);
 
-                    let debugRejected = parseInt(document.getElementById('debugRejected');
-                    let totalRejected = debugRejected.innerHTML) + 1;
+                    let debugRejected = parseInt(document.getElementById('debugRejected'));
+                    let totalRejected = debugRejected.innerHTML + 1;
                     debugRejected.innerHTML = totalRejected;
                 }
             }
 
-            let startIndex = document.getElementById('innerFileThumbs').children;//().last().attr('id');
-            console.log(startIndex);
+            let innerFileThumbsElements = document.querySelector('.innerFileThumbs').children;
+            let startIndex = innerFileThumbsElements[innerFileThumbsElements.length - 1].getAttribute('index');
 
             if (startIndex !== undefined) {
-                startIndex = parseInt(startIndex.substring(startIndex.indexOf('-') + 1, startIndex.length)) + 1;
+                startIndex = parseInt(startIndex) + 1;
             }
             else {
                 startIndex = 0;
@@ -517,9 +516,10 @@ import deepMerge from 'deepmerge';
 
             function appendMessage($message) {
                 setTimeout(() => {
-                    $message.animate({opacity: 0}, 300, function() {
+                    /*$message.animate({opacity: 0}, 300, function() {
                         $(this).remove();
-                    });
+                    });*/
+                    $message.remove();
                 }, 2000);
             }
 
@@ -531,14 +531,15 @@ import deepMerge from 'deepmerge';
                 // test for duplicates
                 if (approvedList && approvedList.indexOf(file.name) < 0) {
                     if (this._options.duplicatesWarning) {
-                        let $info = $('<div class="errorLabel center"></div>');
+                        let $info = document.createElement('div');
+                        $info.className = 'errorLabel center';
 
-                        $info.html(currentLangObj.duplicated_msg);
-                        $fileThumbsContainer.append($info);
+                        $info.innerHTML = currentLangObj.duplicated_msg;
+                        $fileThumbsContainer.appendChild($info);
                         appendMessage($info);
                     }
 
-                    this._logger('File duplicated: ' + file.name + ' -> skipping...', 2);
+                    this._logger(`File duplicated: ${file.name} -> skipping...`, 2);
                     continue;
                 }
 
@@ -556,7 +557,7 @@ import deepMerge from 'deepmerge';
                 // test for filenames
                 let nameTest = this._options.filenameTest(fileName, fileExt, $fileThumbsContainer);
                 if (nameTest === false) {
-                    this._logger('Invalid file name: ' + file.name, 2);
+                    this._logger(`Invalid file name: ${file.name}`, 2);
                     continue;
                 }
                 else {
@@ -591,7 +592,6 @@ import deepMerge from 'deepmerge';
         let $resultContainer = $el.querySelector('.' + this._options.resultContainerClass);
         let $loadBtn = $el.querySelector('.fileLoader');
         let $fileContainer = $el.querySelector('.filesContainer');
-        let $fileNameContainer = $el.querySelector('.fileNameContainer');
         let $fileThumbsContainer = $el.querySelector('.innerFileThumbs');
         let dropZone = $el.querySelector('.dropZone');
         let currentLangObj = this._options.langs[this._options.lang];
@@ -706,7 +706,7 @@ import deepMerge from 'deepmerge';
         }, false);
 
         dropZone.addEventListener('click', (event) => {
-            $loadBtn.dispatchEvent(new Event('change'));
+            $loadBtn.click();
         });
 
         $loadBtn.addEventListener('change', (event) => {

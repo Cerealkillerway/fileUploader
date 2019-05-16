@@ -110,13 +110,13 @@
             },
             filenameTest: function(fileName, fileExt, $container) {
                 let allowedExts = ['jpg', 'jpeg', ''];
-                let $info = document.createElement('div');
-                $info.className = 'errorLabel center';
                 let proceed = true;
+                let info = document.createElement('div');
+                info.className = 'errorLabel center';
 
                 // length check
                 if (fileName.length > 13) {
-                    $info.innerHTML = 'Name too long...';
+                    info.innerHTML = 'Name too long...';
                     proceed = false;
                 }
                 // replace not allowed characters
@@ -124,19 +124,19 @@
 
                 // extension check
                 if (allowedExts.indexOf(fileExt) < 0) {
-                    $info.innerHTML = 'Extension not allowed...';
+                    info.innerHTML = 'Extension not allowed...';
                     proceed = false;
                 }
 
                 // show an error message, but only if there is no other error message already there
                 if (!proceed && !$container.querySelector(':scope > .errorLabel')) {
-                    $container.appendChild($info);
+                    $container.appendChild(info);
 
                     setTimeout(function() {
-                        /*$info.animate({opacity: 0}, 300, function() {
+                        /*info.animate({opacity: 0}, 300, function() {
                             $(this).remove();
                         });*/
-                        $info.remove();
+                        info.remove();
                     }, 2000);
                 }
                 if (!proceed) {

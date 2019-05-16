@@ -338,10 +338,10 @@ import deepMerge from 'deepmerge';
 
         // files read function
         this._filesRead = (event) => {
-            var DOM = event.data.DOM;
-            var filesList;
-            var approvedList = false;
-            var i = 0;
+            let DOM = event.data.DOM;
+            let filesList;
+            let approvedList = false;
+            let i = 0;
 
             if (event.target.files) {
                 this._logger('files array source: file selector (click event)', 1);
@@ -355,15 +355,15 @@ import deepMerge from 'deepmerge';
 
             // build approved list
             if (!this._options.allowDuplicates) {
-                var loadedFiles = [];
-                var newFiles = [];
+                let loadedFiles = [];
+                let newFiles = [];
 
                 approvedList = [];
 
                 // build already loaded files list
-                $.each($resultContainer.children(), function(index, file) {
-                    loadedFiles.push($(file).children('input').first().val());
-                });
+                for(let file of $resultContainer.children) {
+                    loadedFiles.push(file.querySelector('input').value);
+                };
 
                 // build current selected files list
                 for (i = 0; i < filesList.length; i++) {
@@ -372,7 +372,7 @@ import deepMerge from 'deepmerge';
 
                 // avoid load twice the same file
                 newFiles.forEach(function(newFile) {
-                    var fileIndex = loadedFiles.indexOf(newFile);
+                    let fileIndex = loadedFiles.indexOf(newFile);
 
                     if (fileIndex < 0) {
                         approvedList.push(newFile);
@@ -380,59 +380,57 @@ import deepMerge from 'deepmerge';
                 });
             }
 
-            $fileContainer.removeClass('filesContainerEmpty');
+            $fileContainer.classList.remove('filesContainerEmpty');
             // set selected file's name to fleNameContainer
-            $fileNameContainer.html('upload files');
+            $fileNameContainer.innerHTML = 'upload files';
 
             let readFile = (reader, file, index, DOM) => {
-                var currentElement = DOM.find('.innerFileThumbs').children().filter(function() {
-                    return $(this).data('index') === index ;
+                let currentElement = DOM.querySelector('.innerFileThumbs').children.filter(function() {
+                    return this.dataset.index === index ;
                 });
-
-                var size = this._round(file.size / 1000000);      // size in MB
+                let size = this._round(file.size / 1000000);      // size in MB
 
                 reader.onloadstart = () => {
                     this._options.onfileloadStart(index);
-                    this._logger('START read file: ' + index + ', size: ' + size + ' MB', 2);
+                    this._logger(`START read file: ${index}, size: ${size} MB`, 2);
                 };
 
                 reader.onprogress = (event) => {
                     if (event.lengthComputable) {
-                        var percentLoaded = this._round((event.loaded / event.total) * 100);
-                        this._logger('File ' + index + ' loaded: ' + percentLoaded, 3);
+                        let percentLoaded = this._round((event.loaded / event.total) * 100);
+                        this._logger(`File ${index} loaded: ${percentLoaded}`, 3);
 
                         // Increase the progress bar length.
                         if (percentLoaded <= 100) {
-                            currentElement.children('.loadBar').children('div').animate({width: '100%'}, 500);
+                            currentElement.querySelector(':scope > .loadBar > div').style.width = '100%';
                         }
                     }
                 };
 
                 reader.onloadend = () => {
-                    var type = file.type;
-                    var name = file.name;
-                    var result = reader.result;
+                    let type = file.type;
+                    let name = file.name;
+                    let result = reader.result;
 
                     // reading unsuccessful
                     if (!result) {
                         return false;
                     }
 
-                    var mimeType = result.substring(0, result.indexOf(';'));
+                    let mimeType = result.substring(0, result.indexOf(';'));
 
                     // if file has no MIME type, replace with default one
-                    if (mimeType === "data:" && this._options.defaultMimeType.length > 0) {
+                    if (mimeType === 'data:' && this._options.defaultMimeType.length > 0) {
                         result = "data:" + this._options.defaultMimeType + result.substring(result.indexOf(';'), result.length);
                     }
-
                     if (type === "") {
                         type = this._options.defaultMimeType;
                     }
-                    if (name.indexOf('.') < 0 && this._options.defaultFileExt !== "") {
-                        name = name + '.' + this._options.defaultFileExt;
+                    if (name.indexOf('.') < 0 && this._options.defaultFileExt !== '') {
+                        name = `${name}.${this._options.defaultFileExt}`;
                     }
 
-                    var newFile = {
+                    let newFile = {
                         index: index,
                         name: name,
                         type: type,
@@ -443,14 +441,15 @@ import deepMerge from 'deepmerge';
                     this._createResultContainer(newFile);
 
                     //set direct link on file see button
-                    currentElement.children('.fileActions').children('a').attr('href', result);
-                    this._logger('END read file: ' + index, 4);
+                    currentElement.querySelector(':scope > .fileActions > a').setAttribute('href', result);
+                    this._logger(`END read file: ${index}`, 4);
 
-                    var totalUploaded = parseInt($('#debugUploaded').html()) + 1;
+                    let debugUploaded = document.selectElementyById('debugUploaded');
+                    let totalUploaded = parseInt(debugUploaded.innerHTML) + 1;
 
-                    $('#debugUploaded').html(totalUploaded);
+                    debugUploaded.innerHTML = totalUploaded;
 
-                    var resultObject = {
+                    let resultObject = {
                         name: file.name,
                         type: file.type,
                         data: result,
@@ -466,39 +465,48 @@ import deepMerge from 'deepmerge';
                     // update total size
                     currentTotalSize = currentTotalSize + size;
 
-                    var currentAvailableSize = this._options.totalMaxSize - currentTotalSize;
+                    let currentAvailableSize = this._options.totalMaxSize - currentTotalSize;
 
-                    availableLabel.children('span').html(this._round(currentAvailableSize));
+                    availableLabel.querySelector(':scope > span').innerHTML = this._round(currentAvailableSize);
                 }
                 else {
-                    var errorMsg = currentLangObj.totalMaxSizeExceeded_msg;
+                    let errorMsg = currentLangObj.totalMaxSizeExceeded_msg;
 
                     if (size > this._options.fileMaxSize) {
                         errorMsg = currentLangObj.maxSizeExceeded_msg;
-                        this._logger('FILE REJECTED: Max size exceeded - max size: ' + this._options.fileMaxSize + ' MB - file size: ' + size + ' MB');
+                        this._logger(`FILE REJECTED: Max size exceeded - max size: ${this._options.fileMaxSize} MB - file size: ${size} MB`);
                     }
                     else {
-                        this._logger('FILE REJECTED: Max total size exceeded - max size: ' + this._options.totalMaxSizeExceeded_msg + ' MB - current total size: ' + (currentTotalSize + size) + ' MB');
+                        this._logger(`FILE REJECTED: Max total size exceeded - max size: ${this._options.totalMaxSizeExceeded_msg} MB - current total size: ${currentTotalSize + size} MB`);
                     }
 
-                    currentElement.addClass('error');
-                    currentElement.children('.loadBar').empty().append('<div class="errorMsg">' + errorMsg + '</div>');
+                    currentElement.classList.add('error');
+
+                    let loadBar = currentElement.querySelector(':scope > .loadBar');
+                    loadBar.innerHTML = '';
+                    loadBar.insertAdjacentHTML('beforeend', `<div class="errorMsg">${errorMsg}</div>`)
 
                     setTimeout(() => {
-                        currentElement.animate({opacity: 0}, 300, function() {
+                        /*currentElement.animate({opacity: 0}, 300, function() {
                             if (instance._options.useFileIcons) {
                                 $(this).prev('img').remove();
                             }
                             $(this).remove();
-                        });
+                        });*/
+                        if (instance._options.useFileIcons) {
+                            currentElement.getPreviousSibling('img').remove();
+                        }
+                        currentElement.remove();
                     }, 2000);
 
-                    var totalRejected = parseInt($('#debugRejected').html()) + 1;
-                    $('#debugRejected').html(totalRejected);
+                    let debugRejected = parseInt(document.getElementById('debugRejected');
+                    let totalRejected = debugRejected.innerHTML) + 1;
+                    debugRejected.innerHTML = totalRejected;
                 }
             }
 
-            let startIndex = $('#innerFileThumbs').children().last().attr('id');
+            let startIndex = document.getElementById('innerFileThumbs').children;//().last().attr('id');
+            console.log(startIndex);
 
             if (startIndex !== undefined) {
                 startIndex = parseInt(startIndex.substring(startIndex.indexOf('-') + 1, startIndex.length)) + 1;
@@ -698,7 +706,7 @@ import deepMerge from 'deepmerge';
         }, false);
 
         dropZone.addEventListener('click', (event) => {
-            $loadBtn.dispatchEvent(event);
+            $loadBtn.dispatchEvent(new Event('change'));
         });
 
         $loadBtn.addEventListener('change', (event) => {

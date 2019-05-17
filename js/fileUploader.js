@@ -37,7 +37,6 @@ import deepMerge from 'deepmerge';
             allowDuplicates: false,                                        // allow upload duplicates
             duplicatesWarning: false,                                      // show a message in the loading area when trying to load a duplicated file
             labelsContainers: false,                                       // query selector for the container where to look for labels (ex. '#myId'), (default 'false' -> no labels;
-                                                                           // can be 'self' to indicate that labels are inside the DOM element passed to the file uploader instance);
                                                                            // can be a string for a single value, or an array if the plugin has to update labels in many places;
             sizeAvailableLabelClass: 'sizeAvailable',                      // class for the sizeAvailable label
 
@@ -646,9 +645,6 @@ import deepMerge from 'deepmerge';
         }
         if (labelsContainers) {
             const getContainer = function(selector) {
-                if (selector === 'self') {
-                    return $el;
-                }
                 return document.querySelector(selector);
             }
 

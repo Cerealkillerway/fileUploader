@@ -277,7 +277,7 @@ import deepMerge from 'deepmerge';
                 let content = $resultContainer.querySelector(`.uploadedFile[data-index="${index}"] textarea`).value;
                 let win = window.open();
 
-                win.document.write(`<iframe src="${content}" frameborder="0" style="border:0; top:0px; display:block; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`)
+                win.document.write(`<iframe src="${content}" frameborder="0" style="border:0; top:0px; display:block; left:0px; bottom:0px; right:0px; width:100%; min-height: 100vh; height:100%;" allowfullscreen></iframe>`)
             });
 
             // delete button

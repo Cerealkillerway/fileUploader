@@ -645,12 +645,19 @@ import deepMerge from 'deepmerge';
             sizeAvailableLabels.push($el.querySelector(`.${sizeAvailableLabelClass}`));
         }
         if (labelsContainers) {
+            const getContainer = function(selector) {
+                if (selector === 'self') {
+                    return $el;
+                }
+                return document.querySelector(selector);
+            }
+
             if (Array.isArray(labelsContainers)) {
                 for (let selector of labelsContainers) {
-                    let container = document.querySelector(selector);
+                    let container = getContainer(selector);
 
                     if (container) {
-                        sizeAvailableLabels.push(document.querySelector(selector).querySelector(`.${sizeAvailableLabelClass}`));
+                        sizeAvailableLabels.push(container.querySelector(`.${sizeAvailableLabelClass}`));
                     }
                     else {
                         this._logger(`impossible to find labelContainer '${selector}'`, 1);
@@ -658,10 +665,10 @@ import deepMerge from 'deepmerge';
                 }
             }
             else {
-                let container = document.querySelector(labelsContainers);
+                let container = getContainer(labelsContainers);
 
                 if (container) {
-                    sizeAvailableLabels.push(document.querySelector(labelsContainers).querySelector(`.${sizeAvailableLabelClass}`));
+                    sizeAvailableLabels.push(container.querySelector(`.${sizeAvailableLabelClass}`));
                 }
                 else {
                     this._logger(`impossible to find labelContainer '${labelsContainers}'`, 1);

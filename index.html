@@ -20,9 +20,17 @@
         <h3>fileUploader 1</h3>
         <h5>(Example with files reloaded from array):</h5>
 
-        <div class="customTotalSize">Custom total size displayer: <span></span></div>
+        <div class="customTotalSize">Custom total size displayer (this is updated from within the callbacks): <span></span></div>
 
         <div class="fileUploader" id="one"></div>
+
+        <div id="testSizeLabelContainer1">
+              <div class="sizeAvailable">Test size available displayer 1 (this is included in a container passed to 'labelsContainers' option): <span></span></div>
+        </div>
+
+        <div id="testSizeLabelContainer2">
+              <div class="sizeAvailable">Test size available displayer 2 (this is included in a container passed to 'labelsContainers' option): <span></span></div>
+        </div>
 
         <br><br>
 
@@ -55,7 +63,7 @@
 
     <script type="text/javascript" src="dist/js/fileUploader.js"></script>
     <script tyle="text/javascript">
-        var filesArray = [
+        let filesArray = [
             {
                 name: "fromArray1",
                 ext: "jpeg",
@@ -70,7 +78,7 @@
             }
         ];
 
-        var filesHTML = [
+        let filesHTML = [
             '<div data-index="0" class="uploadedFile">',
             '    <div>File: 0</div>',
             '    <input type="text" name="fileUploader[0][title]" value="Example1">',
@@ -99,6 +107,7 @@
             linkButtonContent: '<i>Open</i>',
             deleteButtonContent: '<i>Remove</i>',
             duplicatesWarning: true,
+            labelsContainers: ['#testSizeLabelContainer1', '#testSizeLabelContainer2'],
             onload: function(options, totalSize) {
                 document.querySelector('.customTotalSize').querySelector(':scope > span').innerHTML = (totalSize + ' MB');
             },

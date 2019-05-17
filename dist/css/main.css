@@ -26,6 +26,14 @@ main .ckBtn, .staticBar .ckBtn {
 .right {
   float: right; }
 
+main .customTotalSize, main #testSizeLabelContainer1, main #testSizeLabelContainer2 {
+  background-color: #333;
+  color: #ddd;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 15px 35px;
+  border: solid 3px #0d0d0d; }
+
 body {
   padding: 0;
   margin: 0;
@@ -44,13 +52,8 @@ main {
     font-weight: bold;
     text-transform: uppercase;
     color: #283593; }
-  main .customTotalSize {
-    background-color: #333;
-    color: #ddd;
-    font-size: 18px;
-    font-weight: bold;
-    padding: 15px 35px;
-    border: solid 3px #0d0d0d; }
+  main #testSizeLabelContainer1, main #testSizeLabelContainer2 {
+    margin-top: 25px; }
 
 header {
   padding: 25px 35px;

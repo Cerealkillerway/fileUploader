@@ -40,6 +40,15 @@ $errorColor: #283593 !default;
     float: right;
 }
 
+%solidDarkSquare {
+    background-color: $mainColor;
+    color: $mainColorText;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 15px 35px;
+    border: solid 3px darken($mainColor, 15%);
+}
+
 body {
     padding: 0;
     margin: 0;
@@ -70,12 +79,12 @@ main {
     }
 
     .customTotalSize {
-        background-color: $mainColor;
-        color: $mainColorText;
-        font-size: 18px;
-        font-weight: bold;
-        padding: 15px 35px;
-        border: solid 3px darken($mainColor, 15%);
+        @extend %solidDarkSquare;
+    }
+
+    #testSizeLabelContainer1, #testSizeLabelContainer2 {
+        @extend %solidDarkSquare;
+        margin-top: 25px;
     }
 }
 

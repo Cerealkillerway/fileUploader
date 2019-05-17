@@ -36,6 +36,10 @@ import deepMerge from 'deepmerge';
             deleteButtonContent: 'X',                                      // HTML content for delete button
             allowDuplicates: false,                                        // allow upload duplicates
             duplicatesWarning: false,                                      // show a message in the loading area when trying to load a duplicated file
+            labelsContainers: false,                                       // query selector for the container where to look for labels (ex. '#myId'), (default 'false' -> no labels;
+                                                                           // can be 'self' to indicate that labels are inside the DOM element passed to the file uploader instance);
+                                                                           // can be a string for a single value, or an array if the plugin has to update labels in many places;
+            sizeAvailableLabelClass: 'sizeAvailable',                      // class for the sizeAvailable label
 
             HTMLTemplate: () => {
                 return `<p class="introMsg"></p>
@@ -49,7 +53,7 @@ import deepMerge from 'deepmerge';
                             <div style="clear:both;"></div>
                         </div>
                     </div>
-                    <div class="result"></div>`
+                    <div class="result"></div>`;
             },
 
             onload: () => {},                                         // callback on plugin initialization
@@ -183,7 +187,9 @@ import deepMerge from 'deepmerge';
             let availableSize = this._options.totalMaxSize - currentTotalSize;
 
             availableSize = this._round(availableSize);
-            availableLabel.querySelector(':scope > span').innerHTML = availableSize;
+            for (let sizeAvailableLabel of sizeAvailableLabels) {
+                sizeAvailableLabel.querySelector(':scope > span').innerHTML = availableSize;
+            }
 
             // remove result block
             $resultContainer.querySelector(`:scope > div[data-index="${index}"]`).remove();
@@ -476,7 +482,9 @@ import deepMerge from 'deepmerge';
 
                     let currentAvailableSize = this._options.totalMaxSize - currentTotalSize;
 
-                    availableLabel.querySelector(':scope > span').innerHTML = this._round(currentAvailableSize);
+                    for (let sizeAvailableLabel of sizeAvailableLabels) {
+                        sizeAvailableLabel.querySelector(':scope > span').innerHTML = this._round(currentAvailableSize);
+                    }
                 }
                 else {
                     let errorMsg = currentLangObj.totalMaxSizeExceeded_msg;
@@ -628,7 +636,39 @@ import deepMerge from 'deepmerge';
 
         // --- FILES RELOAD SECTION ---
         // lookup for previously loaded files placed in the result container directly
-        let availableLabel = $el.querySelector('.sizeAvailable');
+        // gather all availableSizeLabels
+        let sizeAvailableLabels = [];
+        let sizeAvailableLabelClass = this._options.sizeAvailableLabelClass;
+        let labelsContainers = this._options.labelsContainers;
+
+        if (this._options.debug) {
+            sizeAvailableLabels.push($el.querySelector(`.${sizeAvailableLabelClass}`));
+        }
+        if (labelsContainers) {
+            if (Array.isArray(labelsContainers)) {
+                for (let selector of labelsContainers) {
+                    let container = document.querySelector(selector);
+
+                    if (container) {
+                        sizeAvailableLabels.push(document.querySelector(selector).querySelector(`.${sizeAvailableLabelClass}`));
+                    }
+                    else {
+                        this._logger(`impossible to find labelContainer '${selector}'`, 1);
+                    }
+                }
+            }
+            else {
+                let container = document.querySelector(labelsContainers);
+
+                if (container) {
+                    sizeAvailableLabels.push(document.querySelector(labelsContainers).querySelector(`.${sizeAvailableLabelClass}`));
+                }
+                else {
+                    this._logger(`impossible to find labelContainer '${labelsContainers}'`, 1);
+                }
+            }
+        }
+
         let currentTotalSize = 0;
         let loadedFile;
 
@@ -682,7 +722,11 @@ import deepMerge from 'deepmerge';
         currentTotalSize = this._round(currentTotalSize);
 
         this._logger('current total size: ' + currentTotalSize);
-        availableLabel.querySelector(':scope > span').innerHTML = (this._options.totalMaxSize - currentTotalSize);
+        if (sizeAvailableLabels.length > 0) {
+            for (let sizeAvailableLabel of sizeAvailableLabels) {
+                sizeAvailableLabel.querySelector(':scope > span').innerHTML = (this._options.totalMaxSize - currentTotalSize);
+            }
+        }
         // --- END FILES RELOAD SECTION ---
 
         // onload callback

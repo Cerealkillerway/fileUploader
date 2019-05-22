@@ -2,7 +2,7 @@ import deepMerge from 'deepmerge';
 
 
 /*
-* fileUploader v4.0.0
+* fileUploader v5.0.0
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function(context) {
@@ -38,7 +38,13 @@ import deepMerge from 'deepmerge';
             duplicatesWarning: false,                                      // show a message in the loading area when trying to load a duplicated file
             labelsContainers: false,                                       // query selector for the container where to look for labels (ex. '#myId'), (default 'false' -> no labels;
                                                                            // can be a string for a single value, or an array if the plugin has to update labels in many places;
-            sizeAvailableLabelClass: 'sizeAvailable',                      // class for the sizeAvailable label
+            //sizeAvailableLabelClass: 'sizeAvailable',                      // class for the sizeAvailable label
+            labelsClasses: {
+                sizeAvailable: 'sizeAvailable',
+                currentSize: 'currentSize',
+                maxFileSize: 'maxFileSize',
+                maxTotalSize: 'maxTotalSize'
+            },
 
             HTMLTemplate: () => {
                 return `<p class="introMsg"></p>
@@ -186,8 +192,11 @@ import deepMerge from 'deepmerge';
             let availableSize = this._options.totalMaxSize - currentTotalSize;
 
             availableSize = this._round(availableSize);
-            for (let sizeAvailableLabel of sizeAvailableLabels) {
+            for (let sizeAvailableLabel of instanceLabels.sizeAvailableLabels) {
                 sizeAvailableLabel.querySelector(':scope > span').innerHTML = availableSize;
+            }
+            for (let currentSizeLabel of instanceLabels.currentSizeLabels) {
+                currentSizeLabel.querySelector(':scope > span').innerHTML = currentTotalSize;
             }
 
             // remove result block
@@ -481,8 +490,11 @@ import deepMerge from 'deepmerge';
 
                     let currentAvailableSize = this._options.totalMaxSize - currentTotalSize;
 
-                    for (let sizeAvailableLabel of sizeAvailableLabels) {
+                    for (let sizeAvailableLabel of instanceLabels.sizeAvailableLabels) {
                         sizeAvailableLabel.querySelector(':scope > span').innerHTML = this._round(currentAvailableSize);
+                    }
+                    for (let currentSizeLabel of instanceLabels.currentSizeLabels) {
+                        currentSizeLabel.querySelector(':scope > span').innerHTML = currentTotalSize;
                     }
                 }
                 else {
@@ -636,40 +648,66 @@ import deepMerge from 'deepmerge';
         // --- FILES RELOAD SECTION ---
         // lookup for previously loaded files placed in the result container directly
         // gather all availableSizeLabels
-        let sizeAvailableLabels = [];
-        let sizeAvailableLabelClass = this._options.sizeAvailableLabelClass;
+        /* labelsClasses: {
+                sizeAvailable: 'sizeAvailable',
+                currentSize: 'currentSize',
+                maxFileSize: 'maxFileSize',
+                maxTotalSize: 'maxTotalSize'
+            },
+        */
+        let instanceLabels = {};
+        for (let label in this._options.labelsClasses) {
+            instanceLabels[`${label}Labels`] = [];
+        }
         let labelsContainers = this._options.labelsContainers;
 
         if (this._options.debug) {
-            sizeAvailableLabels.push($el.querySelector(`.${sizeAvailableLabelClass}`));
+            // handle debug labels
+            // in the debug frame "sizeAvailable" is the only dynamic label that we need to store in order to update it when necessary
+            instanceLabels.sizeAvailableLabels.push($el.querySelector(`.${this._options.labelsClasses.sizeAvailable}`));
         }
         if (labelsContainers) {
             const getContainer = function(selector) {
                 return document.querySelector(selector);
             }
 
-            if (Array.isArray(labelsContainers)) {
-                for (let selector of labelsContainers) {
-                    let container = getContainer(selector);
-
-                    if (container) {
-                        sizeAvailableLabels.push(container.querySelector(`.${sizeAvailableLabelClass}`));
+            for (let label in this._options.labelsClasses) {
+                if (Array.isArray(labelsContainers)) {
+                    for (let selector of labelsContainers) {
+                        let container = getContainer(selector);
+    
+                        if (container) {
+                            let labels = container.querySelector(`.${this._options.labelsClasses[label]}`);
+                            
+                            if (labels) {
+                                instanceLabels[`${label}Labels`].push(labels);
+                            }
+                        }
+                        else {
+                            this._logger(`impossible to find labelContainer '${selector}'`, 1);
+                        }
                     }
-                    else {
-                        this._logger(`impossible to find labelContainer '${selector}'`, 1);
-                    }
-                }
-            }
-            else {
-                let container = getContainer(labelsContainers);
-
-                if (container) {
-                    sizeAvailableLabels.push(container.querySelector(`.${sizeAvailableLabelClass}`));
                 }
                 else {
-                    this._logger(`impossible to find labelContainer '${labelsContainers}'`, 1);
+                    let container = getContainer(labelsContainers);
+    
+                    if (container) {
+                        let labels = container.querySelector(`.${this._options.labelsClasses[label]}`);
+
+                        if (labels) {
+                            instanceLabels[`${label}Labels`].push(labels);
+                        }
+                    }
+                    else {
+                        this._logger(`impossible to find labelContainer '${labelsContainers}'`, 1);
+                    }
                 }
             }
+        }
+
+        console.log(instanceLabels);
+        for (let maxFileSizeLabel of instanceLabels.maxFileSizeLabels) {
+            maxFileSizeLabel.innerHTML = this._options.maxFileSize;
         }
 
         let currentTotalSize = 0;
@@ -725,10 +763,11 @@ import deepMerge from 'deepmerge';
         currentTotalSize = this._round(currentTotalSize);
 
         this._logger('current total size: ' + currentTotalSize);
-        if (sizeAvailableLabels.length > 0) {
-            for (let sizeAvailableLabel of sizeAvailableLabels) {
-                sizeAvailableLabel.querySelector(':scope > span').innerHTML = (this._options.totalMaxSize - currentTotalSize);
-            }
+        for (let sizeAvailableLabel of instanceLabels.sizeAvailableLabels) {
+            sizeAvailableLabel.querySelector(':scope > span').innerHTML = (this._options.totalMaxSize - currentTotalSize);
+        }
+        for (let currentSizeLabel of instanceLabels.currentSizeLabels) {
+            currentSizeLabel.querySelector(':scope > span').innerHTML = currentTotalSize;
         }
         // --- END FILES RELOAD SECTION ---
 

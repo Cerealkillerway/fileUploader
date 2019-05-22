@@ -2,7 +2,7 @@ import deepMerge from 'deepmerge';
 
 
 /*
-* fileUploader v5.0.0
+* fileUploader v5.0.2
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function(context) {
@@ -705,7 +705,6 @@ import deepMerge from 'deepmerge';
             }
         }
 
-        console.log(instanceLabels);
         for (let maxFileSizeLabel of instanceLabels.maxFileSizeLabels) {
             maxFileSizeLabel.innerHTML = this._options.maxFileSize;
         }

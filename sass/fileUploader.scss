@@ -100,7 +100,7 @@
             }
 
             .fileActions {
-                a, .fileDelete {
+                a, .fileDelete, .fileSee {
                     color: $reloadedColor !important;
                 }
             }
@@ -175,7 +175,7 @@
                     cursor: pointer;
                 }
 
-                .fileDelete {
+                .fileDelete, .fileSee {
                     cursor: pointer;
                 }
             }
@@ -196,7 +196,7 @@
             float: left;
             @extend %borderBoxed;
 
-            input {
+            input, textarea {
                 width: 100%;
                 display: block;
             }            

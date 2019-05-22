@@ -57,7 +57,7 @@
       border: solid 2px #1b5e20 !important; }
       .fileUploader .filesContainer .reloadedElement .loadBar div {
         background-color: #1b5e20 !important; }
-    .fileUploader .filesContainer .reloadedElement .fileActions a, .fileUploader .filesContainer .reloadedElement .fileActions .fileDelete {
+    .fileUploader .filesContainer .reloadedElement .fileActions a, .fileUploader .filesContainer .reloadedElement .fileActions .fileDelete, .fileUploader .filesContainer .reloadedElement .fileActions .fileSee {
       color: #1b5e20 !important; }
     .fileUploader .filesContainer .newElement {
       width: 100%;
@@ -102,7 +102,7 @@
           text-decoration: none !important;
           color: #333;
           cursor: pointer; }
-        .fileUploader .filesContainer .newElement .fileActions .fileDelete {
+        .fileUploader .filesContainer .newElement .fileActions .fileDelete, .fileUploader .filesContainer .newElement .fileActions .fileSee {
           cursor: pointer; }
   .fileUploader .result {
     margin-top: 5px;
@@ -115,7 +115,7 @@
       width: 49%;
       margin-right: 1%;
       float: left; }
-      .fileUploader .result > div input {
+      .fileUploader .result > div input, .fileUploader .result > div textarea {
         width: 100%;
         display: block; }
     .fileUploader .result:last-child:after {

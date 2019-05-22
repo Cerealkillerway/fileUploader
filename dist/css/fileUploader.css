@@ -115,9 +115,11 @@
       width: 49%;
       margin-right: 1%;
       float: left; }
-      .fileUploader .result > div input, .fileUploader .result > div textarea {
+      .fileUploader .result > div input {
         width: 100%;
         display: block; }
+      .fileUploader .result > div textarea {
+        width: calc(100% - 2px); }
     .fileUploader .result:last-child:after {
       content: '';
       display: block;

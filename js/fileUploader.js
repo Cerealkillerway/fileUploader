@@ -2,7 +2,7 @@ import deepMerge from 'deepmerge';
 
 
 /*
-* fileUploader v5.0.2
+* fileUploader v5.1.3
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function(context) {
@@ -28,8 +28,8 @@ import deepMerge from 'deepmerge';
             resultInputNames: ['title', 'extension', 'value', 'size'],     // name suffix to be used for result inputs
             defaultFileExt: '',                                            // extension to use for files with no extension
             defaultMimeType: '',                                           // MIME type to use for files with no extension
-            fileMaxSize: 50,                                               // maximum allowed file size (in MB)
-            totalMaxSize: 1000,                                            // total maximum allowed size of all files
+            maxFileSize: 50,                                               // maximum allowed file size (in MB)
+            maxTotalSize: 1000,                                            // total maximum allowed size of all files
             reloadArray: [],                                               // array of files to be reloaded at plugin startup
             reloadHTML: undefined,                                         // HTML for reloaded files to place directly in result container
             linkButtonContent: 'L',                                        // HTML content for link button
@@ -72,7 +72,7 @@ import deepMerge from 'deepmerge';
                     intro_msg: '(Add attachments...)',
                     dropZone_msg: 'Drop your files here',
                     maxSizeExceeded_msg: 'File too large',
-                    totalMaxSizeExceeded_msg: 'Total size exceeded',
+                    maxTotalSizeExceeded_msg: 'Total size exceeded',
                     duplicated_msg: 'File duplicated (skipped)',
                     name_placeHolder: 'name',
                 }
@@ -103,6 +103,12 @@ import deepMerge from 'deepmerge';
             }
         };
 
+        const updateLabel = function(type, value) {
+            for (let label of instanceLabels[`${type}Labels`]) {
+                label.querySelector(':scope > span').innerHTML = value;
+            }
+        }
+
 
         // extend options with instance ones
         this._options = deepMerge(this._defaults, options);
@@ -127,7 +133,7 @@ import deepMerge from 'deepmerge';
                 return this._round(currentTotalSize);
 
                 case 'currentAvailableSize':
-                return this._round(this._options.totalMaxSize - currentTotalSize);
+                return this._round(this._options.maxTotalSize - currentTotalSize);
             }
         };
 
@@ -189,15 +195,11 @@ import deepMerge from 'deepmerge';
             fileSize = this._round(fileSize);
             currentTotalSize = this._round(currentTotalSize - fileSize);
 
-            let availableSize = this._options.totalMaxSize - currentTotalSize;
+            let availableSize = this._options.maxTotalSize - currentTotalSize;
 
             availableSize = this._round(availableSize);
-            for (let sizeAvailableLabel of instanceLabels.sizeAvailableLabels) {
-                sizeAvailableLabel.querySelector(':scope > span').innerHTML = availableSize;
-            }
-            for (let currentSizeLabel of instanceLabels.currentSizeLabels) {
-                currentSizeLabel.querySelector(':scope > span').innerHTML = currentTotalSize;
-            }
+            updateLabel('sizeAvailable', availableSize);
+            updateLabel('currentSize', currentTotalSize);
 
             // remove result block
             $resultContainer.querySelector(`:scope > div[data-index="${index}"]`).remove();
@@ -482,30 +484,26 @@ import deepMerge from 'deepmerge';
                     this._options.onfileloadEnd(index, resultObject, this._round(currentTotalSize));
                 };
 
-                if ((size <= this._options.fileMaxSize) && ((currentTotalSize + size) <= this._options.totalMaxSize)) {
+                if ((size <= this._options.maxFileSize) && ((currentTotalSize + size) <= this._options.maxTotalSize)) {
                     reader.readAsDataURL(file);
 
                     // update total size
                     currentTotalSize = currentTotalSize + size;
 
-                    let currentAvailableSize = this._options.totalMaxSize - currentTotalSize;
+                    let currentAvailableSize = this._round(this._options.maxTotalSize - currentTotalSize);
 
-                    for (let sizeAvailableLabel of instanceLabels.sizeAvailableLabels) {
-                        sizeAvailableLabel.querySelector(':scope > span').innerHTML = this._round(currentAvailableSize);
-                    }
-                    for (let currentSizeLabel of instanceLabels.currentSizeLabels) {
-                        currentSizeLabel.querySelector(':scope > span').innerHTML = currentTotalSize;
-                    }
+                    updateLabel('sizeAvailable', currentAvailableSize);
+                    updateLabel('currentSize', currentTotalSize);
                 }
                 else {
-                    let errorMsg = currentLangObj.totalMaxSizeExceeded_msg;
+                    let errorMsg = currentLangObj.maxTotalSizeExceeded_msg;
 
-                    if (size > this._options.fileMaxSize) {
+                    if (size > this._options.maxFileSize) {
                         errorMsg = currentLangObj.maxSizeExceeded_msg;
-                        this._logger(`FILE REJECTED: Max size exceeded - max size: ${this._options.fileMaxSize} MB - file size: ${size} MB`);
+                        this._logger(`FILE REJECTED: Max size exceeded - max size: ${this._options.maxFileSize} MB - file size: ${size} MB`);
                     }
                     else {
-                        this._logger(`FILE REJECTED: Max total size exceeded - max size: ${this._options.totalMaxSizeExceeded_msg} MB - current total size: ${currentTotalSize + size} MB`);
+                        this._logger(`FILE REJECTED: Max total size exceeded - max size: ${this._options.maxTotalSizeExceeded_msg} MB - current total size: ${currentTotalSize + size} MB`);
                     }
 
                     currentElement.classList.add('error');
@@ -640,14 +638,13 @@ import deepMerge from 'deepmerge';
         else {
             $resultContainer.insertAdjacentHTML('beforebegin', '<p class="debugMode">Debug mode: on</p>');
             $resultContainer.insertAdjacentHTML('beforebegin', '<div class="debug">Uploaded files: <span id="debugUploaded">0</span> | Rejected files: <span id="debugRejected">0</span></div>');
-            $resultContainer.insertAdjacentHTML('beforebegin', '<div class="debug">Current MAX FILE SIZE: ' + this._options.fileMaxSize + ' MB</div>');
-            $resultContainer.insertAdjacentHTML('beforebegin', '<div class="debug">Current MAX TOTAL SIZE: ' + this._options.totalMaxSize + ' MB</div>');
-            $resultContainer.insertAdjacentHTML('beforebegin', '<div class="debug sizeAvailable">Size still available: <span>' + this._options.totalMaxSize + '</span> MB</div>');
+            $resultContainer.insertAdjacentHTML('beforebegin', '<div class="debug">Current MAX FILE SIZE: ' + this._options.maxFileSize + ' MB</div>');
+            $resultContainer.insertAdjacentHTML('beforebegin', '<div class="debug">Current MAX TOTAL SIZE: ' + this._options.maxTotalSize + ' MB</div>');
+            $resultContainer.insertAdjacentHTML('beforebegin', '<div class="debug sizeAvailable">Size still available: <span>' + this._options.maxTotalSize + '</span> MB</div>');
         }
 
         // --- FILES RELOAD SECTION ---
         // lookup for previously loaded files placed in the result container directly
-        // gather all availableSizeLabels
         /* labelsClasses: {
                 sizeAvailable: 'sizeAvailable',
                 currentSize: 'currentSize',
@@ -656,7 +653,8 @@ import deepMerge from 'deepmerge';
             },
         */
         let instanceLabels = {};
-        for (let label in this._options.labelsClasses) {
+        let labelsClasses = this._options.labelsClasses;
+        for (let label in labelsClasses) {
             instanceLabels[`${label}Labels`] = [];
         }
         let labelsContainers = this._options.labelsContainers;
@@ -664,35 +662,39 @@ import deepMerge from 'deepmerge';
         if (this._options.debug) {
             // handle debug labels
             // in the debug frame "sizeAvailable" is the only dynamic label that we need to store in order to update it when necessary
-            instanceLabels.sizeAvailableLabels.push($el.querySelector(`.${this._options.labelsClasses.sizeAvailable}`));
+            instanceLabels.sizeAvailableLabels.push($el.querySelector(`.${labelsClasses.sizeAvailable}`));
         }
         if (labelsContainers) {
             const getContainer = function(selector) {
                 return document.querySelector(selector);
             }
 
-            for (let label in this._options.labelsClasses) {
+            for (let label in labelsClasses) {
+                function findLabel(container, labelsClasses, label) {
+                    if (container) {
+                        let labels = container.querySelector(`.${labelsClasses[label]}`);
+                        
+                        if (labels) {
+                            instanceLabels[`${label}Labels`].push(labels);
+                        }
+                    }
+                    else {
+                        this._logger(`impossible to find labelContainer '${selector}'`, 1);
+                    }
+                }
+
                 if (Array.isArray(labelsContainers)) {
                     for (let selector of labelsContainers) {
                         let container = getContainer(selector);
     
-                        if (container) {
-                            let labels = container.querySelector(`.${this._options.labelsClasses[label]}`);
-                            
-                            if (labels) {
-                                instanceLabels[`${label}Labels`].push(labels);
-                            }
-                        }
-                        else {
-                            this._logger(`impossible to find labelContainer '${selector}'`, 1);
-                        }
+                        findLabel(container, labelsClasses, label);
                     }
                 }
                 else {
                     let container = getContainer(labelsContainers);
     
                     if (container) {
-                        let labels = container.querySelector(`.${this._options.labelsClasses[label]}`);
+                        let labels = container.querySelector(`.${labelsClasses[label]}`);
 
                         if (labels) {
                             instanceLabels[`${label}Labels`].push(labels);
@@ -705,9 +707,8 @@ import deepMerge from 'deepmerge';
             }
         }
 
-        for (let maxFileSizeLabel of instanceLabels.maxFileSizeLabels) {
-            maxFileSizeLabel.innerHTML = this._options.maxFileSize;
-        }
+        updateLabel('maxFileSize', this._options.maxFileSize);
+        updateLabel('maxTotalSize', this._options.maxTotalSize);
 
         let currentTotalSize = 0;
         let loadedFile;
@@ -762,12 +763,8 @@ import deepMerge from 'deepmerge';
         currentTotalSize = this._round(currentTotalSize);
 
         this._logger('current total size: ' + currentTotalSize);
-        for (let sizeAvailableLabel of instanceLabels.sizeAvailableLabels) {
-            sizeAvailableLabel.querySelector(':scope > span').innerHTML = (this._options.totalMaxSize - currentTotalSize);
-        }
-        for (let currentSizeLabel of instanceLabels.currentSizeLabels) {
-            currentSizeLabel.querySelector(':scope > span').innerHTML = currentTotalSize;
-        }
+        updateLabel('sizeAvailable', (this._options.maxTotalSize - currentTotalSize));
+        updateLabel('currentSize', currentTotalSize);
         // --- END FILES RELOAD SECTION ---
 
         // onload callback
@@ -815,59 +812,4 @@ import deepMerge from 'deepmerge';
             elementDOM: $el
         };
     };
-
-    /*const fileUploader = function(methodOrOptions) {
-        console.log('constructor');
-        let method = (typeof methodOrOptions === 'string') ? methodOrOptions : undefined;
-
-        const getFileUploader = () => {
-            let $el          = $(this);
-            let fileUploader = $el.data('fileUploader');
-
-            fileUploaders.push(fileUploader);
-        }
-
-        const applyMethod = (index) => {
-            let fileUploader = fileUploaders[index];
-
-            if (!fileUploader) {
-                console.warn('$.fileUploader not instantiated yet');
-                console.info(this);
-                results.push(undefined);
-                return;
-            }
-
-            if (typeof fileUploader[method] === 'function') {
-                let result = fileUploader[method].apply(fileUploader, args);
-                results.push(result);
-            } else {
-                console.warn('Method \'' + method + '\' not defined in $.fileUploader');
-            }
-        }
-
-        const init = () => {
-            let $el          = $(this);
-            let fileUploader = new FileUploader($el, options);
-
-            $el.data('fileUploader', fileUploader);
-        }
-
-        if (method) {
-            let fileUploaders = [];
-
-            this.each(getFileUploader);
-
-            let args = (arguments.length > 1) ? Array.prototype.slice.call(arguments, 1) : undefined;
-            let results = [];
-
-            this.each(applyMethod);
-
-            return (results.length > 1) ? results : results[0];
-        }
-        else {
-            let options = (typeof methodOrOptions === 'object') ? methodOrOptions : undefined;
-
-            return this.each(init);
-        }
-    };*/
 })(window);

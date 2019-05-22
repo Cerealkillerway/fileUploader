@@ -1,25 +1,20 @@
-## File Uploader v5.0.2
+## File Uploader v5.1.3
 
-![FileUploader](http://144.76.103.88/webforge_static/appLogos/fileUploader.png)
+![FileUploader](./images/logos/file-uploader.png)
 
-LIVE DEMO: [FileUploader demo](http://www.web-forge.info/projects/fileUploader)
-(live demo can be outdated for a while; if live demo version is not the same of current plugin version, please use the included demo instead)
-
-A file uploader skeleton that uses HTML5 file reader API.
+A file uploader skeleton that uses HTML5 file reader API.  
+NOTE: from version 4.0.0 jquery dependency has been removed;
 
 ### Usage
 FileUploader is a jQuery plugin; just put a container for it in your HTML page:
 
     <div class="fileUploader" id="one"></div>
 
-and call **fileUploader()** on it.<br>
+and instantiate **FileUploader** on it.<br>
 Example:
 
-    $(".fileUploader").fileUploader();
+    let test1 = new FileUploader(document.querySelector('#one'));
 
-or 
-
-    $("#one").fileUploader();
 
 This skeleton handles the client-side file reading; then the files must be sended (ex. with an ajax call) to a server procedure that will save them somewhere (filesystem, db, ...).
 You can use the "getData" method to get all files' data and then or handle everything on your own by iterating result container's children elements;
@@ -27,18 +22,18 @@ If needed you can also populate the result container with previously uploaded fi
 
 There are some options that can passed to constructor in the form:
 
-    $('.fileUploader').fileUploader({options})
+    let test1 = new FileUploader(DOMelement, {options})
 
 (see below).
 
 ### Options
-**lang**: language to use (default 'en'); see "translations" section for overrides and new language definitions
+**lang**: [string] language to use (default 'en'); see "translations" section for overrides and new language definitions
 
-**fileMaxSize**: maximum allowed file size in MB (default 50)
+**fileMaxSize**: [number] maximum allowed file size in MB (default 50)
 
-**totalMaxSize**: maximum allowd upload size for all files together (default 1000)
+**totalMaxSize**: [number] maximum allowd upload size for all files together (default 1000)
 
-**reloadArray**: an array of objects representing previously loaded files; each object is in the form:
+**reloadArray**: [array] an array of objects representing previously loaded files; each object is in the form:
     
     {
         name: "file name",
@@ -47,15 +42,15 @@ There are some options that can passed to constructor in the form:
         size: 1.2                      // size in MB of the file
     }
 
-**reloadHTML**: a string containing the HTML to place in result container directly for previously loaded files; see section ["Reloaded files"](#reloadedFiles) for futher details
+**reloadHTML**: [string] a string containing the HTML to place in result container directly for previously loaded files; see section ["Reloaded files"](#reloadedFiles) for futher details
 
-**useFileIcons**: use icons for each file depending on file type (default true)
+**useFileIcons**: [boolean] use icons for each file depending on file type (default true)
 
-**linkButtonContent**: markup for the link button (default "L")
+**linkButtonContent**: [string] markup for the link button (default "L")
 
-**deleteButtonContent**: markup for the delete button (default "X")
+**deleteButtonContent**: [string] markup for the delete button (default "X")
 
-**HTMLTemplate**: a function that returns the HTML template for the plugin; you can edit this, but you must provide the HTML elements needed by the plugin to work; the default is:
+**HTMLTemplate**: [function] a function that returns the HTML template for the plugin; you can edit this, but you must provide the HTML elements needed by the plugin to work; the default is:
 
     <p class="introMsg"></p>
     <div>
@@ -70,23 +65,23 @@ There are some options that can passed to constructor in the form:
     </div>
     <div class="result"></div>
 
-**reloadedFilesClass**: a class to style previously uploaded files (files uploaded during a previous session and now retrieved and placed in the result container) (default 'reloadedElement')
+**reloadedFilesClass**: [string] a class to style previously uploaded files (files uploaded during a previous session and now retrieved and placed in the result container) (default 'reloadedElement')
 
-**useLoadingBars**: show a progress bar while reading each file (default true)
+**useLoadingBars**: [boolean] show a progress bar while reading each file (default true)
 
-**loadingBarsClasses**: an array of strings representing custom classes to assign to each loading bar
+**loadingBarsClasses**: [string] an array of strings representing custom classes to assign to each loading bar
 
-**resultContainerClass**: set the class of the element to be used as container for reader's results (by default this is the hidden $(.result) element of the fileUploader); can be the class of any DOM element inside the fileUploader markup
+**resultContainerClass**: [string] set the class of the element to be used as container for reader's results (by default this is the hidden $(.result) element of the fileUploader); can be the class of any DOM element inside the fileUploader markup
 
-**resultFileContainerClass**: custom class to use for each reader's result container (default "file-")
+**resultFileContainerClass**: [string] custom class to use for each reader's result container (default "file-")
 
-**defaultFileExt**: extension to use for files with no extension (default "")
+**defaultFileExt**: [string] extension to use for files with no extension (default "")
 
-**defaultMimeType**: MIME type to use for files with no extension (default "")
+**defaultMimeType**: [string] MIME type to use for files with no extension (default "")
 
-**allowDuplicates**: allow to upload more than once the same file (based on file name, default false)
+**allowDuplicates**: [boolean] allow to upload more than once the same file (based on file name, default false)
 
-**duplicatesWarning**: if *allowDuplicates* is false, set this option to true to show a warning message when trying to load a duplicated file
+**duplicatesWarning**: [boolean] if *allowDuplicates* is false, set this option to true to show a warning message when trying to load a duplicated file
 
 In the result container, each reader's result is inserted as a DIV with 4 nested INPUT elements (title, extension, value (the base64 string) and size (in MB)); each of these 4 elements has a name attribute in the form "prefix[index][name]"
 
@@ -94,29 +89,72 @@ By default the prefix is "fileUploader", and the names are ["title", "extension"
 
 If needed it is possible to change them:
 
-**resultPrefix** custom name-prefix for result elements
+**resultPrefix**: [string] custom name-prefix for result elements
 
-**resultInputNames** custom array of names for the 4 result elements created for each file (ordered)
+**resultInputNames**: [array of strings] custom array of names for the 4 result elements created for each file (ordered)
+
+**labelsContainers**: [string / array of strings] the fileUploader can dynamically update 4 kind of labels showing the current total size, current available size, max total size and max file size; by default these labels are not included in the plugin's generated DOM; if you need to display those informations, you can do it by placing the DOM element where you want to display these infos wherever you want and:
+
+use the plugin's callbacks to update values when neede
+
+or
+
+let the plugin handle this for you; in this case you have to provide "labelsContainers" option; this is a querySelector string (or an array of querySelector strings if you need to display those infos in more than one place) where the plugin will look to find appropriate elements for containing the relative information; for example you can put somewhere:
+
+```
+<div class="myContainer>
+    <div class="sizeAvailable">size available: <span></span></div>
+    <div class="currentSize">current size: <span></span></div>
+    <div class="maxFileSize">max file size: <span></span></div>
+    <div class="maxTotalSize">max total size: <span></span></div>
+</div>
+```
+(maybe you don't want all of them, you can put a DOM element in your container only for the ones you want); the class of each element in the container that fileUploader will look for is by default as in the example above, anyway can be customized with "labelsClasses" options
+
+**labelsClasses**: [object] an object that defines the classes to look for inside any "labelsContainers" defined, where to update fileUploader infos:
+```
+labelsClasses: {
+    sizeAvailable: 'sizeAvailable',
+    currentSize: 'currentSize',
+    maxFileSize: 'maxFileSize',
+    maxTotalSize: 'maxTotalSize'
+}
+```
 
 ##### DEBUG OPTIONS
 
-**debug**: enable debug mode (default false)
+**debug**: [boolean] enable debug mode (default false)
 
-**debugLogStyle**: custom CSS rules for style debug logs in browser's javascript console (only for browsers that supports this feature, default: *"color: #9900ff"*, purple logs)
+**debugLogStyle**: [string] custom CSS rules for style debug logs in browser's javascript console (only for browsers that supports this feature, default: *"color: #9900ff"*, purple logs)
 
-**name**: a name for current fileUploader's instance, used in debug logs if provided (default: undefined)
+**name**: [string] a name for current fileUploader's instance, used in debug logs if provided (default: undefined)
 
-**pluginName**: the plugin's name used in debug logs alongside with name (default: *"FileUploader*)
+**pluginName**: [string] the plugin's name used in debug logs alongside with name (default: *"FileUploader*)
 
 ### Methods
+To call a method you need first to get the plugin's instance:
+
+    let test1 = new FileUploader(document.querySelector('#one'));
+    test1.fileUploader  // this is the instance
+
+you can then call a method on the instance, ex.:
+
+    test1.fileUploader.getData();
+
 **get**: obtain parameters from the fileUploader instance:
 
 - **currentTotalSize**: total size of currently loaded files
 - **currentAvailableSize**: available size left
 
-(example):
+    let totalSize = test1.fileUploader.get('currentTotalSize');
+    let availableSize = test1.fileUploader.get('currentAvailableSize');
 
-    $('#fileUploader1').fileUploader('get', 'currentTotalSize')
+**getData**: returns an array of objects, containing the data of every file in the result container; every object of the array has the properties: title, ext, value.
+
+Example:
+
+    let result = test1.fileUploader.getData();
+
 
 ### Callbacks
 Together with the options object it is possible to define some callbacks:
@@ -225,19 +263,11 @@ it is possible to override it or add a custom translation by defining it in "lan
         }
     });
 
-### Methods
-
-**getData**: returns an array of objects, containing the data of every file in the result container; every object of the array has the properties: title, ext, value.
-
-Example:
-
-    var result = $('.fileUploader').fileUploader('getData');
-
 ### <a name="reloadedFiles"></a>Reloaded files
 What if you have some files already uploaded to your server (ex. in a previous session) and you want fileUploder to init with them?
 There are 2 possibilities:
 
-*1*
+*1)*
 You can re-create the result DOM inside the fileUploader's result container, and the plugin will create visual element such as progress bar, icon, ect... automatically;
 the reloaded files' HTML must be a string, passed to **reloadHTML** option in the constructor, and must be in the form:
 
@@ -252,22 +282,52 @@ the reloaded files' HTML must be a string, passed to **reloadHTML** option in th
 
 (the class *uploadedFile* is used for the styling of files already there when plugin initializes; basically it is just a different color, easily customizable editing $reloadedColor variable in fileUploader.scss)
 
-*2*
+*2)*
 You can push all your already uploaded files' data into an array and pass it to the plugin througth the **reloadArray** option (see above in the *Options* section for more details)
 
-### Grunt
-It is provided with livereload and sass version of stylesheet;
-use "grunt" to execute it and point your browser on "localhost:7000" (prerequisites: ruby, sass ("gem install sass"), grunt-cli, grunt and needed plugins ("npm install"), browser livereload extension);
+### Gulp
+It is provided with browsersync's live server and sass version of stylesheet;
+use "gulp serve" to execute it and point your browser on "localhost:7000" (prerequisites: node with npm, gulp-cli, needed npm modules (run `npm install` from this folder));
 
-Use --port option to serve it on another port; example:
-**grunt --port=9000**
 
-Use **grunt uglify** or **grunt minify** to rebuild the minified version of fileUploader.js
+Use **gulp** to build a dist version without executing the live server
+
+### Breaking changes
+
+#### Version 5
+A couple of option names have been renamed:
+
+- fileMaxSize -> maxFileSize
+- totalMaxSize -> maxTotalSize
+
+#### Version 4
+From version 4 jquery dependency has been removed; so now the plugin is instantiated like:
+
+    // now
+    let test1 = new FileUploader(document.querySelector('#one'), {...options});
+    // before
+    ${'#one'}.fileUploader({...options});
+
+and the plugin instance must be accessed in a different way to call plugin methods:
+
+    // now
+    test1.fileUploader.getData();
+    // before
+    $('#one').fileUploader.getData();
 
 ### License
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).
 
-##### History
+#### History
+5.0.0
+-----
+- updated plugin labels handling
+
+4.0.0
+-----
+- removed jquery dependency
+- updated source code to ES6
+
 3.7.1
 -----
 - added minified version of fileUploader.js

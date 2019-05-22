@@ -196,10 +196,14 @@
             float: left;
             @extend %borderBoxed;
 
-            input, textarea {
+            input {
                 width: 100%;
                 display: block;
-            }            
+            }
+            
+            textarea {
+                width: calc(100% - 2px);
+            }
         }
 
         &:last-child:after {

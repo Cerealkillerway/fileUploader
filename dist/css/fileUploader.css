@@ -8,7 +8,7 @@
   -webkit-transition: all 1s; }
 
 .fileUploader {
-  color: #333;
+  color: #3d3b4d;
   font-weight: bold; }
   .fileUploader img {
     display: block; }
@@ -20,12 +20,12 @@
     min-height: 150px;
     width: 100%;
     margin-top: 25px;
-    border: dashed 3px #333;
+    border: dashed 3px #3d3b4d;
     text-align: center;
     vertical-align: middle;
     line-height: 150px;
     font-size: 36px;
-    color: gray; }
+    color: #85829f; }
   .fileUploader .highlight {
     color: #76ff03;
     border-color: #76ff03; }
@@ -56,7 +56,8 @@
     .fileUploader .filesContainer .reloadedElement .loadBar {
       border: solid 2px #1b5e20 !important; }
       .fileUploader .filesContainer .reloadedElement .loadBar div {
-        background-color: #1b5e20 !important; }
+        background-color: #1b5e20 !important;
+        background: linear-gradient(to right, #32ad3b, #1b5e20 95%) !important; }
     .fileUploader .filesContainer .reloadedElement .fileActions a, .fileUploader .filesContainer .reloadedElement .fileActions .fileDelete, .fileUploader .filesContainer .reloadedElement .fileActions .fileSee {
       color: #1b5e20 !important; }
     .fileUploader .filesContainer .newElement {
@@ -72,7 +73,7 @@
       .fileUploader .filesContainer .newElement .fileTitle {
         width: 38%;
         margin-right: 2%;
-        color: #333;
+        color: #3d3b4d;
         font-size: 18px;
         border: none;
         text-align: right;
@@ -81,14 +82,15 @@
       .fileUploader .filesContainer .newElement .fileExt {
         display: none; }
       .fileUploader .filesContainer .newElement .loadBar {
-        border: solid 2px #333;
+        border: solid 2px #3d3b4d;
         width: 28%;
         margin-right: 2%;
         height: 100%; }
         .fileUploader .filesContainer .newElement .loadBar div {
-          background-color: #333;
+          background-color: #3d3b4d;
           width: 0;
-          height: 100%; }
+          height: 100%;
+          background: linear-gradient(to right, #6b6787, #3d3b4d 95%); }
       .fileUploader .filesContainer .newElement .fileActions {
         position: relative;
         width: 30%;
@@ -100,14 +102,14 @@
             margin-right: 25px; }
         .fileUploader .filesContainer .newElement .fileActions a {
           text-decoration: none !important;
-          color: #333;
+          color: #3d3b4d;
           cursor: pointer; }
         .fileUploader .filesContainer .newElement .fileActions .fileDelete, .fileUploader .filesContainer .newElement .fileActions .fileSee {
           cursor: pointer; }
   .fileUploader .result {
     margin-top: 5px;
-    color: #ff0000;
-    border: dashed 3px #ff0000;
+    color: #923535;
+    border: dashed 3px #923535;
     min-height: 35px;
     padding: 15px; }
     .fileUploader .result > div {
@@ -125,11 +127,11 @@
       display: block;
       clear: both; }
   .fileUploader .debugMode {
-    color: #ff0000;
+    color: #923535;
     margin: 35px auto auto 0;
     text-align: center;
     font-weight: bold;
     text-transform: uppercase; }
   .fileUploader .debug {
-    color: #ff0000;
+    color: #923535;
     text-align: center; }

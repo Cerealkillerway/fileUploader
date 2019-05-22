@@ -1,4 +1,4 @@
-## File Uploader v5.1.3
+## File Uploader v5.2.2
 
 ![FileUploader](./images/logos/file-uploader.png)
 

@@ -18,7 +18,7 @@
     display: none; }
   .fileUploader .dropZone {
     min-height: 150px;
-    width: 100%;
+    width: calc(100% - 6px);
     margin-top: 25px;
     border: dashed 3px #3d3b4d;
     text-align: center;

@@ -2,7 +2,7 @@ import deepMerge from 'deepmerge';
 
 
 /*
-* fileUploader v5.2.3
+* fileUploader v5.2.5
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function(context) {

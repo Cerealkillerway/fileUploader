@@ -193,6 +193,10 @@ import deepMerge from 'deepmerge';
             let fileSize = $resultContainer.querySelector(`input[name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[3]}]"]`).value;
 
             fileSize = this._round(fileSize);
+            //TODO
+            console.log(fileSize);
+            let realFileSize = encodeURI($el.querySelector(`textarea[name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[2]}]"]`).value).split(/%(?:u[0-9A-F]{2})?[0-9A-F]{2}|./).length - 1;
+            console.log(realFileSize / 1000000);
             currentTotalSize = this._round(currentTotalSize - fileSize);
 
             let availableSize = this._options.maxTotalSize - currentTotalSize;
@@ -513,20 +517,14 @@ import deepMerge from 'deepmerge';
                     loadBar.insertAdjacentHTML('beforeend', `<div class="errorMsg">${errorMsg}</div>`)
 
                     setTimeout(() => {
-                        /*currentElement.animate({opacity: 0}, 300, function() {
-                            if (instance._options.useFileIcons) {
-                                $(this).prev('img').remove();
-                            }
-                            $(this).remove();
-                        });*/
                         if (instance._options.useFileIcons) {
                             currentElement.getPreviousSibling('img').remove();
                         }
                         currentElement.remove();
                     }, 2000);
 
-                    let debugRejected = parseInt(document.getElementById('debugRejected'));
-                    let totalRejected = debugRejected.innerHTML + 1;
+                    let debugRejected = document.getElementById('debugRejected');
+                    let totalRejected = parseInt(debugRejected.innerHTML) + 1;
                     debugRejected.innerHTML = totalRejected;
                 }
             }

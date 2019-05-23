@@ -52,7 +52,7 @@
 
         .error {
             .fileTitle {
-                color: $errorColor !important;
+                color: darken($errorColor, 30%) !important;
             }
 
             .loadBar {
@@ -72,11 +72,11 @@
 
             .fileActions {
                 div {
-                    color: $errorColor !important;
+                    color: darken($errorColor, 30%) !important;
                 }
 
                 a {
-                    color: $errorColor !important;
+                    color: darken($errorColor, 30%) !important;
                 }
             }
         }
@@ -152,6 +152,7 @@
                     width: 0;
                     height: 100%;
                     background: linear-gradient(to right, lighten($mainColor, 20%), $mainColor 95%);
+                    transition: width 1.5s;
                 }
             }
 
@@ -185,9 +186,13 @@
     }
 
     .result {
-        margin-top: 5px;
+        //margin-top: 5px;
         color: $resultColor;
-        border: dashed 3px $resultColor;
+        border: {
+            bottom: solid 3px $resultColor;
+            left: solid 3px $resultColor;
+            right: solid 3px $resultColor;
+        }
         min-height: 35px;
         padding: 15px;
 
@@ -216,15 +221,26 @@
     }
 
     .debugMode {
-        color: $resultColor;
+        background-color: $resultColor;
+        background: linear-gradient(to top, $resultColor 30%, lighten($resultColor, 15%));
+        color: $resultColorText;
         margin: 35px auto auto 0;
         text-align: center;
         font-weight: bold;
         text-transform: uppercase;
+        padding: {
+            top: 15px;
+            bottom: 25px;
+        }
     }
 
     .debug {
-        color: $resultColor;
+        background-color: $resultColor;
+        color: $resultColorText;
         text-align: center;
+
+        &.sizeAvailable {
+            padding-bottom: 11px;
+        }
     }
 }

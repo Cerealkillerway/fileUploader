@@ -46,7 +46,28 @@ $errorColor: #283593 !default;
     font-size: 18px;
     font-weight: bold;
     padding: 15px 35px;
-    border: solid 3px darken($mainColor, 15%);
+    border: {
+        top: solid 3px darken($mainColor, 15%);
+        bottom: solid 3px darken($mainColor, 15%);
+    }
+    position: relative;
+    margin-bottom: 65px;
+    margin-top: 65px;
+
+    &::before {
+        content: ' ';
+        position: absolute;
+        top: -49px;
+        left: 0;
+        background-color: black;
+        width: 100%;
+        height: 45px;
+        background: linear-gradient(to top, $mainColor, darken($mainColor, 15%));
+        border: {
+            top: solid 2px darken($mainColor, 15%);
+            bottom: solid 2px darken($mainColor, 15%);
+        }
+    }
 }
 
 body {
@@ -85,13 +106,8 @@ main {
         @extend %ckBtn;
     }
 
-    .customTotalSize {
+    .customTotalSize, #testSizeLabelContainer1, #testSizeLabelContainer2 {
         @extend %solidDarkSquare;
-    }
-
-    #testSizeLabelContainer1, #testSizeLabelContainer2 {
-        @extend %solidDarkSquare;
-        margin-top: 25px;
     }
 }
 
@@ -134,7 +150,7 @@ footer {
     &::before {
         content: ' ';
         position: absolute;
-        top: -47px;
+        top: -49px;
         left: 0;
         background-color: black;
         width: 100%;

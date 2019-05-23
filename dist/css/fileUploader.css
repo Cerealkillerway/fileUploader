@@ -32,11 +32,11 @@
   .fileUploader .filesContainer {
     margin-top: 25px; }
     .fileUploader .filesContainer .error .fileTitle {
-      color: #aa00ff !important; }
+      color: #757dd9 !important; }
     .fileUploader .filesContainer .error .loadBar {
-      border: solid 2px #aa00ff !important; }
+      border: solid 2px #edeefa !important; }
       .fileUploader .filesContainer .error .loadBar .errorMsg {
-        color: #aa00ff !important;
+        color: #edeefa !important;
         font-weight: bold;
         font-size: 18px;
         line-height: 40px;
@@ -45,9 +45,9 @@
         background-color: transparent !important;
         text-align: center; }
     .fileUploader .filesContainer .error .fileActions div {
-      color: #aa00ff !important; }
+      color: #757dd9 !important; }
     .fileUploader .filesContainer .error .fileActions a {
-      color: #aa00ff !important; }
+      color: #757dd9 !important; }
     .fileUploader .filesContainer .fileThumb {
       max-height: 130px;
       margin: auto; }
@@ -90,7 +90,8 @@
           background-color: #3d3b4d;
           width: 0;
           height: 100%;
-          background: linear-gradient(to right, #6b6787, #3d3b4d 95%); }
+          background: linear-gradient(to right, #6b6787, #3d3b4d 95%);
+          transition: width 1.5s; }
       .fileUploader .filesContainer .newElement .fileActions {
         position: relative;
         width: 30%;
@@ -107,9 +108,10 @@
         .fileUploader .filesContainer .newElement .fileActions .fileDelete, .fileUploader .filesContainer .newElement .fileActions .fileSee {
           cursor: pointer; }
   .fileUploader .result {
-    margin-top: 5px;
     color: #923535;
-    border: dashed 3px #923535;
+    border-bottom: solid 3px #923535;
+    border-left: solid 3px #923535;
+    border-right: solid 3px #923535;
     min-height: 35px;
     padding: 15px; }
     .fileUploader .result > div {
@@ -127,11 +129,18 @@
       display: block;
       clear: both; }
   .fileUploader .debugMode {
-    color: #923535;
+    background-color: #923535;
+    background: linear-gradient(to top, #923535 30%, #c15353);
+    color: #dedede;
     margin: 35px auto auto 0;
     text-align: center;
     font-weight: bold;
-    text-transform: uppercase; }
+    text-transform: uppercase;
+    padding-top: 15px;
+    padding-bottom: 25px; }
   .fileUploader .debug {
-    color: #923535;
+    background-color: #923535;
+    color: #dedede;
     text-align: center; }
+    .fileUploader .debug.sizeAvailable {
+      padding-bottom: 11px; }

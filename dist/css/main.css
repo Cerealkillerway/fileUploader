@@ -114,11 +114,11 @@ footer {
     border-bottom: solid 2px #171a20; }
   footer a:link, footer a:visited {
     text-transform: uppercase;
-    color: #b71c1c;
+    color: #d7f160;
     text-decoration: none; }
   footer a:hover, footer a:active {
     text-decoration: underline;
-    color: #e55454; }
+    color: #eff9be; }
 
 .staticBar {
   position: sticky;

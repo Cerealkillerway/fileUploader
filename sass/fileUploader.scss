@@ -96,11 +96,12 @@
 
                 div {
                     background-color: $reloadedColor !important;
+                    background: linear-gradient(to right, lighten($reloadedColor, 20%), $reloadedColor 95%) !important;
                 }
             }
 
             .fileActions {
-                a, .fileDelete {
+                a, .fileDelete, .fileSee {
                     color: $reloadedColor !important;
                 }
             }
@@ -150,6 +151,7 @@
                     background-color: $mainColor;
                     width: 0;
                     height: 100%;
+                    background: linear-gradient(to right, lighten($mainColor, 20%), $mainColor 95%);
                 }
             }
 
@@ -175,7 +177,7 @@
                     cursor: pointer;
                 }
 
-                .fileDelete {
+                .fileDelete, .fileSee {
                     cursor: pointer;
                 }
             }
@@ -199,7 +201,11 @@
             input {
                 width: 100%;
                 display: block;
-            }            
+            }
+            
+            textarea {
+                width: calc(100% - 2px);
+            }
         }
 
         &:last-child:after {

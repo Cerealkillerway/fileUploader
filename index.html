@@ -3,16 +3,13 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link href="css/fileUploader.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
-
-    <script type="text/javascript" src="lib/jquery-2.1.4.js"></script>
-    <script type="text/javascript" src="js/fileUploader.js"></script>
+    <link href="dist/css/fileUploader.css" rel="stylesheet">
+    <link href="dist/css/main.css" rel="stylesheet">
 </head>
 
 <body>
     <header>
-        <h2>File Uploader v3.7.3</h2>
+        <h2>File Uploader v5.2.2</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader api
         </p>
@@ -23,30 +20,31 @@
         <h3>fileUploader 1</h3>
         <h5>(Example with files reloaded from array):</h5>
 
-        <div class="customTotalSize">Custom total size displayer: <span></span></div>
+        <div class="customTotalSize">
+            <div class="smallTitle">(this is updated from within the callbacks)</div>
+            Custom total size displayer: <span></span>
+        </div>
 
         <div class="fileUploader" id="one"></div>
+
+        <div id="testSizeLabelContainer1">
+            <div class="smallTitle">(These are included in a container passe as "labelsContainers" option)</div>
+            <div class="sizeAvailable">Test size available displayer 1: <span></span> MB</div>
+            <div class="maxFileSize">Test single file MAX size: <span></span> MB</div>
+            <div class="maxTotalSize">Test total MAX size: <span></span> MB</div>
+        </div>
+
+        <div id="testSizeLabelContainer2">
+            <div class="smallTitle">(These are included in a container passe as "labelsContainers" option)</div>
+            <div class="sizeAvailable">Test size available displayer 2: <span></span> MB</div>
+            <div class="currentSize">Test current size displayer: <span></span> MB</div>
+        </div>
 
         <br><br>
 
         <h3>fileUploader 2</h3>
         <h5>(Example with files reloaded placed directly in result container):</h5>
         <div class="fileUploader" id="two"></div>
-
-        <div class="staticBar">
-            <div class="innerBar">
-                <div class="left">
-                    <a id="save1" class="ckBtn">Save 1</a>
-                    <a id="save2" class="ckBtn">Save 2</a>
-                    (Logs result in console)
-                </div>
-                <div class="right">
-                    <a id="getCurrentTotalSize1" class="ckBtn">Get Total Size 1</a>
-                    <a id="getCurrentTotalSize2" class="ckBtn">Get Total Size 2</a>
-                </div>
-                <div style="clear: both;"></div>
-            </div>
-        </div>
     </main>
 
     <footer>
@@ -55,127 +53,146 @@
             Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a>
         </p>
     </footer>
+
+    <div class="staticBar">
+        <div class="innerBar">
+            <div class="left">
+                <a id="save1" class="ckBtn">Save 1</a>
+                <a id="save2" class="ckBtn">Save 2</a>
+                (Logs result in console)
+            </div>
+            <div class="right">
+                <a id="getCurrentTotalSize1" class="ckBtn">Get Total Size 1</a>
+                <a id="getCurrentTotalSize2" class="ckBtn">Get Total Size 2</a>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="dist/js/fileUploader.js"></script>
+    <script tyle="text/javascript">
+        let filesArray = [
+            {
+                name: "fromArray1",
+                ext: "jpeg",
+                data: "ldjahflòksdjòflaksjdflk",
+                size: 0.3
+            },
+            {
+                name: "fromArray2",
+                ext: "jpg",
+                data: "dgjhakjhsdjkhjhjklasdikfj asdilfj",
+                size: 1.2
+            }
+        ];
+
+        let filesHTML = [
+            '<div data-index="0" class="uploadedFile">',
+            '    <div>File: 0</div>',
+            '    <input type="text" name="fileUploader[0][title]" value="Example1">',
+            '    <input type="text" name="fileUploader[0][extension]" value="">',
+            '    <input type="text" name="fileUploader[0][value]" value="dgjhakjhsdjkhjhjklasdikfj asdilfj">',
+            '    <input type="text" name="fileUploader[0][size]" value="1.5">',
+            '</div>',
+            '<div data-index="1" class="uploadedFile">',
+            '    <div>File: 1</div>',
+            '    <input type="text" name="fileUploader[1][title]" value="Example2.jpg">',
+            '    <input type="text" name="fileUploader[1][extension]" value="pdf">',
+            '    <input type="text" name="fileUploader[1][value]" value="hfljsjklsdjfklsjlsdfff">',
+            '    <input type="text" name="fileUploader[1][size]" value="0.9">',
+            '</div>',
+        ].join("\n");
+
+        // fileUploader example 1
+        let test1 = new FileUploader(document.querySelector('#one'), {
+            useFileIcons: false,
+            maxFileSize: 1.9,
+            maxTotalSize: 5.5,
+            loadingBarsClasses: ['striped', 'hoverable'],
+            debug: true,
+            name: 'one',
+            reloadArray: filesArray,
+            linkButtonContent: '<i>Open</i>',
+            deleteButtonContent: '<i>Remove</i>',
+            duplicatesWarning: true,
+            labelsContainers: ['#testSizeLabelContainer1', '#testSizeLabelContainer2'],
+            onload: function(options, totalSize) {
+                document.querySelector('.customTotalSize').querySelector(':scope > span').innerHTML = (totalSize + ' MB');
+            },
+            onfileloadEnd: function(index, file, totalSize) {
+                document.querySelector('.customTotalSize').querySelector(':scope > span').innerHTML = (totalSize + ' MB');
+            },
+            onfileDelete: function(index, totalSize) {
+                document.querySelector('.customTotalSize').querySelector(':scope > span').innerHTML = (totalSize + ' MB');
+            },
+            filenameTest: function(fileName, fileExt, $container) {
+                let allowedExts = ['jpg', 'jpeg', 'png', 'txt'];
+                let proceed = true;
+                let info = document.createElement('div');
+                info.className = 'errorLabel center';
+
+                // length check
+                if (fileName.length > 130) {
+                    info.innerHTML = 'Name too long...';
+                    proceed = false;
+                }
+                // replace not allowed characters
+                fileName = fileName.replace(' ', '-');
+
+                // extension check
+                if (allowedExts.indexOf(fileExt) < 0) {
+                    info.innerHTML = 'Extension not allowed...';
+                    proceed = false;
+                }
+
+                // show an error message, but only if there is no other error message already there
+                if (!proceed && !$container.querySelector(':scope > .errorLabel')) {
+                    $container.appendChild(info);
+
+                    setTimeout(function() {
+                        /*info.animate({opacity: 0}, 300, function() {
+                            $(this).remove();
+                        });*/
+                        info.remove();
+                    }, 2000);
+                }
+                if (!proceed) {
+                    return false;
+                }
+
+                return fileName;
+            }
+        });
+
+        // fileUploader example 2
+        let test2 = new FileUploader(document.querySelector('#two'), {
+            useFileIcons: false,
+            maxFileSize: 1.7,
+            maxTotalSize: 7,
+            debug: true,
+            name: 'two',
+            debugLogStyle: "color: #ff5500",
+            reloadHTML: filesHTML,
+        });
+
+
+        // buttons
+        document.getElementById('save1').addEventListener('click', function() {
+            let result = test1.fileUploader.getData();
+            //do what you need with result (ex. send ajax call to remote procedure to persist files)
+        });
+        document.getElementById('save2').addEventListener('click', function() {
+            let result = test2.fileUploader.getData();
+            //do what you need with result (ex. send ajax call to remote procedure to persist files)
+        });
+
+        document.getElementById('getCurrentTotalSize1').addEventListener('click', function() {
+            console.log(`Current total size uploader 1: ${test1.fileUploader.get('currentTotalSize')}`);
+        });
+        document.getElementById('getCurrentTotalSize2').addEventListener('click', function() {
+            console.log(`Current total size uploader 2: ${test2.fileUploader.get('currentTotalSize')}`);
+        });
+
+    </script>
 </body>
-
-<script tyle="text/javascript">
-    var filesArray = [
-        {
-            name: "fromArray1",
-            ext: "jpeg",
-            data: "ldjahflòksdjòflaksjdflk",
-            size: 0.3
-        },
-        {
-            name: "fromArray2",
-            ext: "jpg",
-            data: "dgjhakjhsdjkhjhjklasdikfj asdilfj",
-            size: 1.2
-        }
-    ];
-
-    var filesHTML = [
-        '<div data-index="0" class="uploadedFile">',
-        '    <div>File: 0</div>',
-        '    <input type="text" name="fileUploader[0][title]" value="Example1">',
-        '    <input type="text" name="fileUploader[0][extension]" value="">',
-        '    <input type="text" name="fileUploader[0][value]" value="dgjhakjhsdjkhjhjklasdikfj asdilfj">',
-        '    <input type="text" name="fileUploader[0][size]" value="1.5">',
-        '</div>',
-        '<div data-index="1" class="uploadedFile">',
-        '    <div>File: 1</div>',
-        '    <input type="text" name="fileUploader[1][title]" value="Example2.jpg">',
-        '    <input type="text" name="fileUploader[1][extension]" value="pdf">',
-        '    <input type="text" name="fileUploader[1][value]" value="hfljsjklsdjfklsjlsdfff">',
-        '    <input type="text" name="fileUploader[1][size]" value="0.9">',
-        '</div>',
-    ].join("\n");
-
-    // fileUploader example 1
-    $('#one').fileUploader({
-        useFileIcons: false,
-        fileMaxSize: 1.7,
-        totalMaxSize: 5,
-        loadingBarsClasses: ['striped', 'hoverable'],
-        debug: true,
-        name: "one",
-        reloadArray: filesArray,
-        linkButtonContent: '<i>Open</i>',
-        deleteButtonContent: '<i>Remove</i>',
-        duplicatesWarning: true,
-        onload: function(options, totalSize) {
-            $('.customTotalSize').children('span').html(totalSize + ' MB');
-        },
-        onfileloadEnd: function(index, file, totalSize) {
-            $('.customTotalSize').children('span').html(totalSize + ' MB');
-        },
-        onfileDelete: function(index, totalSize) {
-            $('.customTotalSize').children('span').html(totalSize + ' MB');
-        },
-        filenameTest: function(fileName, fileExt, $container) {
-            var allowedExts = ['jpg', 'jpeg', ''];
-            var $info = $('<div class="errorLabel center"></div>');
-            var proceed = true;
-
-            // length check
-            if (fileName.length > 13) {
-                $info.html('Name too long...');
-                proceed = false;
-            }
-            // replace not allowed characters
-            fileName = fileName.replace(' ', '-');
-
-            // extension check
-            if (allowedExts.indexOf(fileExt) < 0) {
-                $info.html('Extension not allowed...');
-                proceed = false;
-            }
-
-            // show an error message, but only if there is no other error message already there
-            if (!proceed && $container.children('.errorLabel').length < 1) {
-                $container.append($info);
-
-                setTimeout(function() {
-                    $info.animate({opacity: 0}, 300, function() {
-                        $(this).remove();
-                    });
-                }, 2000);
-            }
-            if (!proceed) {
-                return false;
-            }
-
-            return fileName;
-        }
-    });
-
-    // fileUploader example 2
-    $('#two').fileUploader({
-        useFileIcons: false,
-        fileMaxSize: 1.7,
-        totalMaxSize: 5,
-        debug: true,
-        name: 'two',
-        debugLogStyle: "color: #ff5500",
-        reloadHTML: filesHTML,
-    });
-
-
-    // buttons
-    $('#save1').click(function() {
-        var result = $('#one').fileUploader('getData');
-        //do what you need with result (ex. send ajax call to remote procedure to persist files)
-    });
-    $('#save2').click(function() {
-        var result = $('#two').fileUploader('getData');
-        //do what you need with result (ex. send ajax call to remote procedure to persist files)
-    });
-
-    $('#getCurrentTotalSize1').click(function() {
-        console.log("Current total size uploader 1: " + $('#one').fileUploader('get', 'currentTotalSize'));
-    });
-    $('#getCurrentTotalSize2').click(function() {
-        console.log("Current total size uploader 2: " + $('#two').fileUploader('get', 'currentTotalSize'));
-    });
-
-</script>
 </html>

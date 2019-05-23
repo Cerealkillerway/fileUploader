@@ -1,6 +1,6 @@
-$mainColor: #333 !default;
+$mainColor: rgb(55, 61, 77) !default;
 $mainColorText: #ddd !default;
-$secondaryColor: #424242 !default;
+$secondaryColor: #3e4753 !default;
 $secondaryColorText: #ddd !default;
 $linkColor: #b71c1c !default;
 $errorColor: #283593 !default;
@@ -19,6 +19,36 @@ $errorColor: #283593 !default;
     background-color: lighten($mainColor, 30%);
 }
 
+%ckBtn {
+    background-color: $mainColor;
+    color: $mainColorText;
+    text-transform: uppercase;
+    padding: 7px 25px;
+    display: inline-block;
+    cursor: pointer;
+
+    &:hover {
+        background-color: darken($mainColor, 20%);
+    }
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+%solidDarkSquare {
+    background-color: $mainColor;
+    color: $mainColorText;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 15px 35px;
+    border: solid 3px darken($mainColor, 15%);
+}
+
 body {
     padding: 0;
     margin: 0;
@@ -33,14 +63,6 @@ main {
     padding: 15px 35px;
     flex: 1 0 auto;
 
-    .left {
-        float: left;
-    }
-
-    .right {
-        float: right;
-    }
-
     .center {
         margin: 25px auto;
         text-align: center;
@@ -52,44 +74,24 @@ main {
         color: $errorColor;
     }
 
-    .ckBtn {
-        background-color: $mainColor;
-        color: $mainColorText;
+    .smallTitle {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        font-weight: bold;
         text-transform: uppercase;
-        padding: 7px 25px;
-        display: inline-block;
-        cursor: pointer;
+    }
 
-        &:hover {
-            background-color: darken($mainColor, 20%);
-        }
+    .ckBtn {
+        @extend %ckBtn;
     }
 
     .customTotalSize {
-        background-color: $mainColor;
-        color: $mainColorText;
-        font-size: 18px;
-        font-weight: bold;
-        padding: 15px 35px;
-        border: solid 3px darken($mainColor, 15%);
+        @extend %solidDarkSquare;
     }
 
-    .staticBar {
-        position: fixed;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        background-color: $secondaryColor;
-        color: $secondaryColorText;
-        border: solid 3px $mainColor;
-
-        .innerBar {
-            padding: 15px 35px;
-        }   
-
-        .ckBtn {
-            background-color: darken($mainColor, 15%);
-        }
+    #testSizeLabelContainer1, #testSizeLabelContainer2 {
+        @extend %solidDarkSquare;
+        margin-top: 25px;
     }
 }
 
@@ -97,17 +99,53 @@ header {
     padding: 25px 35px;
     background-color: $mainColor;
     color: $mainColorText;
-    border-bottom: solid 3px darken($mainColor, 15%);
+    position: relative;
+    margin-bottom: 65px;
+
+    h2 {
+        text-transform: uppercase;
+    }
+
+    &::after {
+        content: ' ';
+        position: absolute;
+        bottom: -49px;
+        left: 0;
+        background-color: black;
+        width: 100%;
+        height: 45px;
+        background: linear-gradient(to bottom, $mainColor, darken($mainColor, 15%));
+        border: {
+            top: solid 2px darken($mainColor, 15%);
+            bottom: solid 2px darken($mainColor, 15%);
+        }
+    }
 }
 
 footer {
     padding: 25px 35px;
     background-color: $mainColor;
-    border-top: solid 3px darken($mainColor, 15%);
     color: $mainColorText;
     text-align: center;
     z-index: 99;
-    
+    position: relative;
+    margin-top: 65px;
+
+    &::before {
+        content: ' ';
+        position: absolute;
+        top: -47px;
+        left: 0;
+        background-color: black;
+        width: 100%;
+        height: 45px;
+        background: linear-gradient(to top, $mainColor, darken($mainColor, 15%));
+        border: {
+            top: solid 2px darken($mainColor, 15%);
+            bottom: solid 2px darken($mainColor, 15%);
+        }
+    }
+
     a:link , a:visited {
         text-transform: uppercase;
         color: $linkColor;
@@ -117,5 +155,45 @@ footer {
     a:hover, a:active {
         text-decoration: underline;
         color: lighten($linkColor, 20%);
+    }
+}
+
+.staticBar {
+    position: sticky;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: $secondaryColor;
+    color: $secondaryColorText;
+    z-index: 100;
+
+    &::before {
+        content: ' ';
+        position: absolute;
+        top: -15px;
+        left: 0;
+        background-color: black;
+        width: 100%;
+        height: 11px;
+        background: linear-gradient(to top, $secondaryColor, darken($secondaryColor, 15%));
+        border: {
+            top: solid 2px darken($secondaryColor, 15%);
+            bottom: solid 2px darken($secondaryColor, 15%);
+        }
+    }
+
+    .innerBar {
+        padding: 15px 35px;
+    }
+
+    .ckBtn {
+        @extend %ckBtn;
+        background-color: darken($mainColor, 15%);
+    }
+
+    .left {
+        .ckBtn:last-child {
+            margin-right: 20px;
+        }
     }
 }

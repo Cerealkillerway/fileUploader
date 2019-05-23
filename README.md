@@ -322,6 +322,7 @@ Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT
 5.0.0
 -----
 - updated plugin labels handling
+- improved plugin style
 
 4.0.0
 -----

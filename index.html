@@ -9,7 +9,7 @@
 
 <body>
     <header>
-        <h2>File Uploader v5.2.2</h2>
+        <h2>File Uploader v5.2.3</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader api
         </p>
@@ -125,7 +125,7 @@
             onfileDelete: function(index, totalSize) {
                 document.querySelector('.customTotalSize').querySelector(':scope > span').innerHTML = (totalSize + ' MB');
             },
-            filenameTest: function(fileName, fileExt, $container) {
+            filenameTest: function(fileName, fileExt, container) {
                 let allowedExts = ['jpg', 'jpeg', 'png', 'txt'];
                 let proceed = true;
                 let info = document.createElement('div');
@@ -146,8 +146,8 @@
                 }
 
                 // show an error message, but only if there is no other error message already there
-                if (!proceed && !$container.querySelector(':scope > .errorLabel')) {
-                    $container.appendChild(info);
+                if (!proceed && !container.querySelector(':scope > .errorLabel')) {
+                    container.appendChild(info);
 
                     setTimeout(function() {
                         /*info.animate({opacity: 0}, 300, function() {

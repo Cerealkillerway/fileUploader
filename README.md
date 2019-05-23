@@ -1,4 +1,4 @@
-## File Uploader v5.2.2
+## File Uploader v5.2.3
 
 ![FileUploader](./images/logos/file-uploader.png)
 
@@ -6,7 +6,7 @@ A file uploader skeleton that uses HTML5 file reader API.
 NOTE: from version 4.0.0 jquery dependency has been removed;
 
 ### Usage
-FileUploader is a jQuery plugin; just put a container for it in your HTML page:
+FileUploader is a plain javascript plugin; just put a container for it in your HTML page:
 
     <div class="fileUploader" id="one"></div>
 
@@ -71,7 +71,7 @@ There are some options that can passed to constructor in the form:
 
 **loadingBarsClasses**: [string] an array of strings representing custom classes to assign to each loading bar
 
-**resultContainerClass**: [string] set the class of the element to be used as container for reader's results (by default this is the hidden $(.result) element of the fileUploader); can be the class of any DOM element inside the fileUploader markup
+**resultContainerClass**: [string] set the class of the element to be used as container for reader's results (by default this is the hidden `.result` element of the fileUploader); can be the class of any DOM element inside the fileUploader markup
 
 **resultFileContainerClass**: [string] custom class to use for each reader's result container (default "file-")
 
@@ -177,91 +177,99 @@ Together with the options object it is possible to define some callbacks:
 
 (example)
 
-    $('.fileUploader').fileUploader({
-        useFileIcons: false,
-        fileMaxSize: 1.7,
-        debug: true,
-        //callbacks
-        onload: function(resultContainer) {
-            console.log(started plugin!);
-        },
-        onfileloadStart: function(index) {
-            console.log('new file read started: ' + index);
-        },
-        onfileloadEnd: function(index, result) {
-            console.log('loaded new file:' + index);
-            console.log(result);
+    let test = new FileUploader(
+        document.querySelector('#one'),
+        {
+            useFileIcons: false,
+            fileMaxSize: 1.7,
+            debug: true,
+            //callbacks
+            onload: function(resultContainer) {
+                console.log(started plugin!);
+            },
+            onfileloadStart: function(index) {
+                console.log('new file read started: ' + index);
+            },
+            onfileloadEnd: function(index, result) {
+                console.log('loaded new file:' + index);
+                console.log(result);
+            }
         }
-    });
+    );
 
-**fileNameTest(fileName, fileExt, $container)**: a function used on every file upload (*before onfileloadStart*) useful to take actions baed on file name or extension; if it returns false, the file will be skipped; otherwise it must return true to upload the file without changes or a string representing a new name to use for the current file; parameters:
+**fileNameTest(fileName, fileExt, container)**: a function used on every file upload (*before onfileloadStart*) useful to take actions baed on file name or extension; if it returns false, the file will be skipped; otherwise it must return true to upload the file without changes or a string representing a new name to use for the current file; parameters:
 - *fileName*: the name of the file currently being processed
 - *fileExt*: the extension of the file currently being processed
-- *$container*: the fileUploader's jQuery element that contains visual elements for uploaded files (if needed can be used to append a warning or error message for the user)
+- *container*: the fileUploader's DOM element that contains visual elements for uploaded files (if needed can be used to append a warning or error message for the user)
 
 (example)
     
-    $('.fileUploader').fileUploader({
-        filenameTest: function(fileName, fileExt, $container) {
-            var allowedExts = ["jpg", "jpeg"];
-            var $info = $('<div class="center"></div>');
-            var proceed = true;
+    let test = new FileUploader(
+        document.querySelector('#one'),
+        {
+            filenameTest: function(fileName, fileExt, container) {
+                let allowedExts = ["jpg", "jpeg"];
+                let info = document.createElement('div');
+                info.className = 'center';
+                let proceed = true;
 
-            // length check
-            if (fileName.length > 13) {
-                $info.html('Name too long...');
-                proceed = false;
+                // length check
+                if (fileName.length > 13) {
+                    info.innerHTML = 'Name too long...';
+                    proceed = false;
+                }
+                // replace not allowed characters
+                fileName = fileName.replace(" ", "-");
+
+                // extension check
+                if (allowedExts.indexOf(fileExt) < 0) {
+                    info.innerHTML = 'Extension not allowed...';
+                    proceed = false;
+                }
+                
+                // show an error message
+                if (!proceed) {
+                    container.appendChild(info);
+
+                    setTimeout(function() {
+                        info.remove();
+                    }, 2000);
+                    return false;
+                }
+
+                return fileName;
             }
-            // replace not allowed characters
-            fileName = fileName.replace(" ", "-");
-
-            // extension check
-            if (allowedExts.indexOf(fileExt) < 0) {
-                $info.html('Extension not allowed...');
-                proceed = false;
-            }
-            
-            // show an error message
-            if (!proceed) {
-                $container.append($info);
-
-                setTimeout(function() {
-                    $info.animate({opacity: 0}, 300, function() {
-                        $(this).remove();
-                    });
-                }, 2000);
-                return false;
-            }
-
-            return fileName;
         }
-    });
+    );
 
 ### Translations
 It comes with english built-in;
 it is possible to override it or add a custom translation by defining it in "langs" object in the constructor
 
-    $('.fileUploader').fileUploader({
-        lang: 'es',
-        langs: {
-            "es": {
-                intro_msg: "(Adjuntar Documentos...)",      
-                dropZone_msg: "Arrastre los archivos aquí",
-                maxSizeExceeded_msg: "Archivo demasiado grande",
-                totalMaxSizeExceeded_msg: "Tamaño total superado",
-                duplicated_msg: "Duplicate File (ignorado)",
-                name_placeHolder: "nombre"
-            },
-            "it": {
-                intro_msg: "(Aggiungi documenti allegati...)",
-                dropZone_msg: "Trascina qui i tuoi files...",
-                maxSizeExceeded_msg: "File troppo grande",
-                totalMaxSizeExceeded_msg: "Dimensione max. superata",
-                duplicated_msg: "File duplicato (ignorato)",
-                name_placeHolder: "nome"
+    let test = new FileUploader(
+        document.querySelector('#one'),
+        {
+            lang: 'es',
+            langs: {
+                "es": {
+                    intro_msg: "(Adjuntar Documentos...)",      
+                    dropZone_msg: "Arrastre los archivos aquí",
+                    maxSizeExceeded_msg: "Archivo demasiado grande",
+                    totalMaxSizeExceeded_msg: "Tamaño total superado",
+                    duplicated_msg: "Duplicate File (ignorado)",
+                    name_placeHolder: "nombre"
+                },
+                "it": {
+                    intro_msg: "(Aggiungi documenti allegati...)",
+                    dropZone_msg: "Trascina qui i tuoi files...",
+                    maxSizeExceeded_msg: "File troppo grande",
+                    totalMaxSizeExceeded_msg: "Dimensione max. superata",
+                    duplicated_msg: "File duplicato (ignorato)",
+                    name_placeHolder: "nome"
+                }
             }
         }
-    });
+    );
 
 ### <a name="reloadedFiles"></a>Reloaded files
 What if you have some files already uploaded to your server (ex. in a previous session) and you want fileUploder to init with them?

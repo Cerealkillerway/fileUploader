@@ -9,7 +9,7 @@
 
 <body>
     <header>
-        <h2>File Uploader v5.2.14</h2>
+        <h2>File Uploader v5.3.0</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader API
         </p>
@@ -19,6 +19,8 @@
         <h2>Multi uploader example</h2>
         <h3>fileUploader 1</h3>
         <h5>(Example with files reloaded from array):</h5>
+
+        <div class="fileUploader" id="one"></div>
 
         <div class="customTotalSize">
             <div class="smallTitle">(this is updated from within the callbacks)</div>
@@ -38,8 +40,6 @@
             <div class="currentSize">Test current size displayer: <span></span> MB</div>
         </div>
 
-        <div class="fileUploader" id="one"></div>
-
         <br><br>
 
         <h3>fileUploader 2</h3>
@@ -49,7 +49,7 @@
 
     <footer>
         <p>
-            File Uploader<br><br>
+            fileUploader js plugin<br><br>
             Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a>
         </p>
     </footer>
@@ -106,6 +106,7 @@
         // fileUploader example 1
         let test1 = new FileUploader(document.querySelector('#one'), {
             useFileIcons: false,
+            maxNumberOfFiles: 3,
             maxFileSize: 1.9,
             maxTotalSize: 5.5,
             loadingBarsClasses: ['striped', 'hoverable'],
@@ -126,7 +127,7 @@
                 document.querySelector('.customTotalSize').querySelector(':scope > span').innerHTML = (totalSize + ' MB');
             },
             filenameTest: function(fileName, fileExt, container) {
-                let allowedExts = ['jpg', 'jpeg', 'png', 'txt'];
+                let allowedExts = ['jpg', 'jpeg', 'png', 'txt', 'p7m'];
                 let proceed = true;
                 let info = document.createElement('div');
                 info.className = 'errorLabel center';

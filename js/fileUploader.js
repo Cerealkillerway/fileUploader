@@ -1,8 +1,9 @@
 import deepMerge from 'deepmerge';
+import { read } from 'fs';
 
 
 /*
-* fileUploader v5.2.14
+* fileUploader v5.3.0
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function(context) {
@@ -30,6 +31,7 @@ import deepMerge from 'deepmerge';
             defaultMimeType: '',                                           // MIME type to use for files with no extension
             maxFileSize: 50,                                               // maximum allowed file size (in MB)
             maxTotalSize: 1000,                                            // total maximum allowed size of all files
+            maxNumberOfFiles: false,                                       // maximum number of files allowed to upload
             reloadArray: [],                                               // array of files to be reloaded at plugin startup
             reloadHTML: undefined,                                         // HTML for reloaded files to place directly in result container
             linkButtonContent: 'L',                                        // HTML content for link button
@@ -193,11 +195,8 @@ import deepMerge from 'deepmerge';
             let fileSize = $resultContainer.querySelector(`input[name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[3]}]"]`).value;
 
             fileSize = this._round(fileSize);
-            //TODO
-            console.log(fileSize);
-            let realFileSize = encodeURI($el.querySelector(`textarea[name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[2]}]"]`).value).split(/%(?:u[0-9A-F]{2})?[0-9A-F]{2}|./).length - 1;
-            console.log(realFileSize / 1000000);
             currentTotalSize = this._round(currentTotalSize - fileSize);
+            currentNumberOfFiles--;
 
             let availableSize = this._options.maxTotalSize - currentTotalSize;
 
@@ -470,7 +469,6 @@ import deepMerge from 'deepmerge';
                     this._createResultContainer(newFile);
 
                     //set direct link on file see button
-                    //currentElement.querySelector(':scope > .fileActions > a').setAttribute('href', result);
                     this._logger(`END read file: ${index}`, 4);
 
                     let debugUploaded = document.getElementById('debugUploaded');
@@ -488,26 +486,28 @@ import deepMerge from 'deepmerge';
                     this._options.onfileloadEnd(index, resultObject, this._round(currentTotalSize));
                 };
 
-                if ((size <= this._options.maxFileSize) && ((currentTotalSize + size) <= this._options.maxTotalSize)) {
+                // test if loading is allowed
+                function readAllowed(instance) {
                     reader.readAsDataURL(file);
 
                     // update total size
                     currentTotalSize = currentTotalSize + size;
+                    currentNumberOfFiles++;
 
-                    let currentAvailableSize = this._round(this._options.maxTotalSize - currentTotalSize);
+                    let currentAvailableSize = instance._round(instance._options.maxTotalSize - currentTotalSize);
 
                     updateLabel('sizeAvailable', currentAvailableSize);
                     updateLabel('currentSize', currentTotalSize);
                 }
-                else {
+                function readRejected(instance) {
                     let errorMsg = currentLangObj.maxTotalSizeExceeded_msg;
 
-                    if (size > this._options.maxFileSize) {
+                    if (size > instance._options.maxFileSize) {
                         errorMsg = currentLangObj.maxSizeExceeded_msg;
-                        this._logger(`FILE REJECTED: Max size exceeded - max size: ${this._options.maxFileSize} MB - file size: ${size} MB`);
+                        instance._logger(`FILE REJECTED: Max size exceeded - max size: ${instance._options.maxFileSize} MB - file size: ${size} MB`);
                     }
                     else {
-                        this._logger(`FILE REJECTED: Max total size exceeded - max size: ${this._options.maxTotalSizeExceeded_msg} MB - current total size: ${currentTotalSize + size} MB`);
+                        instance._logger(`FILE REJECTED: Max total size exceeded - max size: ${instance._options.maxTotalSizeExceeded_msg} MB - current total size: ${currentTotalSize + size} MB`);
                     }
 
                     currentElement.classList.add('error');
@@ -527,6 +527,11 @@ import deepMerge from 'deepmerge';
                     let totalRejected = parseInt(debugRejected.innerHTML) + 1;
                     debugRejected.innerHTML = totalRejected;
                 }
+                
+                console.log(`current number of files: ${currentNumberOfFiles} / ${this._options.maxNumberOfFiles}`);
+                let isReadAllowed = ((size < this._options.maxFileSize) && ((currentTotalSize + size) < this._options.maxTotalSize) && (currentNumberOfFiles < this._options.maxNumberOfFiles));
+
+                isReadAllowed ? readAllowed(this) : readRejected(this);
             }
 
             let innerFileThumbsElements = document.querySelector('.innerFileThumbs').children;
@@ -709,6 +714,7 @@ import deepMerge from 'deepmerge';
         updateLabel('maxTotalSize', this._options.maxTotalSize);
 
         let currentTotalSize = 0;
+        let currentNumberOfFiles = 0;
         let loadedFile;
 
         for (const [index, element] of $resultContainer.querySelectorAll(`:scope > .${this._options.resultFileContainerClass}`).entries()) {
@@ -729,6 +735,7 @@ import deepMerge from 'deepmerge';
             loadedFile.classList.add(this._options.reloadedFilesClass);
 
             currentTotalSize = currentTotalSize + parseFloat(fileSize);
+            currentNumberOfFiles++;
             globalIndex++;
         }
 
@@ -754,13 +761,14 @@ import deepMerge from 'deepmerge';
                 this._createResultContainer(newFile);
 
                 currentTotalSize = currentTotalSize + parseFloat(file.size);
+                currentNumberOfFiles++;
                 globalIndex++;
             });
         }
 
         currentTotalSize = this._round(currentTotalSize);
 
-        this._logger('current total size: ' + currentTotalSize);
+        this._logger(`current total size: ${currentTotalSize} - current number of files: ${currentNumberOfFiles}`);
         updateLabel('sizeAvailable', (this._options.maxTotalSize - currentTotalSize));
         updateLabel('currentSize', currentTotalSize);
         // --- END FILES RELOAD SECTION ---

@@ -9,7 +9,7 @@
 
 <body>
     <header>
-        <h2>File Uploader v5.3.0</h2>
+        <h2>File Uploader v5.3.37</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader API
         </p>
@@ -32,6 +32,7 @@
             <div class="sizeAvailable">Test size available displayer 1: <span></span> MB</div>
             <div class="maxFileSize">Test single file MAX size: <span></span> MB</div>
             <div class="maxTotalSize">Test total MAX size: <span></span> MB</div>
+            <div class="currentNumberOfFiles">Current number of files: <span></span></div>
         </div>
 
         <div id="testSizeLabelContainer2">
@@ -117,8 +118,9 @@
             deleteButtonContent: '<i>Remove</i>',
             duplicatesWarning: true,
             labelsContainers: ['#testSizeLabelContainer1', '#testSizeLabelContainer2'],
-            onload: function(options, totalSize) {
+            onload: function(options, totalSize, numberOfFiles) {
                 document.querySelector('.customTotalSize').querySelector(':scope > span').innerHTML = (totalSize + ' MB');
+                console.log(`Number of reloaded files: ${numberOfFiles}`);
             },
             onfileloadEnd: function(index, file, totalSize) {
                 document.querySelector('.customTotalSize').querySelector(':scope > span').innerHTML = (totalSize + ' MB');

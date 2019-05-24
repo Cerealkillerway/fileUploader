@@ -3,7 +3,7 @@ import { read } from 'fs';
 
 
 /*
-* fileUploader v5.3.0
+* fileUploader v5.3.37
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function(context) {
@@ -36,16 +36,19 @@ import { read } from 'fs';
             reloadHTML: undefined,                                         // HTML for reloaded files to place directly in result container
             linkButtonContent: 'L',                                        // HTML content for link button
             deleteButtonContent: 'X',                                      // HTML content for delete button
+            showErrorOnLoadBar: true,                                      // decides if the reason for a rejected file will be displayed over its load bar;
+                                                                           // in case the file is rejected because of more than one reason, only the first one will be displayed on the bar;
             allowDuplicates: false,                                        // allow upload duplicates
             duplicatesWarning: false,                                      // show a message in the loading area when trying to load a duplicated file
             labelsContainers: false,                                       // query selector for the container where to look for labels (ex. '#myId'), (default 'false' -> no labels;
                                                                            // can be a string for a single value, or an array if the plugin has to update labels in many places;
-            //sizeAvailableLabelClass: 'sizeAvailable',                      // class for the sizeAvailable label
-            labelsClasses: {
+            labelsClasses: {                                               // dictionary of classes used by the various labels handled by the plugin
                 sizeAvailable: 'sizeAvailable',
                 currentSize: 'currentSize',
+                currentNumberOfFiles: 'currentNumberOfFiles',
                 maxFileSize: 'maxFileSize',
-                maxTotalSize: 'maxTotalSize'
+                maxTotalSize: 'maxTotalSize',
+                maxNumberOfFiles: 'maxNumberOfFiles'
             },
 
             HTMLTemplate: () => {
@@ -63,11 +66,11 @@ import { read } from 'fs';
                     <div class="result"></div>`;
             },
 
-            onload: () => {},                                         // callback on plugin initialization
-            onfileloadStart: () => {},                                // callback on file reader start
-            onfileloadEnd: () => {},                                  // callback on file reader end
-            onfileDelete: () => {},                                   // callback on file delete
-            filenameTest: () => {},                                   // callback for testing filenames
+            onload: () => {},                                             // callback on plugin initialization
+            onfileloadStart: () => {},                                    // callback on file reader start
+            onfileloadEnd: () => {},                                      // callback on file reader end
+            onfileDelete: () => {},                                       // callback on file delete
+            filenameTest: () => {},                                       // callback for testing filenames
 
             langs: {
                 'en': {
@@ -75,6 +78,7 @@ import { read } from 'fs';
                     dropZone_msg: 'Drop your files here',
                     maxSizeExceeded_msg: 'File too large',
                     maxTotalSizeExceeded_msg: 'Total size exceeded',
+                    maxNumberOfFilesExceeded_msg: 'Number of files allowed exceeded',
                     duplicated_msg: 'File duplicated (skipped)',
                     name_placeHolder: 'name',
                 }
@@ -136,6 +140,12 @@ import { read } from 'fs';
 
                 case 'currentAvailableSize':
                 return this._round(this._options.maxTotalSize - currentTotalSize);
+
+                case 'currentNumberOfFiles':
+                return currentNumberOfFiles;
+
+                case 'availableNumberOfFiles':
+                return this._options.maxNumberOfFiles - currentNumberOfFiles;
             }
         };
 
@@ -203,6 +213,7 @@ import { read } from 'fs';
             availableSize = this._round(availableSize);
             updateLabel('sizeAvailable', availableSize);
             updateLabel('currentSize', currentTotalSize);
+            updateLabel('currentNumberOfFiles', currentNumberOfFiles);
 
             // remove result block
             $resultContainer.querySelector(`:scope > div[data-index="${index}"]`).remove();
@@ -212,7 +223,7 @@ import { read } from 'fs';
             }
 
             this._logger('Deleted file N: ' + index, 2);
-            this._options.onfileDelete(index, currentTotalSize);
+            this._options.onfileDelete(index, currentTotalSize, currentNumberOfFiles);
         };
 
 
@@ -483,7 +494,7 @@ import { read } from 'fs';
                         size: size
                     };
 
-                    this._options.onfileloadEnd(index, resultObject, this._round(currentTotalSize));
+                    this._options.onfileloadEnd(index, resultObject, this._round(currentTotalSize), currentNumberOfFiles);
                 };
 
                 // test if loading is allowed
@@ -498,23 +509,38 @@ import { read } from 'fs';
 
                     updateLabel('sizeAvailable', currentAvailableSize);
                     updateLabel('currentSize', currentTotalSize);
+                    updateLabel('currentNumberOfFiles', currentNumberOfFiles);
                 }
-                function readRejected(instance) {
-                    let errorMsg = currentLangObj.maxTotalSizeExceeded_msg;
 
-                    if (size > instance._options.maxFileSize) {
-                        errorMsg = currentLangObj.maxSizeExceeded_msg;
-                        instance._logger(`FILE REJECTED: Max size exceeded - max size: ${instance._options.maxFileSize} MB - file size: ${size} MB`);
-                    }
-                    else {
-                        instance._logger(`FILE REJECTED: Max total size exceeded - max size: ${instance._options.maxTotalSizeExceeded_msg} MB - current total size: ${currentTotalSize + size} MB`);
+                function readRejected(instance, reasons) {
+                    let errorMsg;
+
+                    for (let reason of reasons) {
+                        switch(reason) {
+                            case 'maxFileSize':
+                            errorMsg = currentLangObj.maxSizeExceeded_msg;
+                            instance._logger(`FILE REJECTED: Max file size exceeded - max size: ${instance._options.maxFileSize} MB - file size: ${size} MB`);
+                            break;
+    
+                            case 'maxTotalSize':
+                            errorMsg = currentLangObj.maxTotalSizeExceeded_msg;
+                            instance._logger(`FILE REJECTED: Max total size exceeded - max size: ${instance._options.maxTotalSize} MB - current total size: ${currentTotalSize + size} MB`);
+                            break;
+    
+                            case 'maxNumberOfFiles':
+                            errorMsg = currentLangObj.maxNumberOfFilesExceeded_msg;
+                            instance._logger(`FILE REJECTED: Max number of files exceeded - max number: ${instance._options.maxNumberOfFiles}`);
+                            break;
+                        }
                     }
 
                     currentElement.classList.add('error');
 
-                    let loadBar = currentElement.querySelector(':scope > .loadBar');
-                    loadBar.innerHTML = '';
-                    loadBar.insertAdjacentHTML('beforeend', `<div class="errorMsg">${errorMsg}</div>`)
+                    if (instance._options.showErrorOnLoadBar) {
+                        let loadBar = currentElement.querySelector(':scope > .loadBar');
+                        loadBar.innerHTML = '';
+                        loadBar.insertAdjacentHTML('beforeend', `<div class="errorMsg">${errorMsg}</div>`)
+                    }
 
                     setTimeout(() => {
                         if (instance._options.useFileIcons) {
@@ -528,10 +554,23 @@ import { read } from 'fs';
                     debugRejected.innerHTML = totalRejected;
                 }
                 
-                console.log(`current number of files: ${currentNumberOfFiles} / ${this._options.maxNumberOfFiles}`);
-                let isReadAllowed = ((size < this._options.maxFileSize) && ((currentTotalSize + size) < this._options.maxTotalSize) && (currentNumberOfFiles < this._options.maxNumberOfFiles));
+                let isReadAllowed = true;
+                let rejectReasons = [];
 
-                isReadAllowed ? readAllowed(this) : readRejected(this);
+                if (size > this._options.maxFileSize) {
+                    isReadAllowed = false;
+                    rejectReasons.push('maxFileSize');
+                }
+                if ((currentTotalSize + size) > this._options.maxTotalSize) {
+                    isReadAllowed = false;
+                    rejectReasons.push('maxTotalSize');
+                }
+                if (currentNumberOfFiles >= this._options.maxNumberOfFiles) {
+                    isReadAllowed = false;
+                    rejectReasons.push('maxNumberOfFiles');
+                }
+
+                isReadAllowed ? readAllowed(this) : readRejected(this, rejectReasons);
             }
 
             let innerFileThumbsElements = document.querySelector('.innerFileThumbs').children;
@@ -546,9 +585,6 @@ import { read } from 'fs';
 
             function appendMessage($message) {
                 setTimeout(() => {
-                    /*$message.animate({opacity: 0}, 300, function() {
-                        $(this).remove();
-                    });*/
                     $message.remove();
                 }, 2000);
             }
@@ -625,6 +661,9 @@ import { read } from 'fs';
         let $fileThumbsContainer = $el.querySelector('.innerFileThumbs');
         let dropZone = $el.querySelector('.dropZone');
         let currentLangObj = this._options.langs[this._options.lang];
+        let currentTotalSize = 0;
+        let currentNumberOfFiles = 0;
+        let loadedFile;
 
         // place reloaded files' HTML in result container directly (if provided)
         if (this._options.reloadHTML) {
@@ -641,9 +680,11 @@ import { read } from 'fs';
         else {
             $resultContainer.insertAdjacentHTML('beforebegin', '<p class="debugMode">Debug mode: on</p>');
             $resultContainer.insertAdjacentHTML('beforebegin', '<div class="debug">Uploaded files: <span id="debugUploaded">0</span> | Rejected files: <span id="debugRejected">0</span></div>');
-            $resultContainer.insertAdjacentHTML('beforebegin', '<div class="debug">Current MAX FILE SIZE: ' + this._options.maxFileSize + ' MB</div>');
-            $resultContainer.insertAdjacentHTML('beforebegin', '<div class="debug">Current MAX TOTAL SIZE: ' + this._options.maxTotalSize + ' MB</div>');
-            $resultContainer.insertAdjacentHTML('beforebegin', '<div class="debug sizeAvailable">Size still available: <span>' + this._options.maxTotalSize + '</span> MB</div>');
+            $resultContainer.insertAdjacentHTML('beforebegin', `<div class="debug">MAX FILE SIZE: ${this._options.maxFileSize} MB</div>`);
+            $resultContainer.insertAdjacentHTML('beforebegin', `<div class="debug">MAX TOTAL SIZE: ${this._options.maxTotalSize} MB</div>`);
+            $resultContainer.insertAdjacentHTML('beforebegin', `<div class="debug">MAX NUMBER OF FILES: ${this._options.maxNumberOfFiles === false ? '(none)' : this._options.maxNumberOfFiles}</div>`);
+            $resultContainer.insertAdjacentHTML('beforebegin', `<div class="debug currentNumberOfFiles">Number of files uploaded: <span>${currentNumberOfFiles}</span></div>`);
+            $resultContainer.insertAdjacentHTML('beforebegin', `<div class="debug sizeAvailable">Size still available: <span>${this._options.maxTotalSize}</span> MB</div>`);
         }
 
         // --- FILES RELOAD SECTION ---
@@ -651,9 +692,11 @@ import { read } from 'fs';
         /* labelsClasses: {
                 sizeAvailable: 'sizeAvailable',
                 currentSize: 'currentSize',
+                currentNumberOfFiles: 'currentNumberOfFiles',
                 maxFileSize: 'maxFileSize',
-                maxTotalSize: 'maxTotalSize'
-            },
+                maxTotalSize: 'maxTotalSize',
+                maxNumberOfFiles: 'maxNumberOfFiles'
+            }
         */
         let instanceLabels = {};
         let labelsClasses = this._options.labelsClasses;
@@ -666,6 +709,7 @@ import { read } from 'fs';
             // handle debug labels
             // in the debug frame "sizeAvailable" is the only dynamic label that we need to store in order to update it when necessary
             instanceLabels.sizeAvailableLabels.push($el.querySelector(`.${labelsClasses.sizeAvailable}`));
+            instanceLabels.currentNumberOfFilesLabels.push($el.querySelector(`.${labelsClasses.currentNumberOfFiles}`));
         }
         if (labelsContainers) {
             const getContainer = function(selector) {
@@ -712,10 +756,7 @@ import { read } from 'fs';
 
         updateLabel('maxFileSize', this._options.maxFileSize);
         updateLabel('maxTotalSize', this._options.maxTotalSize);
-
-        let currentTotalSize = 0;
-        let currentNumberOfFiles = 0;
-        let loadedFile;
+        updateLabel('maxNumberOfFiles', this._options.maxNumberOfFiles);
 
         for (const [index, element] of $resultContainer.querySelectorAll(`:scope > .${this._options.resultFileContainerClass}`).entries()) {
             this._logger(`found previously uploaded file: index = ${element.dataset.index}`, 2);
@@ -771,10 +812,11 @@ import { read } from 'fs';
         this._logger(`current total size: ${currentTotalSize} - current number of files: ${currentNumberOfFiles}`);
         updateLabel('sizeAvailable', (this._options.maxTotalSize - currentTotalSize));
         updateLabel('currentSize', currentTotalSize);
+        updateLabel('currentNumberOfFiles', currentNumberOfFiles);
         // --- END FILES RELOAD SECTION ---
 
         // onload callback
-        this._options.onload(this._options, currentTotalSize);
+        this._options.onload(this._options, currentTotalSize, currentNumberOfFiles);
 
         // Drag events
         this.handleDragOver = (event) => {

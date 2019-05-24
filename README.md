@@ -1,4 +1,4 @@
-## File Uploader v5.3.0
+## File Uploader v5.3.37
 
 ![FileUploader](./images/logos/file-uploader.png)
 
@@ -27,11 +27,13 @@ There are some options that can passed to constructor in the form:
 (see below).
 
 ### Options
-**lang**: [string] language to use (default 'en'); see "translations" section for overrides and new language definitions
+**lang**: [string] language to use (default 'en'); see "translations" section for overrides and new language definitions;
 
-**fileMaxSize**: [number] maximum allowed file size in MB (default 50)
+**fileMaxSize**: [number] maximum allowed file size in MB (default 50);
 
-**totalMaxSize**: [number] maximum allowd upload size for all files together (default 1000)
+**totalMaxSize**: [number] maximum allowed upload size for all files together (default 1000);
+
+**maxNumberOfFiles**: [number] maximum number of files allowed; can be `false` to indicate that unlimited number of files is allowed (default false);
 
 **reloadArray**: [array] an array of objects representing previously loaded files; each object is in the form:
     
@@ -42,13 +44,13 @@ There are some options that can passed to constructor in the form:
         size: 1.2                      // size in MB of the file
     }
 
-**reloadHTML**: [string] a string containing the HTML to place in result container directly for previously loaded files; see section ["Reloaded files"](#reloadedFiles) for futher details
+**reloadHTML**: [string] a string containing the HTML to place in result container directly for previously loaded files; see section ["Reloaded files"](#reloadedFiles) for futher details;
 
-**useFileIcons**: [boolean] use icons for each file depending on file type (default true)
+**useFileIcons**: [boolean] use icons for each file depending on file type (default true);
 
-**linkButtonContent**: [string] markup for the link button (default "L")
+**linkButtonContent**: [string] markup for the link button (default "L");
 
-**deleteButtonContent**: [string] markup for the delete button (default "X")
+**deleteButtonContent**: [string] markup for the delete button (default "X");
 
 **HTMLTemplate**: [function] a function that returns the HTML template for the plugin; you can edit this, but you must provide the HTML elements needed by the plugin to work; the default is:
 
@@ -65,33 +67,35 @@ There are some options that can passed to constructor in the form:
     </div>
     <div class="result"></div>
 
-**reloadedFilesClass**: [string] a class to style previously uploaded files (files uploaded during a previous session and now retrieved and placed in the result container) (default 'reloadedElement')
+**reloadedFilesClass**: [string] a class to style previously uploaded files (files uploaded during a previous session and now retrieved and placed in the result container) (default 'reloadedElement');
 
-**useLoadingBars**: [boolean] show a progress bar while reading each file (default true)
+**useLoadingBars**: [boolean] show a progress bar while reading each file (default true);
 
-**loadingBarsClasses**: [string] an array of strings representing custom classes to assign to each loading bar
+**showErrorOnLoadBar** [boolean] show reason for a rejected file over its load bar (default true);
 
-**resultContainerClass**: [string] set the class of the element to be used as container for reader's results (by default this is the hidden `.result` element of the fileUploader); can be the class of any DOM element inside the fileUploader markup
+**loadingBarsClasses**: [string] an array of strings representing custom classes to assign to each loading bar;
 
-**resultFileContainerClass**: [string] custom class to use for each reader's result container (default "file-")
+**resultContainerClass**: [string] set the class of the element to be used as container for reader's results (by default this is the hidden `.result` element of the fileUploader); can be the class of any DOM element inside the fileUploader markup;
 
-**defaultFileExt**: [string] extension to use for files with no extension (default "")
+**resultFileContainerClass**: [string] custom class to use for each reader's result container (default "file-");
 
-**defaultMimeType**: [string] MIME type to use for files with no extension (default "")
+**defaultFileExt**: [string] extension to use for files with no extension (default "");
 
-**allowDuplicates**: [boolean] allow to upload more than once the same file (based on file name, default false)
+**defaultMimeType**: [string] MIME type to use for files with no extension (default "");
 
-**duplicatesWarning**: [boolean] if *allowDuplicates* is false, set this option to true to show a warning message when trying to load a duplicated file
+**allowDuplicates**: [boolean] allow to upload more than once the same file (based on file name, default false);
 
-In the result container, each reader's result is inserted as a DIV with 4 nested INPUT elements (title, extension, value (the base64 string) and size (in MB)); each of these 4 elements has a name attribute in the form "prefix[index][name]"
+**duplicatesWarning**: [boolean] if *allowDuplicates* is false, set this option to true to show a warning message when trying to load a duplicated file;
+
+In the result container, each reader's result is inserted as a DIV with 4 nested INPUT elements (title, extension, value (the base64 string) and size (in MB)); each of these 4 elements has a name attribute in the form "prefix[index][name]";
 
 By default the prefix is "fileUploader", and the names are ["title", "extension", "value", "size"].<br>
 
 If needed it is possible to change them:
 
-**resultPrefix**: [string] custom name-prefix for result elements
+**resultPrefix**: [string] custom name-prefix for result elements;
 
-**resultInputNames**: [array of strings] custom array of names for the 4 result elements created for each file (ordered)
+**resultInputNames**: [array of strings] custom array of names for the 4 result elements created for each file (ordered);
 
 **labelsContainers**: [string / array of strings] the fileUploader can dynamically update 4 kind of labels showing the current total size, current available size, max total size and max file size; by default these labels are not included in the plugin's generated DOM; if you need to display those informations, you can do it by placing the DOM element where you want to display these infos wherever you want and:
 
@@ -123,13 +127,13 @@ labelsClasses: {
 
 ##### DEBUG OPTIONS
 
-**debug**: [boolean] enable debug mode (default false)
+**debug**: [boolean] enable debug mode (default false);
 
-**debugLogStyle**: [string] custom CSS rules for style debug logs in browser's javascript console (only for browsers that supports this feature, default: *"color: #9900ff"*, purple logs)
+**debugLogStyle**: [string] custom CSS rules for style debug logs in browser's javascript console (only for browsers that supports this feature, default: *"color: #9900ff"*, purple logs);
 
-**name**: [string] a name for current fileUploader's instance, used in debug logs if provided (default: undefined)
+**name**: [string] a name for current fileUploader's instance, used in debug logs if provided (default: undefined);
 
-**pluginName**: [string] the plugin's name used in debug logs alongside with name (default: *"FileUploader*)
+**pluginName**: [string] the plugin's name used in debug logs alongside with name (default: *"FileUploader*);
 
 ### Methods
 To call a method you need first to get the plugin's instance:
@@ -143,8 +147,10 @@ you can then call a method on the instance, ex.:
 
 **get**: obtain parameters from the fileUploader instance:
 
-- **currentTotalSize**: total size of currently loaded files
-- **currentAvailableSize**: available size left
+- **currentTotalSize**: total size of currently loaded files;
+- **currentAvailableSize**: available size left;
+- **currentNumberOfFiles**: number of files currently loaded;
+- **availableNumberOfFiles**: number of files still allowed to load;
 
     let totalSize = test1.fileUploader.get('currentTotalSize');
     let availableSize = test1.fileUploader.get('currentAvailableSize');
@@ -159,19 +165,19 @@ Example:
 ### Callbacks
 Together with the options object it is possible to define some callbacks:
 
-**onload(options, totalSize)**: called at plugin start; parameters:
+**onload(options, totalSize, currentNumberOfFiles)**: called at plugin start; parameters:
 - *options*: the options object for the current plugin's instance
-- *totalSize*: current total size (or reloaded files, 0 if none)
+- *totalSize*: current total size (of reloaded files, 0 if none)
 
 **onfileloadStart(index)**: called on every file read start; paremeters:
 - *index*: the index used for the new file's DOM
 
-**onfileloadEnd(index, file, totalSize)**: callled on every file read end; parameters:
+**onfileloadEnd(index, file, totalSize, currentNumberOfFiles)**: callled on every file read end; parameters:
 - *index*: the index used for the new file's DOM
 - *file*: the file object for the file just loaded (contains name, type, data (the base64 string) and size)
 - *totalSize*: current total size (this file included)
 
-**onfileDelete(index, totalSize)**: called after a file has been removed; parameters:
+**onfileDelete(index, totalSize, currentNumberOfFiles)**: called after a file has been removed; parameters:
 - *index*: index for the removed file's DOM
 - *totalSize*: current total size (already decreased by deleted file' size)
 
@@ -256,6 +262,7 @@ it is possible to override it or add a custom translation by defining it in "lan
                     dropZone_msg: "Arrastre los archivos aquí",
                     maxSizeExceeded_msg: "Archivo demasiado grande",
                     totalMaxSizeExceeded_msg: "Tamaño total superado",
+                    maxNumberOfFilesExceeded_msg: 'Number of files allowed exceeded',
                     duplicated_msg: "Duplicate File (ignorado)",
                     name_placeHolder: "nombre"
                 },
@@ -264,6 +271,7 @@ it is possible to override it or add a custom translation by defining it in "lan
                     dropZone_msg: "Trascina qui i tuoi files...",
                     maxSizeExceeded_msg: "File troppo grande",
                     totalMaxSizeExceeded_msg: "Dimensione max. superata",
+                    maxNumberOfFilesExceeded_msg: 'Numero massimo di files superato',
                     duplicated_msg: "File duplicato (ignorato)",
                     name_placeHolder: "nome"
                 }

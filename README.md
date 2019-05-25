@@ -95,7 +95,7 @@ If needed it is possible to change them:
 
 - **resultPrefix**: [string] custom name-prefix for result elements;
 
-- **resultInputNames**: [array of strings] custom array of names for t-he 4 result elements created for each file (ordered);
+- **resultInputNames**: [array of strings] custom array of names for the 4 result elements created for each file (ordered);
 
 **labelsContainers**: [string / array of strings] the fileUploader can dynamically update 4 kind of labels showing the current total size, current available size, max total size and max file size; by default these labels are not included in the plugin's generated DOM; if you need to display those informations, you can do it by placing the DOM element where you want to display these infos wherever you want and:
 

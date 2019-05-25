@@ -9,7 +9,7 @@
 
 <body>
     <header>
-        <h2>File Uploader v5.3.37</h2>
+        <h2>File Uploader v5.4.13</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader API
         </p>
@@ -122,11 +122,14 @@
                 document.querySelector('.customTotalSize').querySelector(':scope > span').innerHTML = (totalSize + ' MB');
                 console.log(`Number of reloaded files: ${numberOfFiles}`);
             },
-            onfileloadEnd: function(index, file, totalSize) {
+            onfileloadEnd: function(index, file, totalSize, numberOfFiles) {
                 document.querySelector('.customTotalSize').querySelector(':scope > span').innerHTML = (totalSize + ' MB');
             },
             onfileDelete: function(index, totalSize) {
                 document.querySelector('.customTotalSize').querySelector(':scope > span').innerHTML = (totalSize + ' MB');
+            },
+            onFileRejected: function(reasons) {
+                console.log(reasons);
             },
             filenameTest: function(fileName, fileExt, container) {
                 let allowedExts = ['jpg', 'jpeg', 'png', 'txt', 'p7m'];

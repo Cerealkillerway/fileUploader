@@ -1,4 +1,4 @@
-## File Uploader v5.3.37
+## File Uploader v5.4.13
 
 ![FileUploader](./images/logos/file-uploader.png)
 
@@ -166,20 +166,23 @@ Example:
 Together with the options object it is possible to define some callbacks:
 
 **onload(options, totalSize, currentNumberOfFiles)**: called at plugin start; parameters:
-- *options*: the options object for the current plugin's instance
-- *totalSize*: current total size (of reloaded files, 0 if none)
+- *options*: the options object for the current plugin's instance;
+- *totalSize*: current total size (of reloaded files, 0 if none);
 
 **onfileloadStart(index)**: called on every file read start; paremeters:
-- *index*: the index used for the new file's DOM
+- *index*: the index used for the new file's DOM;
 
 **onfileloadEnd(index, file, totalSize, currentNumberOfFiles)**: callled on every file read end; parameters:
-- *index*: the index used for the new file's DOM
-- *file*: the file object for the file just loaded (contains name, type, data (the base64 string) and size)
-- *totalSize*: current total size (this file included)
+- *index*: the index used for the new file's DOM;
+- *file*: the file object for the file just loaded (contains name, type, data (the base64 string) and size);
+- *totalSize*: current total size (this file included);
 
 **onfileDelete(index, totalSize, currentNumberOfFiles)**: called after a file has been removed; parameters:
-- *index*: index for the removed file's DOM
-- *totalSize*: current total size (already decreased by deleted file' size)
+- *index*: index for the removed file's DOM;
+- *totalSize*: current total size (already decreased by deleted file' size);
+
+**onFileRejected(reasons)**: called when a file is rejected; parameters:
+- *reasons*: array of strings describing the reasons why the file has been rejected;
 
 (example)
 

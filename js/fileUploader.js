@@ -3,7 +3,7 @@ import { read } from 'fs';
 
 
 /*
-* fileUploader v5.3.37
+* fileUploader v5.4.13
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function(context) {
@@ -69,6 +69,7 @@ import { read } from 'fs';
             onload: () => {},                                             // callback on plugin initialization
             onfileloadStart: () => {},                                    // callback on file reader start
             onfileloadEnd: () => {},                                      // callback on file reader end
+            onfileRejected: () => {},                                     // callback on file rejected
             onfileDelete: () => {},                                       // callback on file delete
             filenameTest: () => {},                                       // callback for testing filenames
 
@@ -552,6 +553,9 @@ import { read } from 'fs';
                     let debugRejected = document.getElementById('debugRejected');
                     let totalRejected = parseInt(debugRejected.innerHTML) + 1;
                     debugRejected.innerHTML = totalRejected;
+
+                    // error callback
+                    instance._options.onFileRejected(rejectReasons);
                 }
                 
                 let isReadAllowed = true;

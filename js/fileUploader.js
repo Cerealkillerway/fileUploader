@@ -3,7 +3,7 @@ import { read } from 'fs';
 
 
 /*
-* fileUploader v5.4.13
+* fileUploader v5.4.14
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function(context) {

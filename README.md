@@ -1,4 +1,4 @@
-## File Uploader v5.4.14
+## File Uploader v5.4.43
 
 ![FileUploader](./images/logos/file-uploader.png)
 
@@ -120,8 +120,12 @@ let the plugin handle this for you; in this case you have to provide "labelsCont
 labelsClasses: {
     sizeAvailable: 'sizeAvailable',
     currentSize: 'currentSize',
+    currentNumberOfFiles: 'currentNumberOfFiles',
     maxFileSize: 'maxFileSize',
-    maxTotalSize: 'maxTotalSize'
+    maxTotalSize: 'maxTotalSize',
+    maxNumberOfFiles: 'maxNumberOfFiles',
+    numberOfUploadedFiles: 'numberOfUploadedFiles',
+    numberOfRejectedFiles: 'numberOfRejectedFiles'
 }
 ```
 

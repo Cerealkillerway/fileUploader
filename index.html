@@ -9,7 +9,7 @@
 
 <body>
     <header>
-        <h2>File Uploader v5.4.43</h2>
+        <h2>File Uploader v5.4.46</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader API
         </p>
@@ -119,6 +119,7 @@
             deleteButtonContent: '<i>Remove</i>',
             duplicatesWarning: true,
             labelsContainers: ['#testSizeLabelContainer1', '#testSizeLabelContainer2'],
+            resultInputNames: ['NomeAttachment', 'FormatoAttachment', 'Attachment', 'HiddenFileSize'],
             onload: function(options, totalSize, numberOfFiles) {
                 document.querySelector('.customTotalSize').querySelector(':scope > span').innerHTML = (totalSize + ' MB');
                 console.log(`Number of reloaded files: ${numberOfFiles}`);

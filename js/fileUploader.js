@@ -3,7 +3,7 @@ import { read } from 'fs';
 
 
 /*
-* fileUploader v5.4.43
+* fileUploader v5.4.46
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function(context) {
@@ -136,7 +136,10 @@ import { read } from 'fs';
 
 
         // extend options with instance ones
-        this._options = deepMerge(this._defaults, options);
+        const overwriteMerge = (dest, source, options) => source;
+        this._options = deepMerge(this._defaults, options, {
+            arrayMerge: overwriteMerge
+        });
 
 
         // add more options
@@ -663,7 +666,7 @@ import { read } from 'fs';
         // build HTML template
         let template = this._options.HTMLTemplate();
 
-        $el.insertAdjacentHTML('beforeend', template);
+        $el.insertAdjacentHTML('beforeend', template);        
 
         let globalIndex = 0;
         let $resultContainer = $el.querySelector('.' + this._options.resultContainerClass);
@@ -769,7 +772,7 @@ import { read } from 'fs';
             let fileData = element.querySelectorAll(':scope > input');
             let fileName = fileData[0].value;
             let fileExt = fileData[1].value;
-            let fileSize = fileData[3].value;
+            let fileSize = fileData[2].value;
 
             if (fileName.lastIndexOf('.') > 0) {
                 fileName = fileName.substr(0, fileName.lastIndexOf('.'));

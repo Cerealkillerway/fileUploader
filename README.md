@@ -1,4 +1,4 @@
-## File Uploader v5.4.46
+## File Uploader v5.5.7
 
 ![FileUploader](./images/logos/file-uploader.png)
 
@@ -268,19 +268,17 @@ it is possible to override it or add a custom translation by defining it in "lan
                     intro_msg: "(Adjuntar Documentos...)",      
                     dropZone_msg: "Arrastre los archivos aquí",
                     maxSizeExceeded_msg: "Archivo demasiado grande",
-                    totalMaxSizeExceeded_msg: "Tamaño total superado",
-                    maxNumberOfFilesExceeded_msg: 'Number of files allowed exceeded',
-                    duplicated_msg: "Duplicate File (ignorado)",
-                    name_placeHolder: "nombre"
+                    maxTotalSizeExceeded_msg: "Tamaño total superado",
+                    maxNumberOfFilesExceeded_msg: 'Número máximo de archivos excedidos',
+                    duplicated_msg: "Duplicate File (ignorado)"
                 },
                 "it": {
                     intro_msg: "(Aggiungi documenti allegati...)",
                     dropZone_msg: "Trascina qui i tuoi files...",
                     maxSizeExceeded_msg: "File troppo grande",
-                    totalMaxSizeExceeded_msg: "Dimensione max. superata",
+                    maxTotalSizeExceeded_msg: "Dimensione max. superata",
                     maxNumberOfFilesExceeded_msg: 'Numero massimo di files superato',
-                    duplicated_msg: "File duplicato (ignorato)",
-                    name_placeHolder: "nome"
+                    duplicated_msg: "File duplicato (ignorato)"
                 }
             }
         }
@@ -322,6 +320,8 @@ A couple of option names have been renamed:
 
 - fileMaxSize -> maxFileSize
 - totalMaxSize -> maxTotalSize
+
+some new strings have been added to the lang object and some have been renamed in the configuration; so if you are using your custom lang object, you will need to updated it;
 
 #### Version 4
 From version 4 jquery dependency has been removed; so now the plugin is instantiated like:

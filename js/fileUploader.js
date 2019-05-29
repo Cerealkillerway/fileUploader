@@ -2,7 +2,7 @@ import deepMerge from 'deepmerge';
 
 
 /*
-* fileUploader v5.4.46
+* fileUploader v5.5.7
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function(context) {
@@ -41,6 +41,8 @@ import deepMerge from 'deepmerge';
             duplicatesWarning: false,                                      // show a message in the loading area when trying to load a duplicated file
             labelsContainers: false,                                       // query selector for the container where to look for labels (ex. '#myId'), (default 'false' -> no labels;
                                                                            // can be a string for a single value, or an array if the plugin has to update labels in many places;
+            useSourceFileSize: false,                                      // tells to the plugin to use the original file size in size calculations; by default it will use the size of the
+                                                                           // base64 string created by the reader instead (which is bigger);
             labelsClasses: {                                               // dictionary of classes used by the various labels handled by the plugin
                 sizeAvailable: 'sizeAvailable',
                 currentSize: 'currentSize',
@@ -81,8 +83,7 @@ import deepMerge from 'deepmerge';
                     maxSizeExceeded_msg: 'File too large',
                     maxTotalSizeExceeded_msg: 'Total size exceeded',
                     maxNumberOfFilesExceeded_msg: 'Number of files allowed exceeded',
-                    duplicated_msg: 'File duplicated (skipped)',
-                    name_placeHolder: 'name',
+                    duplicated_msg: 'File duplicated (skipped)'
                 }
             }
         };
@@ -98,6 +99,7 @@ import deepMerge from 'deepmerge';
             }
         }
 
+
         const getPreviousSibling = function(element, selector) {
             let sibling = element.previousElementSibling;
 
@@ -110,6 +112,7 @@ import deepMerge from 'deepmerge';
                 sibling = sibling.previousElementSibling;
             }
         };
+
 
         const updateLabel = function(type, value) {
             for (let label of instanceLabels[`${type}Labels`]) {
@@ -131,6 +134,31 @@ import deepMerge from 'deepmerge';
                     labelSpan.innerHTML = value;
                 }
             }
+        }
+
+
+        // returns the byte length of an utf8 string
+        const byteLength = function(utf8String) {
+            let size = utf8String.length;
+
+            for (let i = utf8String.length - 1; i >= 0; i--) {
+                let code = utf8String.charCodeAt(i);
+
+                if (code > 0x7f && code <= 0x7ff) {
+                    size++;
+                }
+                else {
+                    if (code > 0x7ff && code <= 0xffff) {
+                        size += 2;
+                    }
+                }
+                //trail surrogate
+                if (code >= 0xDC00 && code <= 0xDFFF) {
+                    i--;
+                }
+            }
+
+            return size;
         }
 
 
@@ -491,6 +519,10 @@ import deepMerge from 'deepmerge';
                         name = `${name}.${this._options.defaultFileExt}`;
                     }
 
+                    if (!this._options.useSourceFileSize) {
+                        size = this._round(byteLength(result) / 1000000);
+                    }
+
                     let newFile = {
                         index: index,
                         name: name,
@@ -511,13 +543,6 @@ import deepMerge from 'deepmerge';
                         size: size
                     };
 
-                    this._options.onfileloadEnd(index, resultObject, this._round(currentTotalSize), currentNumberOfFiles);
-                };
-
-                // test if loading is allowed
-                function readAllowed(instance) {
-                    reader.readAsDataURL(file);
-
                     // update total size
                     currentTotalSize = currentTotalSize + size;
                     currentNumberOfFiles++;
@@ -528,6 +553,13 @@ import deepMerge from 'deepmerge';
                     updateLabel('currentSize', currentTotalSize);
                     updateLabel('currentNumberOfFiles', currentNumberOfFiles);
                     updateLabel('numberOfUploadedFiles', '++');
+
+                    this._options.onfileloadEnd(index, resultObject, this._round(currentTotalSize), currentNumberOfFiles);
+                };
+
+                // test if loading is allowed
+                function readAllowed(instance) {
+                    reader.readAsDataURL(file);
                 }
 
                 function readRejected(instance, reasons) {
@@ -570,7 +602,7 @@ import deepMerge from 'deepmerge';
                     updateLabel('numberOfRejectedFiles', '++');
 
                     // error callback
-                    instance._options.onFileRejected(rejectReasons);
+                    instance._options.onfileRejected(rejectReasons);
                 }
                 
                 let isReadAllowed = true;

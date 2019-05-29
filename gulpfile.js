@@ -6,12 +6,9 @@ const browserify = require('browserify');
 const babel = require('babelify');
 const browserSync = require('browser-sync').create();
 const sass = require('gulp-sass');
-const log = require('fancy-log');
 const del = require('del');
 const uglify = require('gulp-uglify');
 const merge = require('merge-stream');
-const gulpif = require('gulp-if');
-const directoryExists = require('directory-exists');
 
 
 // build js

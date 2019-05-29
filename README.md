@@ -1,4 +1,4 @@
-## File Uploader v5.5.7
+## File Uploader v5.5.8
 
 ![FileUploader](./images/logos/file-uploader.png)
 
@@ -114,6 +114,9 @@ let the plugin handle this for you; in this case you have to provide "labelsCont
 </div>
 ```
 (maybe you don't want all of them, you can put a DOM element in your container only for the ones you want); the class of each element in the container that fileUploader will look for is by default as in the example above, anyway can be customized with "labelsClasses" options
+
+**useSourceFileSize**: [boolean] by deafult the fileUploader will calculate the uploaded file size based on the resulting base64 string which is the output it produces; that string will be bigger than the original file size due to conversion to base64;
+if instead you want to use the original file size you need to set this to `true`; (default `false`);
 
 **labelsClasses**: [object] an object that defines the classes to look for inside any "labelsContainers" defined, where to update fileUploader infos:
 ```

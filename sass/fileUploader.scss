@@ -165,7 +165,7 @@
                 top: 10px;
                 @extend %borderBoxed;
 
-                div {
+                div, a {
                     //width: 30px;
                     display: inline-block;
 

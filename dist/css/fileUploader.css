@@ -98,9 +98,9 @@
         width: 30%;
         position: relative;
         top: 10px; }
-        .fileUploader .filesContainer .newElement .fileActions div {
+        .fileUploader .filesContainer .newElement .fileActions div, .fileUploader .filesContainer .newElement .fileActions a {
           display: inline-block; }
-          .fileUploader .filesContainer .newElement .fileActions div:first-child {
+          .fileUploader .filesContainer .newElement .fileActions div:first-child, .fileUploader .filesContainer .newElement .fileActions a:first-child {
             margin-right: 25px; }
         .fileUploader .filesContainer .newElement .fileActions a {
           text-decoration: none !important;

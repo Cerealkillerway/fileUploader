@@ -1,30 +1,29 @@
 {
-  "name": "fileUploader",
-  "version": "5.5.8",
-  "description": "A HTML5 file uploader skeleton",
-  "devDependencies": {
-    "@babel/core": "^7.4.3",
-    "@babel/preset-env": "^7.4.3",
-    "babelify": "^10.0.0",
-    "browser-sync": "^2.26.3",
-    "browserify": "^16.2.3",
-    "browserify-shim": "^3.8.14",
-    "deepmerge": "^3.2.0",
-    "del": "^4.1.0",
-    "directory-exists": "^2.0.1",
-
-    "gulp-changed": "^3.2.0",
-    "gulp-if": "^2.0.2",
-    "gulp-sass": "^4.0.2",
-    "gulp-sourcemaps": "^2.6.5",
-    "gulp-uglify": "^3.0.2",
-    "merge-stream": "^1.0.1",
-    "vinyl-buffer": "^1.0.1",
-    "vinyl-source-stream": "^2.0.0"
-  },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Cerealkillerway/fileUploader"
-  }
+    "name": "fileUploader",
+    "version": "5.6.19",
+    "description": "A HTML5 file uploader skeleton",
+    "devDependencies": {
+        "@babel/core": "^7.4.3",
+        "@babel/preset-env": "^7.4.3",
+        "babelify": "^10.0.0",
+        "browser-sync": "^2.26.3",
+        "browserify": "^16.2.3",
+        "browserify-shim": "^3.8.14",
+        "deepmerge": "^3.2.0",
+        "del": "^4.1.0",
+        "directory-exists": "^2.0.1",
+        "gulp-changed": "^3.2.0",
+        "gulp-if": "^2.0.2",
+        "gulp-sass": "^4.0.2",
+        "gulp-sourcemaps": "^2.6.5",
+        "gulp-uglify": "^3.0.2",
+        "merge-stream": "^1.0.1",
+        "vinyl-buffer": "^1.0.1",
+        "vinyl-source-stream": "^2.0.0"
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Cerealkillerway/fileUploader"
+    }
 }

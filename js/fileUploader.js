@@ -2,7 +2,7 @@ import deepMerge from 'deepmerge';
 
 
 /*
-* fileUploader v5.5.8
+* fileUploader v5.6.19
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function(context) {
@@ -43,6 +43,11 @@ import deepMerge from 'deepmerge';
                                                                            // can be a string for a single value, or an array if the plugin has to update labels in many places;
             useSourceFileSize: false,                                      // tells to the plugin to use the original file size in size calculations; by default it will use the size of the
                                                                            // base64 string created by the reader instead (which is bigger);
+            mimeTypesToOpen: [                                             // when clicking the "open" button, a file with mimeType in this list will be opened in a new tab of the browser
+                'application/pdf',                                         // while others are just downloaded;
+                'image/png',
+                'image/jpeg'
+            ],
             labelsClasses: {                                               // dictionary of classes used by the various labels handled by the plugin
                 sizeAvailable: 'sizeAvailable',
                 currentSize: 'currentSize',
@@ -159,6 +164,26 @@ import deepMerge from 'deepmerge';
             }
 
             return size;
+        }
+
+
+        // update open file button attributes
+        const updateFileSeeLink = (result, uploaderContainer, fileName) => {
+            let mimeType = result.substring(5, result.indexOf(';'));
+            let fileSeeLink = uploaderContainer.querySelector('.fileSee');
+        
+            if (this._options.mimeTypesToOpen.indexOf(mimeType) >= 0) {
+                
+                fileSeeLink.addEventListener('click', () => {
+                    let win = window.open();                            
+
+                    win.document.write(`<iframe src="${result}" frameborder="0" style="border:0; top:0px; display:block; left:0px; bottom:0px; right:0px; width:100%; min-height: 100vh; height:100%;" allowfullscreen></iframe>`)
+                })
+            }
+            else {
+                fileSeeLink.setAttribute('href', result);
+                fileSeeLink.setAttribute('download', fileName);
+            }
         }
 
 
@@ -337,28 +362,38 @@ import deepMerge from 'deepmerge';
             }
 
             let container = document.createElement('div');
+
             container.className = 'newElement';
             container.dataset.index = parseInt(index);
             container.style.position = 'relative';
             $fileThumbsContainer.appendChild(container);
 
             let fileButtonsContainer = document.createElement('div');
+
             fileButtonsContainer.className = 'fileActions';
             container.appendChild(fileButtonsContainer);
 
             // file "see" link
-            let seeFileLink = document.createElement('div');
+            let seeFileLink = document.createElement('a');
+
             seeFileLink.className = 'fileSee';
             seeFileLink.innerHTML = this._options.linkButtonContent;
+
             fileButtonsContainer.appendChild(seeFileLink);
 
-            seeFileLink.addEventListener('click', function(event) {
+            /*seeFileLink.addEventListener('click', (event) => {
                 let index = event.target.closest('.newElement').dataset.index;
                 let content = $resultContainer.querySelector(`.uploadedFile[data-index="${index}"] textarea`).value;
-                let win = window.open();
+                //let win = window.open();
+                let mimeType = content.substring(5, content.indexOf(';'));
+                
+                if (this._options.mimeTypesToOpen.indexOf(mimeType) >= 0) {
+                    console.log('open!!');
+                    window.open(content);
+                }
 
-                win.document.write(`<iframe src="${content}" frameborder="0" style="border:0; top:0px; display:block; left:0px; bottom:0px; right:0px; width:100%; min-height: 100vh; height:100%;" allowfullscreen></iframe>`)
-            });
+                //win.document.write(`<iframe src="${content}" frameborder="0" style="border:0; top:0px; display:block; left:0px; bottom:0px; right:0px; width:100%; min-height: 100vh; height:100%;" allowfullscreen></iframe>`)
+            });*/
 
             // delete button
             let deleteBtn = document.createElement('div');
@@ -472,7 +507,7 @@ import deepMerge from 'deepmerge';
 
             $fileContainer.classList.remove('filesContainerEmpty');
 
-            let readFile = (reader, file, index, DOM) => {
+            let readFile = (reader, file, index, DOM, uploaderContainer) => {
                 let currentElement = Array.from(DOM.querySelector('.innerFileThumbs').children).filter(function(element) {
                     return parseInt(element.dataset.index) === index ;
                 });
@@ -553,6 +588,8 @@ import deepMerge from 'deepmerge';
                     updateLabel('currentSize', currentTotalSize);
                     updateLabel('currentNumberOfFiles', currentNumberOfFiles);
                     updateLabel('numberOfUploadedFiles', '++');
+                    
+                    updateFileSeeLink(result, uploaderContainer, file.name);
 
                     this._options.onfileloadEnd(index, resultObject, this._round(currentTotalSize), currentNumberOfFiles);
                 };
@@ -624,10 +661,6 @@ import deepMerge from 'deepmerge';
                 isReadAllowed ? readAllowed(this) : readRejected(this, rejectReasons);
             }
 
-            let innerFileThumbsElements = document.querySelector('.innerFileThumbs').children;
-            let lastThumbElement = innerFileThumbsElements[innerFileThumbsElements.length - 1];
-            let startIndex = lastThumbElement ? lastThumbElement.getAttribute('index') : 0;
-
             function appendMessage($message) {
                 setTimeout(() => {
                     $message.remove();
@@ -677,10 +710,10 @@ import deepMerge from 'deepmerge';
                     }
                 }
 
-                this._createUploaderContainer(globalIndex, fileName, fileExt);
+                let uploaderContainer = this._createUploaderContainer(globalIndex, fileName, fileExt);
 
                 // now read!
-                readFile(reader, file, globalIndex, DOM);
+                readFile(reader, file, globalIndex, DOM, uploaderContainer);
                 globalIndex++;
             }
         };
@@ -813,6 +846,10 @@ import deepMerge from 'deepmerge';
             loadedFile.querySelector(':scope > .loadBar > div').style.width = '100%';
             loadedFile.classList.add(this._options.reloadedFilesClass);
 
+            let data = element.querySelector(':scope textarea').value;
+
+            updateFileSeeLink(data, loadedFile, fileName);
+
             currentTotalSize = currentTotalSize + parseFloat(fileSize);
             currentNumberOfFiles++;
             globalIndex++;
@@ -836,6 +873,8 @@ import deepMerge from 'deepmerge';
                     result: file.data,
                     size: file.size
                 };
+
+                updateFileSeeLink(file.data, loadedFile, file.name);
 
                 this._createResultContainer(newFile);
 

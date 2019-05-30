@@ -9,7 +9,7 @@
 
 <body>
     <header>
-        <h2>File Uploader v5.5.8</h2>
+        <h2>File Uploader v5.6.19</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader API
         </p>
@@ -93,14 +93,14 @@
             '    <div>File: 0</div>',
             '    <input type="text" name="fileUploader[0][title]" value="Example1">',
             '    <input type="text" name="fileUploader[0][extension]" value="">',
-            '    <input type="text" name="fileUploader[0][value]" value="dgjhakjhsdjkhjhjklasdikfj asdilfj">',
+            '    <textarea name="fileUploader[0][value]">dgjhakjhsdjkhjhjklasdikfj asdilfj</textarea>',
             '    <input type="text" name="fileUploader[0][size]" value="1.5">',
             '</div>',
             '<div data-index="1" class="uploadedFile">',
             '    <div>File: 1</div>',
             '    <input type="text" name="fileUploader[1][title]" value="Example2.jpg">',
             '    <input type="text" name="fileUploader[1][extension]" value="pdf">',
-            '    <input type="text" name="fileUploader[1][value]" value="hfljsjklsdjfklsjlsdfff">',
+            '    <textarea name="fileUploader[1][value]">hfljsjklsdjfklsjlsdfff</textarea>',
             '    <input type="text" name="fileUploader[1][size]" value="0.9">',
             '</div>',
         ].join("\n");
@@ -134,7 +134,7 @@
                 console.log(reasons);
             },
             filenameTest: function(fileName, fileExt, container) {
-                let allowedExts = ['jpg', 'jpeg', 'png', 'txt', 'p7m'];
+                let allowedExts = ['jpg', 'jpeg', 'png', 'txt', 'p7m', 'pdf'];
                 let proceed = true;
                 let info = document.createElement('div');
                 info.className = 'errorLabel center';

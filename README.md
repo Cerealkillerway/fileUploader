@@ -1,4 +1,4 @@
-## File Uploader v5.5.8
+## File Uploader v5.6.19
 
 ![FileUploader](./images/logos/file-uploader.png)
 
@@ -117,6 +117,8 @@ let the plugin handle this for you; in this case you have to provide "labelsCont
 
 **useSourceFileSize**: [boolean] by deafult the fileUploader will calculate the uploaded file size based on the resulting base64 string which is the output it produces; that string will be bigger than the original file size due to conversion to base64;
 if instead you want to use the original file size you need to set this to `true`; (default `false`);
+
+**mimeTypesToOpen**: [array] this is used to define the behaviour of the "open" link that is put near every uploaded file; some files like images and pdfs can be opened in the browser, while other are not supported to be opened this way and are just downloaded; this array contains the mime types for files that should be opened in the browser (they are placed into an iframe in a new tab);
 
 **labelsClasses**: [object] an object that defines the classes to look for inside any "labelsContainers" defined, where to update fileUploader infos:
 ```
@@ -300,7 +302,7 @@ the reloaded files' HTML must be a string, passed to **reloadHTML** option in th
         <div>File: 0</div>
         <input type="text" name="fileUploader[0][title]" value="try1">
         <input type="text" name="fileUploader[0][extension]" value="jpeg">
-        <input type="text" name="fileUploader[0][value]" value="ldjahflòksdjòflaksjdflk...">
+        <textarea name="fileUploader[0][value]">ldjahflòksdjòflaksjdflk...</textarea>
         <input type="text" name="fileUploader[0][size]" value="0.3">
     </div>
 
@@ -340,6 +342,25 @@ and the plugin instance must be accessed in a different way to call plugin metho
     test1.fileUploader.getData();
     // before
     $('#one').fileUploader.getData();
+
+Due to input element' size limitation the input used to store the base64 string result of the file reading, has been replaced with a textarea; so if you are reloading files putting the HTML directly in the result container, you will need to update this:
+
+    // now
+    <div data-index="0" class="uploadedFile">
+        <div>File: 0</div>
+        <input type="text" name="fileUploader[0][title]" value="try1">
+        <input type="text" name="fileUploader[0][extension]" value="jpeg">
+        <textarea name="fileUploader[0][value]">ldjahflòksdjòflaksjdflk...</textarea>
+        <input type="text" name="fileUploader[0][size]" value="0.3">
+    </div>
+    // before
+    <div data-index="0" class="uploadedFile">
+        <div>File: 0</div>
+        <input type="text" name="fileUploader[0][title]" value="try1">
+        <input type="text" name="fileUploader[0][extension]" value="jpeg">
+        <input type="text" name="fileUploader[0][value]" value="ldjahflòksdjòflaksjdflk...">
+        <input type="text" name="fileUploader[0][size]" value="0.3">
+    </div>
 
 ### License
 Available under <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a> (also available in included **license.txt** file).

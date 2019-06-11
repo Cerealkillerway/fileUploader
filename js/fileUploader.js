@@ -102,7 +102,7 @@ import deepMerge from 'deepmerge';
             for (const event of events) {
                 element.addEventListener(event, handler);
             }
-        }
+        };
 
 
         const getPreviousSibling = function(element, selector) {
@@ -119,7 +119,7 @@ import deepMerge from 'deepmerge';
         };
 
 
-        const updateLabel = function(type, value) {
+        let updateLabel = function(type, value) {
             for (let label of instanceLabels[`${type}Labels`]) {
                 let labelSpan = label.querySelector(':scope > span');
                 let prevValue;
@@ -139,7 +139,7 @@ import deepMerge from 'deepmerge';
                     labelSpan.innerHTML = value;
                 }
             }
-        }
+        };
 
 
         // returns the byte length of an utf8 string
@@ -164,7 +164,7 @@ import deepMerge from 'deepmerge';
             }
 
             return size;
-        }
+        };
 
 
         // update open file button attributes
@@ -184,7 +184,7 @@ import deepMerge from 'deepmerge';
                 fileSeeLink.setAttribute('href', result);
                 fileSeeLink.setAttribute('download', fileName);
             }
-        }
+        };
 
 
         // extend options with instance ones
@@ -192,12 +192,6 @@ import deepMerge from 'deepmerge';
         this._options = deepMerge(this._defaults, options, {
             arrayMerge: overwriteMerge
         });
-
-
-        // add more options
-        this.options = (options) => {
-            return (options) ? deepMerge(this._options, options) : this._options;
-        };
 
 
         // round number
@@ -354,7 +348,7 @@ import deepMerge from 'deepmerge';
 
 
         // create container for file uploading elements (icon, progress bar, etc...)
-        this._createUploaderContainer = (index, fileName, fileExt) => {
+        this.createUploaderContainer = (index, fileName, fileExt) => {
             //insert file icon if requested
             if (this._options.useFileIcons) {
                 let currentThumb = `<img src="/images/${this._fileType(fileExt)}.png" class="fileThumb" />`;
@@ -710,7 +704,7 @@ import deepMerge from 'deepmerge';
                     }
                 }
 
-                let uploaderContainer = this._createUploaderContainer(globalIndex, fileName, fileExt);
+                let uploaderContainer = this.createUploaderContainer(globalIndex, fileName, fileExt);
 
                 // now read!
                 readFile(reader, file, globalIndex, DOM, uploaderContainer);
@@ -788,7 +782,7 @@ import deepMerge from 'deepmerge';
             }
 
             for (let label in labelsClasses) {
-                function findLabel(container, labelsClasses, label) {
+                let findLabel = function(container, labelsClasses, label) {
                     if (container) {
                         let labels = container.querySelector(`.${labelsClasses[label]}`);
                         
@@ -824,7 +818,7 @@ import deepMerge from 'deepmerge';
                 }
             }
         }
-
+        
         updateLabel('maxFileSize', this._options.maxFileSize);
         updateLabel('maxTotalSize', this._options.maxTotalSize);
         updateLabel('maxNumberOfFiles', this._options.maxNumberOfFiles);
@@ -842,7 +836,7 @@ import deepMerge from 'deepmerge';
                 fileName = fileName.substr(0, fileName.lastIndexOf('.'));
             }
 
-            loadedFile = this._createUploaderContainer(globalIndex, fileName, fileExt);
+            loadedFile = this.createUploaderContainer(globalIndex, fileName, fileExt);
             loadedFile.querySelector(':scope > .loadBar > div').style.width = '100%';
             loadedFile.classList.add(this._options.reloadedFilesClass);
 
@@ -859,7 +853,7 @@ import deepMerge from 'deepmerge';
         if (this._options.reloadArray.length > 0) {
             this._options.reloadArray.forEach((file, index) => {
                 // re-create visible elements
-                loadedFile = this._createUploaderContainer(index, file.name, file.ext);
+                loadedFile = this.createUploaderContainer(index, file.name, file.ext);
                 loadedFile.querySelector(':scope > .loadBar > div').style.width = '100%';
                 loadedFile.classList.add(this._options.reloadedFilesClass);
 

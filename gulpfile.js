@@ -13,12 +13,10 @@ const merge = require('merge-stream');
 
 // build js
 function build() {
-    let fileUploaderBundle = browserify('./js/fileUploader.js', { debug: true })
+    return browserify('./js/fileUploader.js', { debug: true })
         .transform(babel.configure({
             presets: ['@babel/env']
-        }));
-
-    return fileUploaderBundle
+        }))
         .bundle()
         .on('error', (error) => {
             console.error(error); this.emit('end');

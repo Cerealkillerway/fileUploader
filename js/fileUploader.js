@@ -3,7 +3,7 @@ import 'element-qsa-scope';
 
 
 /*
-* fileUploader v5.7.19
+* fileUploader v5.7.20
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function(context) {
@@ -481,8 +481,8 @@ import 'element-qsa-scope';
                 approvedList = [];
 
                 // build already loaded files list
-                for(let file of $resultContainer.children) {
-                    loadedFiles.push(file.querySelector('input').value);
+                for (let i = 0; i < $resultContainer.children.length; i++) {
+                    loadedFiles.push($resultContainer.children[i].querySelector('input').value);
                 };
 
                 // build current selected files list

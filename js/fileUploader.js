@@ -1,4 +1,5 @@
 import deepMerge from 'deepmerge';
+import 'element-qsa-scope';
 
 
 /*

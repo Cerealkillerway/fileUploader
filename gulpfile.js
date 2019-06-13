@@ -14,20 +14,18 @@ const merge = require('merge-stream');
 // build js
 function build() {
     return browserify('./js/fileUploader.js', { debug: true })
-        .transform(babel.configure({
-            presets: ['@babel/env']
-        }))
+        .transform(babel)
         .bundle()
         .on('error', (error) => {
             console.error(error); this.emit('end');
         })
         .pipe(source('fileUploader.js'))
-        .pipe(buffer())
+        /*.pipe(buffer())
         .pipe(sourcemaps.init({
             loadMaps: true
         }))
         .pipe(uglify())
-        .pipe(sourcemaps.write('./'))
+        .pipe(sourcemaps.write('./'))*/
         .pipe(dest('./dist/js'));
 };
 

@@ -3,7 +3,7 @@ import 'element-qsa-scope';
 
 
 /*
-* fileUploader v5.6.19
+* fileUploader v5.7.19
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function(context) {

@@ -495,7 +495,16 @@ import 'element-qsa-scope';
                     let fileIndex = loadedFiles.indexOf(newFile);
 
                     if (fileIndex < 0) {
-                        approvedList.push(newFile);
+                        // max number of files handling
+                        if (instance._options.maxNumberOfFiles && currentNumberOfFiles >= instance._options.maxNumberOfFiles) {
+                            //isReadAllowed = false;
+                            //rejectReasons.push('maxNumberOfFiles');
+                            console.log('max files!!!');
+                        }
+                        else {
+                            currentNumberOfFiles++;
+                            approvedList.push(newFile);
+                        }
                     }
                 });
             }
@@ -575,13 +584,13 @@ import 'element-qsa-scope';
 
                     // update total size
                     currentTotalSize = currentTotalSize + size;
-                    currentNumberOfFiles++;
+                    //currentNumberOfFiles++;
 
                     let currentAvailableSize = instance._round(instance._options.maxTotalSize - currentTotalSize);
 
                     updateLabel('sizeAvailable', currentAvailableSize);
                     updateLabel('currentSize', currentTotalSize);
-                    updateLabel('currentNumberOfFiles', currentNumberOfFiles);
+                    //updateLabel('currentNumberOfFiles', currentNumberOfFiles);
                     updateLabel('numberOfUploadedFiles', '++');
                     
                     updateFileSeeLink(result, uploaderContainer, file.name);
@@ -648,10 +657,10 @@ import 'element-qsa-scope';
                     isReadAllowed = false;
                     rejectReasons.push('maxTotalSize');
                 }
-                if (this._options.maxNumberOfFiles && currentNumberOfFiles >= this._options.maxNumberOfFiles) {
+                /*if (this._options.maxNumberOfFiles && currentNumberOfFiles >= this._options.maxNumberOfFiles) {
                     isReadAllowed = false;
                     rejectReasons.push('maxNumberOfFiles');
-                }
+                }*/
 
                 isReadAllowed ? readAllowed(this) : readRejected(this, rejectReasons);
             }
@@ -669,16 +678,21 @@ import 'element-qsa-scope';
 
                 // test for duplicates
                 if (approvedList && approvedList.indexOf(file.name) < 0) {
-                    if (this._options.duplicatesWarning) {
-                        let $info = document.createElement('div');
-                        $info.className = 'errorLabel center';
+                    let $info = document.createElement('div');
 
+                    $info.className = 'errorLabel center';
+
+                    if (this._options.maxNumberOfFiles && currentNumberOfFiles >= this._options.maxNumberOfFiles) {
+                        $info.innerHTML = currentLangObj.maxNumberOfFilesExceeded_msg;
+                        this._logger(`File max number reached: ${file.name} -> skipping...`, 2);
+                    }
+                    else if (this._options.duplicatesWarning) {
                         $info.innerHTML = currentLangObj.duplicated_msg;
-                        $fileThumbsContainer.appendChild($info);
-                        appendMessage($info);
+                        this._logger(`File duplicated: ${file.name} -> skipping...`, 2);
                     }
 
-                    this._logger(`File duplicated: ${file.name} -> skipping...`, 2);
+                    $fileThumbsContainer.appendChild($info);
+                    appendMessage($info);
                     continue;
                 }
 

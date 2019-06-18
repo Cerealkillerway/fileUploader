@@ -587,13 +587,12 @@ import './polyfills/dataset.js';
 
                     // update total size
                     currentTotalSize = currentTotalSize + size;
-                    //currentNumberOfFiles++;
 
                     let currentAvailableSize = instance._round(instance._options.maxTotalSize - currentTotalSize);
 
                     updateLabel('sizeAvailable', currentAvailableSize);
                     updateLabel('currentSize', currentTotalSize);
-                    //updateLabel('currentNumberOfFiles', currentNumberOfFiles);
+                    updateLabel('currentNumberOfFiles', currentNumberOfFiles);
                     updateLabel('numberOfUploadedFiles', '++');
                     
                     updateFileSeeLink(result, uploaderContainer, file.name);

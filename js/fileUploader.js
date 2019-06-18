@@ -1,9 +1,12 @@
 import deepMerge from 'deepmerge';
 import 'element-qsa-scope';
+import 'core-js';
+import './polyfills/prepend.js';
+import './polyfills/dataset.js';
 
 
 /*
-* fileUploader v5.7.20
+* fileUploader v5.8.7
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function(context) {
@@ -395,7 +398,7 @@ import 'element-qsa-scope';
             deleteBtn.className = 'fileDelete';
             deleteBtn.dataset.delete = parseInt(index);
             deleteBtn.innerHTML = this._options.deleteButtonContent;
-            fileButtonsContainer.append(deleteBtn);
+            fileButtonsContainer.appendChild(deleteBtn);
             deleteBtn.addEventListener('click', (event) => {
                 this._fileDelete(event, {element: container});
             });
@@ -605,6 +608,8 @@ import 'element-qsa-scope';
 
                 function readRejected(instance, reasons) {
                     let errorMsg;
+
+                    currentNumberOfFiles--;
 
                     for (let reason of reasons) {
                         switch(reason) {

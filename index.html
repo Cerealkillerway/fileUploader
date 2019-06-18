@@ -9,7 +9,7 @@
 
 <body>
     <header>
-        <h2>File Uploader v5.7.20</h2>
+        <h2>File Uploader v5.8.7</h2>
         <p>
             A file uploader skeleton that uses HTML5 file reader API
         </p>
@@ -73,22 +73,22 @@
 
     <script type="text/javascript" src="dist/js/fileUploader.js"></script>
     <script tyle="text/javascript">
-        let filesArray = [
+        var filesArray = [
             {
                 name: "fromArray1",
                 ext: "jpeg",
-                data: "ldjahflòksdjòflaksjdflk",
+                data: "this is just a test...",
                 size: 0.3
             },
             {
                 name: "fromArray2",
                 ext: "jpg",
-                data: "dgjhakjhsdjkhjhjklasdikfj asdilfj",
+                data: "this is just a test................",
                 size: 1.2
             }
         ];
 
-        let filesHTML = [
+        var filesHTML = [
             '<div data-index="0" class="uploadedFile">',
             '    <div>File: 0</div>',
             '    <input type="text" name="fileUploader[0][title]" value="Example1">',
@@ -106,10 +106,10 @@
         ].join("\n");
 
         // fileUploader example 1
-        let test1 = new FileUploader(document.querySelector('#one'), {
+        var test1 = new FileUploader(document.querySelector('#one'), {
             useFileIcons: false,
             maxNumberOfFiles: 3,
-            maxFileSize: 6.0,
+            maxFileSize: 1,
             maxTotalSize: 15.5,
             loadingBarsClasses: ['striped', 'hoverable'],
             debug: true,
@@ -122,7 +122,7 @@
             resultInputNames: ['NomeAttachment', 'FormatoAttachment', 'Attachment', 'HiddenFileSize'],
             onload: function(options, totalSize, numberOfFiles) {
                 document.querySelector('.customTotalSize').querySelector(':scope > span').innerHTML = (totalSize + ' MB');
-                console.log(`Number of reloaded files: ${numberOfFiles}`);
+                console.log('Number of reloaded files:' + numberOfFiles);
             },
             onfileloadEnd: function(index, file, totalSize, numberOfFiles) {
                 document.querySelector('.customTotalSize').querySelector(':scope > span').innerHTML = (totalSize + ' MB');
@@ -130,13 +130,13 @@
             onfileDelete: function(index, totalSize) {
                 document.querySelector('.customTotalSize').querySelector(':scope > span').innerHTML = (totalSize + ' MB');
             },
-            onFileRejected: function(reasons) {
+            onfileRejected: function(reasons) {
                 console.log(reasons);
             },
             filenameTest: function(fileName, fileExt, container) {
-                let allowedExts = ['jpg', 'jpeg', 'png', 'txt', 'p7m', 'pdf'];
-                let proceed = true;
-                let info = document.createElement('div');
+                var allowedExts = ['jpg', 'jpeg', 'png', 'txt', 'p7m', 'pdf'];
+                var proceed = true;
+                var info = document.createElement('div');
                 info.className = 'errorLabel center';
 
                 // length check
@@ -173,7 +173,7 @@
         });
 
         // fileUploader example 2
-        let test2 = new FileUploader(document.querySelector('#two'), {
+        var test2 = new FileUploader(document.querySelector('#two'), {
             useFileIcons: false,
             maxFileSize: 1.7,
             maxTotalSize: 7,
@@ -186,19 +186,19 @@
 
         // buttons
         document.getElementById('save1').addEventListener('click', function() {
-            let result = test1.fileUploader.getData();
+            var result = test1.fileUploader.getData();
             //do what you need with result (ex. send ajax call to remote procedure to persist files)
         });
         document.getElementById('save2').addEventListener('click', function() {
-            let result = test2.fileUploader.getData();
+            var result = test2.fileUploader.getData();
             //do what you need with result (ex. send ajax call to remote procedure to persist files)
         });
 
         document.getElementById('getCurrentTotalSize1').addEventListener('click', function() {
-            console.log(`Current total size uploader 1: ${test1.fileUploader.get('currentTotalSize')}`);
+            console.log('Current total size uploader 1:' + test1.fileUploader.get('currentTotalSize'));
         });
         document.getElementById('getCurrentTotalSize2').addEventListener('click', function() {
-            console.log(`Current total size uploader 2: ${test2.fileUploader.get('currentTotalSize')}`);
+            console.log('Current total size uploader 2:' + test2.fileUploader.get('currentTotalSize'));
         });
 
     </script>

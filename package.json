@@ -1,6 +1,6 @@
 {
     "name": "fileUploader",
-    "version": "5.8.7",
+    "version": "5.8.14",
     "description": "A HTML5 file uploader skeleton",
     "devDependencies": {
         "@babel/core": "^7.4.3",

@@ -6,7 +6,7 @@ import './polyfills/dataset.js';
 
 
 /*
-* fileUploader v5.8.7
+* fileUploader v5.8.14
 * Licensed under MIT (https://raw.githubusercontent.com/Cerealkillerway/fileUploader/master/license.txt)
 */
 (function(context) {
@@ -123,7 +123,7 @@ import './polyfills/dataset.js';
         };
 
 
-        let updateLabel = function(type, value) {
+        const updateLabel = function(type, value) {
             for (let label of instanceLabels[`${type}Labels`]) {
                 let labelSpan = label.querySelector(':scope > span');
                 let prevValue;
@@ -379,20 +379,6 @@ import './polyfills/dataset.js';
 
             fileButtonsContainer.appendChild(seeFileLink);
 
-            /*seeFileLink.addEventListener('click', (event) => {
-                let index = event.target.closest('.newElement').dataset.index;
-                let content = $resultContainer.querySelector(`.uploadedFile[data-index="${index}"] textarea`).value;
-                //let win = window.open();
-                let mimeType = content.substring(5, content.indexOf(';'));
-                
-                if (this._options.mimeTypesToOpen.indexOf(mimeType) >= 0) {
-                    console.log('open!!');
-                    window.open(content);
-                }
-
-                //win.document.write(`<iframe src="${content}" frameborder="0" style="border:0; top:0px; display:block; left:0px; bottom:0px; right:0px; width:100%; min-height: 100vh; height:100%;" allowfullscreen></iframe>`)
-            });*/
-
             // delete button
             let deleteBtn = document.createElement('div');
             deleteBtn.className = 'fileDelete';
@@ -458,6 +444,58 @@ import './polyfills/dataset.js';
             $resultContainer.appendChild(resultElemContainer);
         };
 
+        // test if loading is allowed
+        this._readAllowed = (reader, file) => {
+            reader.readAsDataURL(file);
+        }
+
+        this._readRejected = (instance, reasons, currentElement, size) => {
+            let errorMsg;
+
+            for (let reason of reasons) {
+                switch(reason) {
+                    case 'maxFileSize':
+                    errorMsg = currentLangObj.maxSizeExceeded_msg;
+                    instance._logger(`FILE REJECTED: Max file size exceeded - max size: ${instance._options.maxFileSize} MB - file size: ${size} MB`);
+                    currentNumberOfFiles--;
+                    break;
+
+                    case 'maxTotalSize':
+                    errorMsg = currentLangObj.maxTotalSizeExceeded_msg;
+                    instance._logger(`FILE REJECTED: Max total size exceeded - max size: ${instance._options.maxTotalSize} MB - current total size: ${currentTotalSize + size} MB`);
+                    currentNumberOfFiles--;
+                    break;
+
+                    case 'maxNumberOfFiles':
+                    instance._logger(`FILE REJECTED: Max number of files exceeded - max number: ${instance._options.maxNumberOfFiles}`);
+                    break;
+                }
+            }
+
+            if (currentElement) {
+                currentElement.classList.add('error');
+
+                if (instance._options.showErrorOnLoadBar) {
+                    let loadBar = currentElement.querySelector(':scope > .loadBar');
+
+                    loadBar.innerHTML = '';
+                    loadBar.insertAdjacentHTML('beforeend', `<div class="errorMsg">${errorMsg}</div>`)
+                }
+
+                setTimeout(() => {
+                    if (instance._options.useFileIcons) {
+                        currentElement.getPreviousSibling('img').remove();
+                    }
+                    currentElement.remove();
+                }, 2000);
+            }
+
+            updateLabel('numberOfRejectedFiles', '++');
+
+            // error callback
+            instance._options.onfileRejected(reasons);
+        }
+        
 
         // files read function
         this._filesRead = (event) => {
@@ -465,6 +503,8 @@ import './polyfills/dataset.js';
             let filesList;
             let approvedList = false;
             let i = 0;
+            let isReadAllowed = true;
+            let rejectReasons = [];
 
             if (event.target.files) {
                 this._logger('files array source: file selector (click event)', 1);
@@ -500,9 +540,7 @@ import './polyfills/dataset.js';
                     if (fileIndex < 0) {
                         // max number of files handling
                         if (instance._options.maxNumberOfFiles && currentNumberOfFiles >= instance._options.maxNumberOfFiles) {
-                            //isReadAllowed = false;
-                            //rejectReasons.push('maxNumberOfFiles');
-                            console.log('max files!!!');
+                            instance._readRejected(instance, ['maxNumberOfFiles']);
                         }
                         else {
                             currentNumberOfFiles++;
@@ -514,13 +552,7 @@ import './polyfills/dataset.js';
 
             $fileContainer.classList.remove('filesContainerEmpty');
 
-            let readFile = (reader, file, index, DOM, uploaderContainer) => {
-                let currentElement = Array.from(DOM.querySelector('.innerFileThumbs').children).filter(function(element) {
-                    return parseInt(element.dataset.index) === index ;
-                });
-                currentElement = currentElement[0];
-                let size = this._round(file.size / 1000000);      // size in MB
-
+            let readFile = (reader, file, index, DOM, uploaderContainer, size, currentElement) => {
                 reader.onloadstart = () => {
                     this._options.onfileloadStart(index);
                     this._logger(`START read file: ${index}, size: ${size} MB`, 2);
@@ -600,59 +632,6 @@ import './polyfills/dataset.js';
                     this._options.onfileloadEnd(index, resultObject, this._round(currentTotalSize), currentNumberOfFiles);
                 };
 
-                // test if loading is allowed
-                function readAllowed(instance) {
-                    reader.readAsDataURL(file);
-                }
-
-                function readRejected(instance, reasons) {
-                    let errorMsg;
-
-                    currentNumberOfFiles--;
-
-                    for (let reason of reasons) {
-                        switch(reason) {
-                            case 'maxFileSize':
-                            errorMsg = currentLangObj.maxSizeExceeded_msg;
-                            instance._logger(`FILE REJECTED: Max file size exceeded - max size: ${instance._options.maxFileSize} MB - file size: ${size} MB`);
-                            break;
-    
-                            case 'maxTotalSize':
-                            errorMsg = currentLangObj.maxTotalSizeExceeded_msg;
-                            instance._logger(`FILE REJECTED: Max total size exceeded - max size: ${instance._options.maxTotalSize} MB - current total size: ${currentTotalSize + size} MB`);
-                            break;
-    
-                            case 'maxNumberOfFiles':
-                            errorMsg = currentLangObj.maxNumberOfFilesExceeded_msg;
-                            instance._logger(`FILE REJECTED: Max number of files exceeded - max number: ${instance._options.maxNumberOfFiles}`);
-                            break;
-                        }
-                    }
-
-                    currentElement.classList.add('error');
-
-                    if (instance._options.showErrorOnLoadBar) {
-                        let loadBar = currentElement.querySelector(':scope > .loadBar');
-                        loadBar.innerHTML = '';
-                        loadBar.insertAdjacentHTML('beforeend', `<div class="errorMsg">${errorMsg}</div>`)
-                    }
-
-                    setTimeout(() => {
-                        if (instance._options.useFileIcons) {
-                            currentElement.getPreviousSibling('img').remove();
-                        }
-                        currentElement.remove();
-                    }, 2000);
-
-                    updateLabel('numberOfRejectedFiles', '++');
-
-                    // error callback
-                    instance._options.onfileRejected(rejectReasons);
-                }
-                
-                let isReadAllowed = true;
-                let rejectReasons = [];
-
                 if (this._options.maxFileSize && size > this._options.maxFileSize) {
                     isReadAllowed = false;
                     rejectReasons.push('maxFileSize');
@@ -661,12 +640,8 @@ import './polyfills/dataset.js';
                     isReadAllowed = false;
                     rejectReasons.push('maxTotalSize');
                 }
-                /*if (this._options.maxNumberOfFiles && currentNumberOfFiles >= this._options.maxNumberOfFiles) {
-                    isReadAllowed = false;
-                    rejectReasons.push('maxNumberOfFiles');
-                }*/
 
-                isReadAllowed ? readAllowed(this) : readRejected(this, rejectReasons);
+                isReadAllowed ? this._readAllowed(reader, file) : this._readRejected(this, rejectReasons, currentElement, size);
             }
 
             function appendMessage($message) {
@@ -679,6 +654,7 @@ import './polyfills/dataset.js';
             for (i = 0; i < filesList.length; i++) {
                 let file = filesList[i];
                 let reader = new FileReader();
+                let size = this._round(file.size / 1000000);      // size in MB
 
                 // test for duplicates
                 if (approvedList && approvedList.indexOf(file.name) < 0) {
@@ -726,7 +702,11 @@ import './polyfills/dataset.js';
                 let uploaderContainer = this.createUploaderContainer(globalIndex, fileName, fileExt);
 
                 // now read!
-                readFile(reader, file, globalIndex, DOM, uploaderContainer);
+                let currentElement = Array.from(DOM.querySelector('.innerFileThumbs').children).filter(function(element) {
+                    return parseInt(element.dataset.index) === globalIndex ;
+                });
+                currentElement = currentElement[0];
+                readFile(reader, file, globalIndex, DOM, uploaderContainer, size, currentElement);
                 globalIndex++;
             }
         };

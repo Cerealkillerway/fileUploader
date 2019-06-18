@@ -261,10 +261,10 @@ import './polyfills/dataset.js';
         // method for deleting a reader's result from result container
         this._fileDelete = (event, data) => {
             let element = data.element;
-            let index = event.target.dataset.delete;
+            let index = event.target.getAttribute('data-delete');
 
             if (!index) {
-                index = event.target.closest('div[data-delete]').dataset.delete;
+                index = event.target.closest('div[data-delete]').getAttribute('data-delete');
             }
 
             // remove file block
@@ -306,7 +306,7 @@ import './polyfills/dataset.js';
             let $this = event.target;
             let ext = element.querySelector(':scope > .fileExt').innerHTML;
             let text = $this.value;
-            let index = element.dataset.index;
+            let index = element.getAttribute('data-index');
             let $input = $resultContainer.querySelector(`div[data-index="${index}"] input`);
             let nameTest = this._options.filenameTest(text, ext, $fileThumbsContainer);
 
@@ -317,11 +317,6 @@ import './polyfills/dataset.js';
             if (nameTest !== undefined && nameTest !== true) {
                 text = nameTest;
                 $this.value = text;
-
-                // update input
-                /*if (ext.length > 0) {
-                    text = `${text}.${ext}`;
-                }*/
 
                 $input.value = text;
                 // restore selection range
@@ -362,7 +357,7 @@ import './polyfills/dataset.js';
             let container = document.createElement('div');
 
             container.className = 'newElement';
-            container.dataset.index = parseInt(index);
+            container.setAttribute('data-index', parseInt(index));
             container.style.position = 'relative';
             $fileThumbsContainer.appendChild(container);
 
@@ -382,7 +377,7 @@ import './polyfills/dataset.js';
             // delete button
             let deleteBtn = document.createElement('div');
             deleteBtn.className = 'fileDelete';
-            deleteBtn.dataset.delete = parseInt(index);
+            deleteBtn.setAttribute('data-delete', parseInt(index));
             deleteBtn.innerHTML = this._options.deleteButtonContent;
             fileButtonsContainer.appendChild(deleteBtn);
             deleteBtn.addEventListener('click', (event) => {
@@ -435,7 +430,7 @@ import './polyfills/dataset.js';
             let resultElemContainer = document.createElement('div');
 
             resultElemContainer.className = this._options.resultFileContainerClass;
-            resultElemContainer.dataset.index = index;
+            resultElemContainer.setAttribute('data-index', index);
             resultElemContainer.insertAdjacentHTML('beforeend', `<div>File: ${index}</div>`);
             resultElemContainer.insertAdjacentHTML('beforeend', `<input type="text" name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[0]}]" value="${fileData.name}" />`);
             resultElemContainer.insertAdjacentHTML('beforeend', `<input type="text" name="${this._options.resultPrefix}[${index}][${this._options.resultInputNames[1]}]" value="${fileData.type}" />`);
@@ -703,7 +698,7 @@ import './polyfills/dataset.js';
 
                 // now read!
                 let currentElement = Array.from(DOM.querySelector('.innerFileThumbs').children).filter(function(element) {
-                    return parseInt(element.dataset.index) === globalIndex ;
+                    return parseInt(element.getAttribute('data-index', globalIndex));
                 });
                 currentElement = currentElement[0];
                 readFile(reader, file, globalIndex, DOM, uploaderContainer, size, currentElement);
@@ -823,7 +818,7 @@ import './polyfills/dataset.js';
         updateLabel('maxNumberOfFiles', this._options.maxNumberOfFiles);
 
         for (const [index, element] of $resultContainer.querySelectorAll(`:scope > .${this._options.resultFileContainerClass}`).entries()) {
-            this._logger(`found previously uploaded file: index = ${element.dataset.index}`, 2);
+            this._logger(`found previously uploaded file: index = ${element.getAttribute('data-index')}`, 2);
 
             // pay attention to index used on fileData here: index 0 is the title DIV!
             let fileData = element.querySelectorAll(':scope > input');

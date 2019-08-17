@@ -20,12 +20,12 @@ function build() {
             console.error(error); this.emit('end');
         })
         .pipe(source('fileUploader.js'))
-        /*.pipe(buffer())
+        .pipe(buffer())
         .pipe(sourcemaps.init({
             loadMaps: true
         }))
         .pipe(uglify())
-        .pipe(sourcemaps.write('./'))*/
+        .pipe(sourcemaps.write('./'))
         .pipe(dest('./dist/js'));
 };
 

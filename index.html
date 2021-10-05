@@ -108,7 +108,7 @@
         // fileUploader example 1
         var test1 = new FileUploader(document.querySelector('#one'), {
             useFileIcons: false,
-            maxNumberOfFiles: 3,
+            maxNumberOfFiles: 1000,
             maxFileSize: 2,
             maxTotalSize: 15.5,
             loadingBarsClasses: ['striped', 'hoverable'],
@@ -134,7 +134,7 @@
                 console.log(reasons);
             },
             filenameTest: function(fileName, fileExt, container) {
-                var allowedExts = ['jpg', 'jpeg', 'png', 'txt', 'p7m', 'pdf'];
+                var allowedExts = ['jpg', 'jpeg', 'png', 'txt', 'p7m', 'pdf', 'xml'];
                 var proceed = true;
                 var info = document.createElement('div');
                 info.className = 'errorLabel center';
